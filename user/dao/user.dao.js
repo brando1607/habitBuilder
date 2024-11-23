@@ -17,14 +17,13 @@ export class UserDAO {
     try {
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO user(id, first_name, last_name, username, user_email, hashed_email, theme, date_of_birth, country) VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?,?);`,
+        `INSERT INTO user(id, first_name, last_name, username, user_email, theme, date_of_birth, country) VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?);`,
         [
           uuid,
           firstName,
           lastName,
           username,
           encryptedEmail,
-          hashedEmail,
           theme,
           dateOfBirth,
           country,
@@ -53,7 +52,7 @@ export class UserDAO {
       await connection.rollback();
       console.error(`Error adding user`, e.sqlMessage);
       if (e.code === "ER_DUP_ENTRY") {
-        if (e.sqlMessage.includes("hashed_email")) {
+        if (e.sqlMessage.includes("user_email")) {
           return CustomError.newError(errors.conflict.userEmail);
         } else if (e.sqlMessage.includes("username")) {
           return CustomError.newError(errors.conflict.username);

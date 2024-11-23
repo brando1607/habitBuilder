@@ -16,7 +16,6 @@ export class UserModel {
       password,
       ReusableFunctions.passwordSaltRound
     );
-    const hashedEmail = ReusableFunctions.hashEmail(userEmail);
 
     const encryptedEmail = encryption.encrypt(userEmail);
 
@@ -25,7 +24,6 @@ export class UserModel {
     const result = await DaoIndex.userDao.addUser({
       user,
       encryptedEmail,
-      hashedEmail,
       hashedPassword,
     });
 

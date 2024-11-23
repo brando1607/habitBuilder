@@ -1,5 +1,6 @@
 import { ModelsIndex } from "../model/index.model.js";
 import { CustomError } from "../utils/errors/customErrors.js";
+import { verifyToken } from "../utils/jwt.js";
 
 export class BadgesAndLevelsController {
   static async sendToPendingBadges(req, res, next) {

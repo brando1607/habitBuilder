@@ -2,10 +2,6 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 
 export class ReusableFunctions {
-  static hashEmail(email) {
-    return crypto.createHash("sha256").update(email).digest("hex");
-  }
-
   static generateRandomString(length) {
     return crypto.randomBytes(length).toString("hex").slice(0, length);
   }

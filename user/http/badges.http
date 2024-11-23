@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ###  suggest badge
 
-POST http://localhost:1234/api/badgesAndLevels/sendToPendingBadges/brndo16
+POST http://localhost:1234/api/badgesAndLevels/sendToPendingBadges/brando16
 Content-Type: application/json
 
 {
@@ -25,7 +25,7 @@ POST http://localhost:1234/api/badgesAndLevels/evaluateBadge/2
 Content-Type: application/json
 
 {
-    "decision": "accepted"
+    "decision": "rejected"
 }
 
 ### get user and badge levels

@@ -48,7 +48,7 @@ POST http://localhost:1234/api/user/sendTemporaryPassword
 Content-Type: application/json
 
 {
-    "username": "brndo16"
+    "username": "brando16"
 }
 
 ### change password
