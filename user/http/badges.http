@@ -1,0 +1,37 @@
+###  create badge
+
+POST http://localhost:1234/api/badgesAndLevels/createBadge/brando16
+Content-Type: application/json
+
+{
+    "badge": "Veggie",
+    "keyword": "read"
+}
+
+###  suggest badge
+
+POST http://localhost:1234/api/badgesAndLevels/sendToPendingBadges/brndo16
+Content-Type: application/json
+
+{
+    "badge": "hiker",
+    "keyword": "hike"
+}
+
+
+###  evaluate badge
+
+POST http://localhost:1234/api/badgesAndLevels/evaluateBadge/2
+Content-Type: application/json
+
+{
+    "decision": "accepted"
+}
+
+### get user and badge levels
+
+GET http://localhost:1234/api/badgesAndLevels/getUserAndBadgeLevels
+
+### get badges 
+
+GET http://localhost:1234/api/badgesAndLevels/getBadges

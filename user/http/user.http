@@ -1,0 +1,82 @@
+## add user
+POST http://localhost:1234/api/user/createUser
+Content-Type: application/json
+
+{
+    "firstName": "Brando",
+    "lastName": "Hernandez",
+    "username": "brndo16", 
+    "userEmail": "brandodavid16@gmail.com",
+    "theme": "greek_gods",
+    "dateOfBirth": "1994-07-16",
+    "country": "Venezuela", 
+    "password": "Leslie2505."
+}
+
+# {
+#     "firstName": "Leslie",    
+#     "lastName": "Caro",
+#     "username": "leslie25", 
+#     "userEmail": "leslie@gmail.com",
+#     "theme": "traveler",
+#     "dateOfBirth": "1989-05-25",
+#     "country": "Chile", 
+#     "password": "Brando1607."
+# }
+
+
+###
+
+
+### log user in
+
+POST http://localhost:1234/api/user/login
+Content-Type: application/json
+
+{
+    "login": "brndo16",
+    "password": "Leslie2505."
+}
+
+### logout
+
+GET http://localhost:1234/api/user/logout
+
+### send temporary password
+
+POST http://localhost:1234/api/user/sendTemporaryPassword
+Content-Type: application/json
+
+{
+    "username": "brndo16"
+}
+
+### change password
+
+PUT http://localhost:1234/api/user/changePassword
+Content-Type: application/json
+
+{
+    "username": "brando16",
+    "tempPassword": "1ef86d4fe0",
+    "newPassword": "Leslie2505."
+}
+
+### change username or email
+
+PUT  http://localhost:1234/api/user/changeLogin/brando16
+Content-Type: application/json
+
+{
+    "passwordToCheck": "Leslie2505.",
+    "new_email": "brando16@gmail.com"
+}
+
+### get user profile        
+    
+GET http://localhost:1234/api/user/profile/brando16 
+
+### get user's achievements        
+    
+GET http://localhost:1234/api/user/achievements/brando16 
+

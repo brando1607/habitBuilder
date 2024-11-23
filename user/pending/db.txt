@@ -1,0 +1,4 @@
+- create followers table with follower and following columns
+- create friends table where requests and friendships are located
+- create trigger that will remove requests that were rejected 
+- change pending badges table so they're structured in that same way
