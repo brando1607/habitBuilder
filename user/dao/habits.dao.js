@@ -132,6 +132,7 @@ export class HabitsDAO {
     } catch (error) {
       await connection.rollback();
       console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -150,9 +151,9 @@ export class HabitsDAO {
       );
       if (habitFound) return CustomError.newError(errors.conflict.habit);
 
-      let badgeAssigned = await this.assignBadge({ habit, username });
-
       await this.addHabitAndIncreaseCounter({ habit, deadline, username });
+
+      const badgeAssigned = await this.assignBadge({ habit, username });
 
       await this.addFrequency({ habit, deadline });
 

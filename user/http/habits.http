@@ -1,11 +1,11 @@
 ### add habit
 
-POST http://localhost:1234/api/habits/addHabit/fff
+POST http://localhost:1234/api/habits/addHabit/brando16
 Content-Type: application/json
 
 {
     "habit": "learn french",
-    "deadline": "2024-11-07"
+    "deadline": "2024-11-23"
 }
 
 ###  complete habit
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "habit": "learn french",
-    "deadline": "2024-10-21"
+    "deadline": "2024-11-23"
 }
 
 ###  delete habit
