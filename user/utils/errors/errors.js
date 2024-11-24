@@ -12,7 +12,11 @@ export const errors = {
   fatal: { message: "Server Error", statusCode: 500 },
   noData: { message: "Data not found", statusCode: 204 },
   conflict: {
-    badge: {
+    currentBadge: {
+      message: "Badge or keyword already exists.",
+      statusCode: 409,
+    },
+    pendingBadge: {
       message: "Badge or keyword currently under evaluation",
       statusCode: 409,
     },

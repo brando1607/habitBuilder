@@ -1,3 +1,2 @@
-- before sending a badge to the pending badges table, check if it already exists
 - add hability to follow people and have friends
 

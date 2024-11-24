@@ -9,7 +9,7 @@ export class UserDAO {
   constructor(pool) {
     this.pool = pool;
   }
-  async addUser({ user, encryptedEmail, hashedEmail, hashedPassword }) {
+  async addUser({ user, encryptedEmail, hashedPassword }) {
     const { firstName, lastName, username, theme, dateOfBirth, country } = user;
     const uuid = randomUUID();
 

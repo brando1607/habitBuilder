@@ -38,6 +38,15 @@ export class BadgesAndLevelsDAO {
     const connection = await this.pool.getConnection();
     const { badge, keyword } = input;
     try {
+      const [currentBadges] = await connection.query(
+        `SELECT badge FROM badges WHERE badge = ? OR keyword = ?;`,
+        [badge, keyword]
+      );
+
+      if (currentBadges.length > 0) {
+        throw CustomError.newError(errors.conflict.currentBadge);
+      }
+
       const [getBadges] = await connection.query(
         `SELECT badge FROM pending_badges WHERE badge = ? OR keyword = ?;`,
         [badge, keyword]
