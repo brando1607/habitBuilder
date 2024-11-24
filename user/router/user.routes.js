@@ -2,6 +2,7 @@ import Router from "express";
 export const userRoutes = Router();
 import { IndexController } from "../controller/index.controller.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
+import { checkUsernameInUrl } from "../middlewares/username.middleware.js";
 
 userRoutes.post("/createUser", IndexController.userController.addUser);
 
@@ -20,18 +21,21 @@ userRoutes.put(
 userRoutes.put(
   "/changeLogin/:username",
   passportCall("jwt", { session: false }),
+  checkUsernameInUrl(),
   IndexController.userController.changeLogin
 );
 
 userRoutes.get(
   "/profile/:username",
   passportCall("jwt", { session: false }),
+  checkUsernameInUrl(),
   IndexController.userController.profile
 );
 
 userRoutes.get(
   "/achievements/:username",
   passportCall("jwt", { session: false }),
+  checkUsernameInUrl(),
   IndexController.userController.achievements
 );
 

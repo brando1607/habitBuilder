@@ -269,7 +269,7 @@ JOIN badges ON badges.id = habit_completion.badge_id WHERE user.username = ?;
         [userId]
       );
       const [getHabitsWithoutBadge] = await connection.query(
-        `SELECT habit, habit_completion.times_completed FROM habit_completion WHERE badge_id IS NULL AND user_id = ?;`,
+        `SELECT habit, habit_completion, times_completed FROM habit_completion WHERE badge_id IS NULL AND user_id = ?;`,
         [userId]
       );
 

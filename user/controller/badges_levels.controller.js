@@ -1,17 +1,10 @@
 import { ModelsIndex } from "../model/index.model.js";
-import { CustomError } from "../utils/errors/customErrors.js";
-import { verifyToken } from "../utils/jwt.js";
 
 export class BadgesAndLevelsController {
   static async sendToPendingBadges(req, res, next) {
     try {
       let input = req.body;
       let username = req.params.username;
-
-      const token = verifyToken(req.cookies.token);
-      if (username !== token.login) {
-        return CustomError.newError(errors.auth.unauthorized);
-      }
 
       let result = await ModelsIndex.badgesAndLevelsModel.sendToPendingBadges({
         input,

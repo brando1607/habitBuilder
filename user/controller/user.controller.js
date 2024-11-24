@@ -2,7 +2,6 @@ import { ModelsIndex } from "../model/index.model.js";
 import { generateToken } from "../utils/jwt.js";
 import { errors } from "../utils/errors/errors.js";
 import { CustomError } from "../utils/errors/customErrors.js";
-import { verifyToken } from "../utils/jwt.js";
 
 export class UserController {
   static async addUser(req, res, next) {
@@ -57,11 +56,6 @@ export class UserController {
     try {
       let username = req.params.username;
 
-      const token = verifyToken(req.cookies.token);
-      if (username !== token.login) {
-        return CustomError.newError(errors.auth.unauthorized);
-      }
-
       let input = req.body;
       let result = await ModelsIndex.userModel.changeLogin({ username, input });
       res.send(result);
@@ -82,11 +76,6 @@ export class UserController {
     try {
       let username = req.params.username;
 
-      const token = verifyToken(req.cookies.token);
-      if (username !== token.login) {
-        return CustomError.newError(errors.auth.unauthorized);
-      }
-
       let result = await ModelsIndex.userModel.profile({ username });
       res.send(result);
     } catch (error) {
@@ -96,11 +85,6 @@ export class UserController {
   static async achievements(req, res, next) {
     try {
       const username = req.params.username;
-
-      const token = verifyToken(req.cookies.token);
-      if (username !== token.login) {
-        return CustomError.newError(errors.auth.unauthorized);
-      }
 
       let result = await ModelsIndex.userModel.achievements({ username });
       res.send(result);
