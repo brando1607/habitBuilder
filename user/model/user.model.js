@@ -123,13 +123,9 @@ export class UserModel {
     return result;
   }
   async profile({ username }) {
-    try {
-      const result = await DaoIndex.userDao.profile({ username });
+    const result = await DaoIndex.userDao.profile({ username });
 
-      return result;
-    } catch (error) {
-      console.error(error);
-    }
+    return result;
   }
   async achievements({ username }) {
     try {
