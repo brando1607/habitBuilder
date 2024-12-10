@@ -74,7 +74,7 @@ Content-Type: application/json
 
 ### get user profile        
     
-GET http://localhost:1234/api/user/profile/brando16
+GET http://localhost:1234/api/user/profile/leslie25
 
 ### get user's achievements        
     
