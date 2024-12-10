@@ -47,7 +47,7 @@ export class UserDAO {
         [uuid, hashedPassword]
       );
       await connection.commit();
-      return `User added!`;
+      return `User created.`;
     } catch (e) {
       await connection.rollback();
       console.error(`Error adding user`, e.sqlMessage);
@@ -204,27 +204,33 @@ export class UserDAO {
     const connection = await this.pool.getConnection();
     try {
       const [getUserData] = await connection.query(
-        `SELECT id, first_name, last_name, country, date_of_birth, points, theme FROM user WHERE username = ?;`,
+        `SELECT user.id, first_name, last_name, country, date_of_birth, points, themes.theme, themes.level_name FROM user
+        JOIN user_level ON user.id = user_level.user_id
+        JOIN themes ON themes.level_number = user_level.level_id  
+        WHERE username = ?;`,
         [username]
       );
-      const userData = getUserData[0];
-      const { id, first_name, last_name, country, points, theme } = userData;
 
-      const [getLevelAndHabits] = await connection.query(
-        `SELECT level_name, COUNT(times_completed) AS 'Habits completed', SUM(times_completed) AS 'Amount of times habits were completed' FROM user
+      const userData = getUserData[0];
+
+      if (!userData) return CustomError.newError(errors.notFound.userNotFound);
+
+      const { id, first_name, last_name, country, points, theme, level_name } =
+        userData;
+
+      const [getHabitCompletion] = await connection.query(
+        `SELECT COUNT(times_completed) AS 'Habits completed', SUM(times_completed) AS 'Amount of times habits were completed' FROM user
       JOIN habit_completion ON user.id = habit_completion.user_id
-      JOIN user_level ON user.id = user_level.user_id
-      JOIN themes ON themes.level_number = user_level.level_id
-      WHERE username = ? AND themes.theme = ?
-      GROUP BY user.id, level_name;
+      WHERE username = ?
+      GROUP BY user.id;
       `,
-        [username, theme]
+        [username]
       );
 
       const [getBadges] = await connection.query(
         `SELECT badge, badge_level FROM user
-JOIN habit_completion ON habit_completion.user_id = user.id
-JOIN badges ON badges.id = habit_completion.badge_id WHERE user.username = ?;
+        JOIN habit_completion ON habit_completion.user_id = user.id
+        JOIN badges ON badges.id = habit_completion.badge_id WHERE user.username = ?;
 `,
         [username]
       );
@@ -234,7 +240,8 @@ JOIN badges ON badges.id = habit_completion.badge_id WHERE user.username = ?;
         [id]
       );
 
-      const levelAndHabitsData = getLevelAndHabits[0];
+      const levelAndHabitsData = getHabitCompletion[0];
+
       const badgesInformation = getBadges;
 
       const userInformation = {
@@ -242,16 +249,18 @@ JOIN badges ON badges.id = habit_completion.badge_id WHERE user.username = ?;
         last_name,
         country,
         points,
+        level_name,
         theme,
         ...levelAndHabitsData,
-        badges: badgesInformation,
+        badges:
+          badgesInformation.length > 0 ? badgesInformation : "No badges yet.",
         threeMostCompletedHabits: getHabits,
       };
 
       return userInformation;
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
