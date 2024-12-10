@@ -13,8 +13,6 @@ export class HabitsDAO {
     try {
       let user_id = await ReusableFunctions.getId("user", username, connection);
 
-      console.log(user_id);
-
       let [getKeyWords] = await connection.query(`SELECT keyword FROM badges`);
 
       let match = getKeyWords.filter((e) =>

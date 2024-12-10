@@ -28,7 +28,6 @@ userRoutes.put(
 userRoutes.get(
   "/profile/:username",
   passportCall("jwt", { session: false }),
-  checkUsernameInUrl(),
   IndexController.userController.profile
 );
 
