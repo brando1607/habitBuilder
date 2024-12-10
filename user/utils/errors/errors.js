@@ -8,7 +8,7 @@ export const errors = {
     },
   },
   forbidden: { message: "Permission Required", statusCode: 403 },
-  notFound: { message: "Not Found", statusCode: 404 },
+  notFound: { userNotFound: { message: "User not Found", statusCode: 404 } },
   fatal: { message: "Server Error", statusCode: 500 },
   noData: { message: "Data not found", statusCode: 204 },
   conflict: {
