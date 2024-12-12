@@ -1,4 +1,1 @@
 - create followers table with follower and following columns
-- create friends table with friend1 and friend2 columns where a pair can't be repeated
-- create a friend request table with pending requests and status
-- create trigger that removes it from pending table, but adds it to friends table if status is changed to accepted
