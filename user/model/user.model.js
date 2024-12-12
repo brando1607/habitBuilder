@@ -136,4 +136,15 @@ export class UserModel {
       console.error(error);
     }
   }
+  async sendFriendRequest({ sender, receiver }) {
+    try {
+      const result = await DaoIndex.userDao.sendFriendRequest({
+        sender,
+        receiver,
+      });
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

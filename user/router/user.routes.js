@@ -34,8 +34,13 @@ userRoutes.get(
 userRoutes.get(
   "/achievements/:username",
   passportCall("jwt", { session: false }),
-  checkUsernameInUrl(),
   IndexController.userController.achievements
+);
+
+userRoutes.post(
+  "/sendFriendRequest/:username",
+  passportCall("jwt", { session: false }),
+  IndexController.userController.sendFriendRequest
 );
 
 userRoutes.get("/logout", IndexController.userController.logout);

@@ -96,4 +96,16 @@ export class UserController {
     res.cookie("token", "", { expires: new Date(0) });
     res.send("User logged out.");
   }
+  static async sendFriendRequest(req, res) {
+    const sender = req.user.login;
+    const receiver = req.params.username;
+    try {
+      const result = await ModelsIndex.userModel.sendFriendRequest({
+        sender,
+        receiver,
+      });
+
+      res.send(result);
+    } catch (error) {}
+  }
 }

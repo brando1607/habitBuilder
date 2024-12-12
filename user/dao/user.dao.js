@@ -297,4 +297,34 @@ export class UserDAO {
       console.error(error);
     }
   }
+  async sendFriendRequest({ sender, receiver }) {
+    const connection = await this.pool.getConnection();
+
+    try {
+      const senderId = await ReusableFunctions.getId(
+        "user",
+        sender,
+        connection
+      );
+
+      const receiverId = await ReusableFunctions.getId(
+        "user",
+        receiver,
+        connection
+      );
+
+      await connection.beginTransaction();
+
+      await connection.query(
+        `INSERT INTO friends(friend_1, friend_2, status) VALUES(?,?,?);`,
+        [senderId, receiverId, "PENDING"]
+      );
+
+      await connection.commit();
+
+      return "Friend request sent.";
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
