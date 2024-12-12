@@ -80,3 +80,6 @@ GET http://localhost:1234/api/user/profile/leslie25
     
 GET http://localhost:1234/api/user/achievements/brando16 
 
+### send friend request
+
+POST http://localhost:1234/api/user/sendFriendRequest/leslie25
