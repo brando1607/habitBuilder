@@ -146,7 +146,10 @@ CREATE TRIGGER delete_friend_request
 	AFTER UPDATE ON friends
     FOR EACH ROW
 BEGIN
-	DELETE FROM friends WHERE status = 'REJECTED';
+	IF NEW.status = 'REJECTED' THEN
+        DELETE FROM friends 
+        WHERE id = NEW.id;
+    END IF;
 END $
 DELIMITER ;
 
