@@ -1,5 +1,10 @@
 export const errors = {
-  error: { message: "Client Error", statusCode: 400 },
+  error: {
+    friendRequestSameUser: {
+      message: "Friend request has to be sent to a different user",
+      statusCode: 400,
+    },
+  },
   auth: {
     unauthorized: { message: "Invalid Credentials", statusCode: 401 },
     expiredPassword: {
