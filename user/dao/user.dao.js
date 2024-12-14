@@ -300,6 +300,9 @@ export class UserDAO {
   async sendFriendRequest({ sender, receiver }) {
     const connection = await this.pool.getConnection();
 
+    if (sender === receiver)
+      return CustomError.newError(errors.error.friendRequestSameUser);
+
     try {
       const senderId = await ReusableFunctions.getId(
         "user",
@@ -337,7 +340,7 @@ export class UserDAO {
       );
 
       const [getRequests] = await connection.query(
-        `SELECT first_name, last_name FROM friends
+        `SELECT f.id, first_name, last_name FROM friends f
         JOIN user ON friend_1 = user.id
         WHERE friend_2 = ? AND status = 'PENDING';`,
         [receiverId]

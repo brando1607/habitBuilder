@@ -2,27 +2,27 @@
 POST http://localhost:1234/api/user/createUser
 Content-Type: application/json
 
-# {
-#     "firstName": "Brando",
-#     "lastName": "Hernandez",
-#     "username": "brando16", 
-#     "userEmail": "brandodavid16@gmail.com",
-#     "theme": "greek_gods",
-#     "dateOfBirth": "1994-07-16",
-#     "country": "Venezuela", 
-#     "password": "Leslie2505."
-# }
-
 {
-    "firstName": "Leslie",    
-    "lastName": "Caro",
-    "username": "leslie25", 
-    "userEmail": "leslie@gmail.com",
-    "theme": "traveler",
-    "dateOfBirth": "1989-05-25",
-    "country": "Chile", 
-    "password": "Brando1607."
+    "firstName": "Brando",
+    "lastName": "Hernandez",
+    "username": "brando16", 
+    "userEmail": "brandodavid16@gmail.com",
+    "theme": "greek_gods",
+    "dateOfBirth": "1994-07-16",
+    "country": "Venezuela", 
+    "password": "Leslie2505."
 }
+
+# {
+#     "firstName": "Leslie",    
+#     "lastName": "Caro",
+#     "username": "leslie25", 
+#     "userEmail": "leslie@gmail.com",
+#     "theme": "traveler",
+#     "dateOfBirth": "1989-05-25",
+#     "country": "Chile", 
+#     "password": "Brando1607."
+# }
 
 
 ###

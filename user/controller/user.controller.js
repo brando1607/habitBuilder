@@ -96,7 +96,7 @@ export class UserController {
     res.cookie("token", "", { expires: new Date(0) });
     res.send("User logged out.");
   }
-  static async sendFriendRequest(req, res) {
+  static async sendFriendRequest(req, res, next) {
     const sender = req.user.login;
     const receiver = req.params.username;
     try {
@@ -106,7 +106,9 @@ export class UserController {
       });
 
       res.send(result);
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
   static async getFriendRequests(req, res) {
     const username = req.params.username;
