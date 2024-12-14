@@ -39,13 +39,14 @@ CREATE TABLE user(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE friends(
+CREATE TABLE friends (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
     friend_1 BINARY(16),
     friend_2 BINARY(16),
-    status  ENUM('ACCEPTED', 'PENDING', 'REJECTED'),
-    PRIMARY KEY(friend_1, friend_2),
-    FOREIGN KEY(friend_1) REFERENCES user(id),
-    FOREIGN KEY(friend_2) REFERENCES user(id)    
+    status ENUM('ACCEPTED', 'PENDING', 'REJECTED'),
+    UNIQUE KEY unique_friendship (friend_1, friend_2), 
+    FOREIGN KEY (friend_1) REFERENCES user(id),
+    FOREIGN KEY (friend_2) REFERENCES user(id)
 );
 
 CREATE TABLE levels(
