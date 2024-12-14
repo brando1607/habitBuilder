@@ -327,4 +327,52 @@ export class UserDAO {
       console.log(error);
     }
   }
+  async getFriendRequests({ username }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const receiverId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+
+      const [getRequests] = await connection.query(
+        `SELECT first_name, last_name FROM friends
+        JOIN user ON friend_1 = user.id
+        WHERE friend_2 = ? AND status = 'PENDING';`,
+        [receiverId]
+      );
+
+      return getRequests.length > 0
+        ? getRequests
+        : "No friend requests at the moment.";
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async getFriends({ username }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const userId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+
+      const [getFriends] = await connection.query(
+        `SELECT first_name, last_name FROM friends
+         JOIN user ON user.id = friend_1 
+         WHERE friend_1 = ? AND status = 'ACCEPTED'
+         UNION 
+         SELECT first_name, last_name FROM friends 
+         JOIN user ON user.id = friend_2 
+         WHERE friend_2 = ? AND status = 'ACCEPTED';`,
+        [userId, userId]
+      );
+
+      return getFriends.length > 0 ? "hola" : "No friends yet.";
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

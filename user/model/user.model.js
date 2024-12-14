@@ -147,4 +147,21 @@ export class UserModel {
       console.error(error);
     }
   }
+  async getFriendRequests({ username }) {
+    try {
+      const result = await DaoIndex.userDao.getFriendRequests({ username });
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async getFriends({ username }) {
+    try {
+      const result = await DaoIndex.userDao.getFriends({ username });
+
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

@@ -108,4 +108,26 @@ export class UserController {
       res.send(result);
     } catch (error) {}
   }
+  static async getFriendRequests(req, res) {
+    const username = req.params.username;
+    try {
+      const result = await ModelsIndex.userModel.getFriendRequests({
+        username,
+      });
+
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  static async getFriends(req, res) {
+    const username = req.params.username;
+    try {
+      const result = await ModelsIndex.userModel.getFriends({ username });
+
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
