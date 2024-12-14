@@ -160,4 +160,15 @@ export class UserModel {
       console.error(error);
     }
   }
+  async respondToFriendRequest({ id, response }) {
+    try {
+      const result = await DaoIndex.userDao.respondToFriendRequest({
+        id,
+        response,
+      });
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

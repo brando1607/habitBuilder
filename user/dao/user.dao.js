@@ -373,7 +373,42 @@ export class UserDAO {
         [userId, userId]
       );
 
-      return getFriends.length > 0 ? "hola" : "No friends yet.";
+      return getFriends.length > 0 ? getFriends : "No friends yet.";
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async respondToFriendRequest({ id, response }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const requestAccepted =
+        response.toUpperCase() === "ACCEPTED" ? true : false;
+
+      await connection.beginTransaction();
+
+      await connection.query(
+        `UPDATE friends 
+         SET status = ?
+         WHERE id = ?;`,
+        [response.toUpperCase(), id]
+      );
+
+      await connection.commit();
+
+      if (!requestAccepted) {
+        await connection.beginTransaction();
+
+        await connection.query(
+          `DELETE FROM friends
+           WHERE id = ?;`,
+          [id]
+        );
+        await connection.commit();
+      }
+
+      return requestAccepted
+        ? "Friend request accepted"
+        : "Friend request rejected";
     } catch (error) {
       console.error(error);
     }

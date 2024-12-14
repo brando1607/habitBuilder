@@ -132,4 +132,16 @@ export class UserController {
       console.error(error);
     }
   }
+  static async respondToFriendRequest(req, res) {
+    const { id, response } = req.body;
+    try {
+      const result = await ModelsIndex.userModel.respondToFriendRequest({
+        id,
+        response,
+      });
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

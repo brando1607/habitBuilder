@@ -57,8 +57,10 @@ userRoutes.get(
 );
 
 userRoutes.post(
-  "/respondFriendRequest/:username",
-  passportCall("jwt", { session: false }, checkUsernameInUrl())
+  "/respondToFriendRequest/:username",
+  passportCall("jwt", { session: false }),
+  checkUsernameInUrl(),
+  IndexController.userController.respondToFriendRequest
 );
 
 userRoutes.get("/logout", IndexController.userController.logout);

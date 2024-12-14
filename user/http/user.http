@@ -34,8 +34,8 @@ POST http://localhost:1234/api/user/login
 Content-Type: application/json
 
 {
-    "login": "leslie25",
-    "password": "Brando1607."
+    "login": "brando16",
+    "password": "Leslie2505."
 }
 
 ### logout
@@ -82,12 +82,22 @@ GET http://localhost:1234/api/user/achievements/brando16
 
 ### send friend request
 
-POST http://localhost:1234/api/user/sendFriendRequest/leslie25
+POST http://localhost:1234/api/user/sendFriendRequest/brando16
 
 ### get friend requests
 
-GET http://localhost:1234/api/user/getFriendRequests/leslie25
+GET http://localhost:1234/api/user/getFriendRequests/brando16
 
 ### get friends
 
 GET http://localhost:1234/api/user/getFriends/leslie25
+
+### respond to friend request
+
+POST http://localhost:1234/api/user/respondToFriendRequest/brando16
+Content-Type: application/json
+
+{
+    "id": 3,
+    "response": "accepted"
+}
