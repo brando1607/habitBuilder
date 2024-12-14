@@ -1,3 +1,0 @@
-- add hability to follow people and have friends
-- create endpoint to respond to a friend request
-

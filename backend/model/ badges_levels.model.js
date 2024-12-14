@@ -1,4 +1,3 @@
-import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { DaoIndex } from "../dao/dao.index.js";
 
 export class BadgesAndLevelsModel {

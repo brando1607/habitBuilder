@@ -203,12 +203,22 @@ export class UserDAO {
   async profile({ username }) {
     const connection = await this.pool.getConnection();
     try {
+      const [getUserTheme] = await connection.query(
+        `SELECT theme FROM user
+         WHERE username = ?;`,
+        [username]
+      );
+
+      const userTheme = getUserTheme[0];
+
+      console.log(userTheme.theme);
+
       const [getUserData] = await connection.query(
         `SELECT user.id, first_name, last_name, country, date_of_birth, points, themes.theme, themes.level_name FROM user
         JOIN user_level ON user.id = user_level.user_id
         JOIN themes ON themes.level_number = user_level.level_id  
-        WHERE username = ?;`,
-        [username]
+        WHERE username = ? AND themes.theme = ?;`,
+        [username, userTheme.theme]
       );
 
       const userData = getUserData[0];
@@ -278,7 +288,7 @@ export class UserDAO {
         [userId]
       );
       const [getHabitsWithoutBadge] = await connection.query(
-        `SELECT habit, habit_completion, times_completed FROM habit_completion WHERE badge_id IS NULL AND user_id = ?;`,
+        `SELECT habit, times_completed FROM habit_completion WHERE badge_id IS NULL AND user_id = ?;`,
         [userId]
       );
 

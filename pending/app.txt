@@ -1,0 +1,1 @@
+- add hability for users to send messages to each other if they're friends
