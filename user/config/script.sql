@@ -19,7 +19,6 @@ DROP TABLE IF EXISTS frequency;
 DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
-DROP TRIGGER IF EXISTS delete_friend_request;
 DROP TRIGGER IF EXISTS add_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
 
@@ -140,18 +139,6 @@ CREATE TABLE frequency(
 CREATE INDEX username_index ON user(username);
 CREATE INDEX habit_id_index ON user_habits(id);
 CREATE INDEX level_id ON levels(id, points_or_completions_required);
-
-DELIMITER $
-CREATE TRIGGER delete_friend_request
-	AFTER UPDATE ON friends
-    FOR EACH ROW
-BEGIN
-	IF NEW.status = 'REJECTED' THEN
-        DELETE FROM friends 
-        WHERE id = NEW.id;
-    END IF;
-END $
-DELIMITER ;
 
 DELIMITER $
 CREATE TRIGGER check_status_before_completion
