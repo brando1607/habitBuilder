@@ -46,7 +46,7 @@ Backend development is my strongest suit, so I will focus on creating a robust b
 
 ## Technical Details
 
-The **`config/user`** folder contains a `script.sql` file with:
+The **`backend/config`** folder contains a `script.sql` file with:
 
 - Definitions for all tables, indexes, and triggers.
 - Predefined levels and badges.
@@ -60,6 +60,7 @@ This project is built using the following technologies and libraries:
 - **Node.js**: For the backend server.
 - **Express.js**: To create routes and handle HTTP requests.
 - **bcrypt**: For password hashing.
+- **crypto**: To encrypt and decrypt users' email addresses.
 - **cookie-parser**: To handle cookies.
 - **CORS**: To enable cross-origin resource sharing.
 - **express-compression**: To compress responses.
@@ -74,7 +75,7 @@ This project is built using the following technologies and libraries:
 This project is a **work in progress**. I will update it regularly as new features are added or existing ones are improved.
 
 - The **`pending`** folder contains `.txt` files listing:
-  - Planned features such as real-time updates and caching mechanisms.
+  - Planned features for both the app and the database.
   - Areas for improvement, like enhancing database performance and user experience.
 
 ---
