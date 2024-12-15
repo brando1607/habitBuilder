@@ -1,21 +1,82 @@
-This is the Habit Builder page.
+# Habit Builder
 
-I came up with this idea because I wanted to have a project for my portfolio. At first I wanted to make a to do list, but I decided to take it to the next level.
+This is the **Habit Builder** page, a project designed for my portfolio to showcase my backend development skills. Initially, I planned to create a to-do list, but I decided to take it to the next level.
 
-Backend development is my strongest suit, so I'll be only working on the backend first and then I'll build the best frontend that I can.
+## Why I Built This
 
-This app is supposed to be used to help people build habits, with the ability of earning points each time a habit is completed. These points allow leveling up and depending on a theme
-that was chosen when the user was created, each level will have a different name. Also, a badge will be assigned to a habit upon creation if it contains the badge's keyword. As the
-habit is completed the badge can also level up, giving more points after each completion.
+Backend development is my strongest suit, so I will focus on creating a robust backend first. Once completed, I’ll develop the best frontend I can to deliver an engaging user experience.
 
-It is possible to change the user's email address or username, as well as the password. Habits can be added with a date and then it'll be marked as in progress if it's added on
-the current day, or scheduled if it's a future one. Habits can only be completed on the day of its deadline, future ones can only be deleted, not marked as completed. Once completed
-the points are given and if enough completions are made (for badge levels) or enough points are accumulated (for user levels) then leveling up will occur automatically. Users can also
-make badge suggestions, if it's accepted or rejected, they'll receive an email informing them about the decision.
+## Core Features
 
-In the config folder, within the user folder, there is a script.sql file where all the tables, indexes and triggers are created. Also, the information for the levels and badges is
-inserted in the tables with the information of the amounts of points given after each habit completion and the points or completions required for each user or badge level.
+### Points and Leveling
 
-This is a work in progress, so I'll be updating it as more features are added or fixed.
+- Earn points each time a habit is completed.
+- Level up based on points accumulated.
+- Levels are theme-based, with unique names based on the theme chosen during user registration.
 
-There is a pending folder with .txt files where I'll be adding new features or things I want to improve.
+### Badge System
+
+- Badges are assigned automatically to habits if a keyword matches.
+- Badges can level up as habits are completed, increasing points earned.
+
+### Habit Workflow
+
+- **Add Habits:** Assign a date to a habit.
+  - Current-day habits are marked "in progress."
+  - Future habits are marked "scheduled."
+- **Complete Habits:** Habits can only be completed on their deadline day.
+- **Delete Habits:** Future habits can be deleted but not marked as completed.
+
+### User Profile Management
+
+- Update email address, username, or password.
+- Ensure secure and flexible account management.
+
+### Badge Suggestions
+
+- Users can propose new badges.
+- An admin evaluates suggestions.
+- Users receive an email notification about acceptance or rejection.
+
+### Friend System
+
+- Users can send friend requests to each other.
+- Friend requests can be **accepted** or **rejected** by the recipient.
+- Once accepted, both users are added to each other's friend list.
+
+## Technical Details
+
+The **`config/user`** folder contains a `script.sql` file with:
+
+- Definitions for all tables, indexes, and triggers.
+- Predefined levels and badges.
+- Points awarded per habit completion.
+- Requirements for user and badge level progression.
+
+## Technologies Used
+
+This project is built using the following technologies and libraries:
+
+- **Node.js**: For the backend server.
+- **Express.js**: To create routes and handle HTTP requests.
+- **bcrypt**: For password hashing.
+- **cookie-parser**: To handle cookies.
+- **CORS**: To enable cross-origin resource sharing.
+- **express-compression**: To compress responses.
+- **jsonwebtoken**: For authentication via JWTs.
+- **MySQL2**: To interact with the MySQL database.
+- **Nodemailer**: To send emails for notifications (e.g., badge suggestions).
+- **Passport.js**: For user authentication.
+- **Passport-JWT**: For handling JWT-based authentication.
+
+## Development Status
+
+This project is a **work in progress**. I will update it regularly as new features are added or existing ones are improved.
+
+- The **`pending`** folder contains `.txt` files listing:
+  - Planned features such as real-time updates and caching mechanisms.
+  - Areas for improvement, like enhancing database performance and user experience.
+
+---
+
+I’m excited to continue working on this app and make it a valuable addition to my portfolio.
