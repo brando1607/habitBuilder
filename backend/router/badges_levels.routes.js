@@ -22,6 +22,6 @@ badgesAndLevelsRoutes.get(
 );
 
 badgesAndLevelsRoutes.post(
-  "/evaluateBadge/:id",
+  "/evaluateBadge",
   IndexController.badgesAndLevelsController.evaluateBadge
 );

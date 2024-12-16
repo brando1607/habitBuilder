@@ -1,4 +1,4 @@
-import { ModelsIndex } from "../model/index.model.js";
+import { DaoIndex } from "../dao/dao.index.js";
 
 export class BadgesAndLevelsController {
   static async sendToPendingBadges(req, res, next) {
@@ -6,7 +6,7 @@ export class BadgesAndLevelsController {
       let input = req.body;
       let username = req.params.username;
 
-      let result = await ModelsIndex.badgesAndLevelsModel.sendToPendingBadges({
+      let result = await DaoIndex.badgesAndLevelsDao.sendToPendingBadges({
         input,
         username,
       });
@@ -17,8 +17,7 @@ export class BadgesAndLevelsController {
   }
   static async getUserAndBadgeLevels(req, res, next) {
     try {
-      let result =
-        await ModelsIndex.badgesAndLevelsModel.getUserAndBadgeLevels();
+      let result = await DaoIndex.badgesAndLevelsDao.getUserAndBadgeLevels();
       res.send(result);
     } catch (error) {
       next(error);
@@ -26,7 +25,7 @@ export class BadgesAndLevelsController {
   }
   static async getBadges(req, res, next) {
     try {
-      const result = await ModelsIndex.badgesAndLevelsModel.getBadges();
+      const result = await DaoIndex.badgesAndLevelsDao.getBadges();
       res.send(result);
     } catch (error) {
       next(error);
@@ -35,9 +34,9 @@ export class BadgesAndLevelsController {
   static async evaluateBadge(req, res, next) {
     try {
       const accepted = req.body.decision === "accepted" ? true : false;
-      const id = req.params.id;
+      const { id } = req.body;
 
-      const result = await ModelsIndex.badgesAndLevelsModel.evaluateBadge({
+      const result = await DaoIndex.badgesAndLevelsDao.evaluateBadge({
         id,
         accepted,
       });

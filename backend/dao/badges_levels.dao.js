@@ -19,6 +19,8 @@ export class BadgesAndLevelsDAO {
       return { userLevels: getUserLevels, badgeLevels: getBadgeLevels };
     } catch (error) {
       console.error(error);
+    } finally {
+      connection.release();
     }
   }
   async getBadges() {
@@ -31,6 +33,8 @@ export class BadgesAndLevelsDAO {
     } catch (error) {
       console.error(error);
       throw error;
+    } finally {
+      connection.release();
     }
   }
 
@@ -62,11 +66,12 @@ export class BadgesAndLevelsDAO {
 
         return `Badge sent to be evaluated`;
       } else {
-        throw CustomError.newError(errors.conflict.badge);
+        return CustomError.newError(errors.conflict.pendingBadge);
       }
     } catch (error) {
-      console.error(error);
       throw error;
+    } finally {
+      connection.release();
     }
   }
   async evaluateBadge({ id, accepted }) {
@@ -85,7 +90,7 @@ export class BadgesAndLevelsDAO {
       const email = encryption.decrypt(getUserEmail[0].user_email);
 
       const text = accepted
-        ? `We appreciate your contribution to our community. We are glad to inform you your badge ${badge} has been approved!`
+        ? `We appreciate your contribution to our community. We are glad to inform you that your badge '${badge}' has been approved! It's added to our list of badges and it's ready to use.`
         : `We appreciate your contribution to our community. We have unfortunately decided not to accept your badge suggestion. Please don't hesitate to send over more of your ideas!`;
 
       const subject = "The habit builder badge you suggested.";
@@ -115,6 +120,8 @@ export class BadgesAndLevelsDAO {
     } catch (error) {
       console.error(error);
       throw error;
+    } finally {
+      connection.release();
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ModelsIndex } from "../model/index.model.js";
+import { DaoIndex } from "../dao/dao.index.js";
 import { generateToken } from "../utils/jwt.js";
 import { errors } from "../utils/errors/errors.js";
 import { CustomError } from "../utils/errors/customErrors.js";
@@ -8,7 +8,7 @@ export class UserController {
     try {
       const user = req.body;
 
-      let result = await ModelsIndex.userModel.addUser({ user });
+      let result = await DaoIndex.userDao.addUser({ user });
       res.send(result);
     } catch (error) {
       next(error);
@@ -22,7 +22,7 @@ export class UserController {
         return res.send(CustomError.newError(errors.conflict.user));
       }
 
-      let result = await ModelsIndex.userModel.logIn({ user });
+      let result = await DaoIndex.userDao.logIn({ user });
 
       if (result) {
         const payload = {
@@ -46,7 +46,7 @@ export class UserController {
   static async changePassword(req, res, next) {
     try {
       let password = req.body;
-      let result = await ModelsIndex.userModel.changePassword({ password });
+      let result = await DaoIndex.userDao.changePassword({ password });
       res.send(result);
     } catch (error) {
       next(error);
@@ -57,7 +57,7 @@ export class UserController {
       let username = req.params.username;
 
       let input = req.body;
-      let result = await ModelsIndex.userModel.changeLogin({ username, input });
+      let result = await DaoIndex.userDao.changeLogin({ username, input });
       res.send(result);
     } catch (error) {
       next(error);
@@ -66,7 +66,7 @@ export class UserController {
   static async sendTemporaryPassword(req, res, next) {
     try {
       let input = req.body;
-      let result = await ModelsIndex.userModel.sendTemporaryPassword({ input });
+      let result = await DaoIndex.userDao.sendTemporaryPassword({ input });
       res.send(result);
     } catch (error) {
       next(error);
@@ -76,7 +76,7 @@ export class UserController {
     try {
       let username = req.params.username;
 
-      let result = await ModelsIndex.userModel.profile({ username });
+      let result = await DaoIndex.userDao.profile({ username });
       res.send(result);
     } catch (error) {
       next(error);
@@ -86,7 +86,7 @@ export class UserController {
     try {
       const username = req.params.username;
 
-      let result = await ModelsIndex.userModel.achievements({ username });
+      let result = await DaoIndex.userDao.achievements({ username });
       res.send(result);
     } catch (error) {
       next(error);
@@ -100,7 +100,7 @@ export class UserController {
     const sender = req.user.login;
     const receiver = req.params.username;
     try {
-      const result = await ModelsIndex.userModel.sendFriendRequest({
+      const result = await DaoIndex.userDao.sendFriendRequest({
         sender,
         receiver,
       });
@@ -113,7 +113,7 @@ export class UserController {
   static async getFriendRequests(req, res) {
     const username = req.params.username;
     try {
-      const result = await ModelsIndex.userModel.getFriendRequests({
+      const result = await DaoIndex.userDao.getFriendRequests({
         username,
       });
 
@@ -125,7 +125,7 @@ export class UserController {
   static async getFriends(req, res) {
     const username = req.params.username;
     try {
-      const result = await ModelsIndex.userModel.getFriends({ username });
+      const result = await DaoIndex.userDao.getFriends({ username });
 
       res.send(result);
     } catch (error) {
@@ -135,7 +135,7 @@ export class UserController {
   static async respondToFriendRequest(req, res) {
     const { id, response } = req.body;
     try {
-      const result = await ModelsIndex.userModel.respondToFriendRequest({
+      const result = await DaoIndex.userDao.respondToFriendRequest({
         id,
         response,
       });

@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { sendEmail } from "../utils/nodemailer.js";
 import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { encryption } from "../utils/encryptAndDecryptFunctions.js";
 import { errors } from "../utils/errors/errors.js";
@@ -9,12 +10,28 @@ export class UserDAO {
   constructor(pool) {
     this.pool = pool;
   }
-  async addUser({ user, encryptedEmail, hashedPassword }) {
-    const { firstName, lastName, username, theme, dateOfBirth, country } = user;
+  async addUser({ user }) {
+    const {
+      firstName,
+      lastName,
+      username,
+      userEmail,
+      password,
+      theme,
+      dateOfBirth,
+      country,
+    } = user;
     const uuid = randomUUID();
 
     const connection = await this.pool.getConnection();
     try {
+      const hashedPassword = await bcrypt.hash(
+        password,
+        ReusableFunctions.passwordSaltRound
+      );
+
+      const encryptedEmail = encryption.encrypt(userEmail);
+
       await connection.beginTransaction();
       await connection.query(
         `INSERT INTO user(id, first_name, last_name, username, user_email, theme, date_of_birth, country) VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?);`,
@@ -64,6 +81,40 @@ export class UserDAO {
       connection.release();
     }
   }
+  async logIn({ user }) {
+    const { login, password } = user;
+    const hashedEmail = encryption.encrypt(login);
+    const connection = await this.pool.getConnection();
+
+    try {
+      const getUser = await ReusableFunctions.findUser(
+        login,
+        connection,
+        hashedEmail
+      );
+
+      if (getUser.length > 0) {
+        if (
+          await ReusableFunctions.validatePassword(
+            password,
+            getUser,
+            "password"
+          )
+        ) {
+          return getUser[0];
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      connection.release();
+    }
+  }
+
   async storeTempPassInDB({ username, temporaryPassword }) {
     const connection = await this.pool.getConnection();
     try {
@@ -200,6 +251,43 @@ export class UserDAO {
       connection.release();
     }
   }
+  async sendTemporaryPassword({ input }) {
+    let { username } = input;
+    const connection = await this.pool.getConnection();
+
+    try {
+      const [userExists] = await ReusableFunctions.findUser(
+        username,
+        connection
+      );
+
+      if (userExists.length === 0) {
+        return `Username not valid`;
+      } else {
+        const temporaryPassword = ReusableFunctions.generateRandomString(10);
+        const text = `Your temporary password is: ${temporaryPassword} - It will expire in 1 minute.`;
+        const email = encryption.decrypt(userExists.user_email);
+        const subject = "Password Reset";
+
+        try {
+          await connection.beginTransaction();
+          await sendEmail(email, text, subject);
+          this.storeTempPassInDB({
+            username,
+            temporaryPassword,
+          });
+          await connection.commit();
+          return `Temporary password sent to email for ${username}.`;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      connection.release();
+    }
+  }
   async profile({ username }) {
     const connection = await this.pool.getConnection();
     try {
@@ -211,7 +299,7 @@ export class UserDAO {
 
       const userTheme = getUserTheme[0];
 
-      console.log(userTheme.theme);
+      if (!userTheme) return CustomError.newError(errors.notFound.userNotFound);
 
       const [getUserData] = await connection.query(
         `SELECT user.id, first_name, last_name, country, date_of_birth, points, themes.theme, themes.level_name FROM user
@@ -305,6 +393,8 @@ export class UserDAO {
       return userAchievements;
     } catch (error) {
       console.error(error);
+    } finally {
+      connection.release();
     }
   }
   async sendFriendRequest({ sender, receiver }) {
@@ -326,6 +416,10 @@ export class UserDAO {
         connection
       );
 
+      if (!receiverId) {
+        return CustomError.newError(errors.notFound.userNotFound);
+      }
+
       await connection.beginTransaction();
 
       await connection.query(
@@ -337,7 +431,9 @@ export class UserDAO {
 
       return "Friend request sent.";
     } catch (error) {
-      console.log(error);
+      throw error;
+    } finally {
+      connection.release();
     }
   }
   async getFriendRequests({ username }) {
@@ -361,6 +457,8 @@ export class UserDAO {
         : "No friend requests at the moment.";
     } catch (error) {
       console.error(error);
+    } finally {
+      connection.release();
     }
   }
   async getFriends({ username }) {
@@ -386,6 +484,8 @@ export class UserDAO {
       return getFriends.length > 0 ? getFriends : "No friends yet.";
     } catch (error) {
       console.error(error);
+    } finally {
+      connection.release();
     }
   }
   async respondToFriendRequest({ id, response }) {
@@ -421,6 +521,8 @@ export class UserDAO {
         : "Friend request rejected";
     } catch (error) {
       console.error(error);
+    } finally {
+      connection.release();
     }
   }
 }

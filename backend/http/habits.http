@@ -4,8 +4,8 @@ POST http://localhost:1234/api/habits/addHabit/brando16
 Content-Type: application/json
 
 {
-    "habit": "learn french",
-    "deadline": "2024-12-10"
+    "habit": "read a book in french",
+    "deadline": "2024-12-16"
 }
 
 ###  complete habit
@@ -14,8 +14,8 @@ PUT http://localhost:1234/api/habits/completeHabit/brando16
 Content-Type: application/json
 
 {
-    "habit": "learn french",
-    "deadline": "2024-12-10"
+    "habit": "read a book in french",
+    "deadline": "2024-12-16"
 }
 
 ###  delete habit
@@ -24,6 +24,6 @@ DELETE http://localhost:1234/api/habits/deleteHabit/brando16
 Content-Type: application/json
 
 {
-    "habit": "go for a run",
-    "deadline": "2024-10-14"
+    "habit": "read a book in french",
+    "deadline": "2024-12-18"
 }

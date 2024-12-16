@@ -13,7 +13,13 @@ export const errors = {
     },
   },
   forbidden: { message: "Permission Required", statusCode: 403 },
-  notFound: { userNotFound: { message: "User not Found", statusCode: 404 } },
+  notFound: {
+    userNotFound: { message: "User not Found", statusCode: 404 },
+    habitNotFound: {
+      message: `Habit not found, or not added on that day.`,
+      statusCode: 404,
+    },
+  },
   fatal: { message: "Server Error", statusCode: 500 },
   noData: { message: "Data not found", statusCode: 204 },
   conflict: {

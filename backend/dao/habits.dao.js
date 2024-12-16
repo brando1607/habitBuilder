@@ -389,7 +389,9 @@ export class HabitsDAO {
         connection
       );
 
-      if (!habitFound) return `Habit not found, or not added on that day.`;
+      if (!habitFound) {
+        return CustomError.newError(errors.notFound.habitNotFound);
+      }
 
       await ReusableFunctions.decreaseCurrendOrScheduledHabits(
         habit,
@@ -420,7 +422,7 @@ export class HabitsDAO {
       return `Habit deleted`;
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
