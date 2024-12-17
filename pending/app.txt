@@ -1,3 +1,2 @@
-- refactor the addUser method in the DAO
 - use artillery to test the leveling up process works.
 - add hability for users to send messages to each other if they're friends
