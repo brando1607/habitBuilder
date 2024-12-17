@@ -28,6 +28,9 @@ class Encryption {
     decrypted += decipher.final("utf8");
     return decrypted;
   }
+  hash(text) {
+    return crypto.createHash("sha256").update(text).digest("hex");
+  }
 }
 
 export const encryption = new Encryption(key);
