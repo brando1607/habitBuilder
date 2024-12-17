@@ -10,6 +10,27 @@ export class UserDAO {
   constructor(pool) {
     this.pool = pool;
   }
+  async encryptAndHashUserInfo({ userEmail, password }) {
+    try {
+      const hashedPassword = await bcrypt.hash(
+        password,
+        ReusableFunctions.passwordSaltRound
+      );
+
+      const hashedEmail = encryption.hash(userEmail);
+
+      const encryptedEmail = encryption.encrypt(userEmail);
+      const data = {
+        hashedPassword,
+        hashedEmail,
+        encryptedEmail,
+      };
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
   async addUser({ user }) {
     const {
       firstName,
@@ -25,22 +46,22 @@ export class UserDAO {
 
     const connection = await this.pool.getConnection();
     try {
-      const hashedPassword = await bcrypt.hash(
+      const hashedAndEncryptedELements = await this.encryptAndHashUserInfo({
+        userEmail,
         password,
-        ReusableFunctions.passwordSaltRound
-      );
-
-      const encryptedEmail = encryption.encrypt(userEmail);
+      });
 
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO user(id, first_name, last_name, username, user_email, theme, date_of_birth, country) VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?);`,
+        `INSERT INTO user(id, first_name, last_name, username, user_email, hashed_email, theme, date_of_birth, country)
+       VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?,?);`,
         [
           uuid,
           firstName,
           lastName,
           username,
-          encryptedEmail,
+          hashedAndEncryptedELements.encryptedEmail,
+          hashedAndEncryptedELements.hashedEmail,
           theme,
           dateOfBirth,
           country,
@@ -49,27 +70,25 @@ export class UserDAO {
       await connection.commit();
 
       await connection.beginTransaction();
-
       await connection.query(
         `INSERT INTO user_level(user_id) VALUES(UUID_TO_BIN(?));`,
         [uuid]
       );
-
       await connection.commit();
 
       await connection.beginTransaction();
-
       await connection.query(
         `INSERT INTO passwords(user_id, password) VALUES(UUID_TO_BIN(?),?);`,
-        [uuid, hashedPassword]
+        [uuid, hashedAndEncryptedELements.hashedPassword]
       );
       await connection.commit();
+
       return `User created.`;
     } catch (e) {
       await connection.rollback();
       console.error(`Error adding user`, e.sqlMessage);
       if (e.code === "ER_DUP_ENTRY") {
-        if (e.sqlMessage.includes("user_email")) {
+        if (e.sqlMessage.includes("hashed_email")) {
           return CustomError.newError(errors.conflict.userEmail);
         } else if (e.sqlMessage.includes("username")) {
           return CustomError.newError(errors.conflict.username);
