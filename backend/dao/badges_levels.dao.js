@@ -11,10 +11,12 @@ export class BadgesAndLevelsDAO {
     const connection = await this.pool.getConnection();
     try {
       const [getUserLevels] = await connection.query(
-        `SELECT theme, level_name, level_number, points_or_completions_required FROM levels JOIN themes ON themes.level_number = levels.user_level;`
+        `SELECT theme, level_name, level_number, points_or_completions_required FROM levels 
+         JOIN themes ON themes.level_number = levels.user_level;`
       );
       const [getBadgeLevels] = await connection.query(
-        `SELECT badge_level, points_or_completions_required, points_given FROM levels WHERE user_level IS NULL;`
+        `SELECT badge_level, points_or_completions_required, points_given FROM levels 
+         WHERE user_level IS NULL;`
       );
       return { userLevels: getUserLevels, badgeLevels: getBadgeLevels };
     } catch (error) {
@@ -43,7 +45,8 @@ export class BadgesAndLevelsDAO {
     const { badge, keyword } = input;
     try {
       const [currentBadges] = await connection.query(
-        `SELECT badge FROM badges WHERE badge = ? OR keyword = ?;`,
+        `SELECT badge FROM badges 
+         WHERE badge = ? OR keyword = ?;`,
         [badge, keyword]
       );
 
@@ -52,14 +55,16 @@ export class BadgesAndLevelsDAO {
       }
 
       const [getBadges] = await connection.query(
-        `SELECT badge FROM pending_badges WHERE badge = ? OR keyword = ?;`,
+        `SELECT badge FROM pending_badges 
+         WHERE badge = ? OR keyword = ?;`,
         [badge, keyword]
       );
 
       if (getBadges.length === 0) {
         await connection.beginTransaction();
         await connection.query(
-          `INSERT INTO pending_badges(badge, keyword, username) VALUES(?,?,?);`,
+          `INSERT INTO pending_badges(badge, keyword, username) 
+           VALUES(?,?,?);`,
           [badge, keyword, username]
         );
         await connection.commit();
@@ -78,13 +83,15 @@ export class BadgesAndLevelsDAO {
     const connection = await this.pool.getConnection();
     try {
       const [getBadge] = await connection.query(
-        `SELECT badge, keyword, username FROM pending_badges WHERE id = ?;`,
+        `SELECT badge, keyword, username FROM pending_badges
+         WHERE id = ?;`,
         [id]
       );
       const { badge, keyword, username } = getBadge[0];
 
       const [getUserEmail] = await connection.query(
-        `SELECT user_email FROM user WHERE username = ?;`,
+        `SELECT user_email FROM user
+         WHERE username = ?;`,
         [username]
       );
       const email = encryption.decrypt(getUserEmail[0].user_email);
@@ -99,7 +106,8 @@ export class BadgesAndLevelsDAO {
         await connection.beginTransaction();
 
         await connection.query(
-          `INSERT INTO badges(badge, keyword, username) VALUES(?,?,?);`,
+          `INSERT INTO badges(badge, keyword, username)
+           VALUES(?,?,?);`,
           [badge, keyword, username]
         );
 
