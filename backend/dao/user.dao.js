@@ -54,7 +54,7 @@ export class UserDAO {
       await connection.beginTransaction();
       await connection.query(
         `INSERT INTO user(id, first_name, last_name, username, user_email, hashed_email, theme, date_of_birth, country)
-       VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?,?);`,
+         VALUES(UUID_TO_BIN(?),?,?,?,?,?,?,?,?);`,
         [
           uuid,
           firstName,
@@ -71,14 +71,16 @@ export class UserDAO {
 
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO user_level(user_id) VALUES(UUID_TO_BIN(?));`,
+        `INSERT INTO user_level(user_id) 
+         VALUES(UUID_TO_BIN(?));`,
         [uuid]
       );
       await connection.commit();
 
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO passwords(user_id, password) VALUES(UUID_TO_BIN(?),?);`,
+        `INSERT INTO passwords(user_id, password) 
+         VALUES(UUID_TO_BIN(?),?);`,
         [uuid, hashedAndEncryptedELements.hashedPassword]
       );
       await connection.commit();
@@ -141,12 +143,18 @@ export class UserDAO {
         temporaryPassword,
         ReusableFunctions.passwordSaltRound
       );
-
+      const userId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
       await connection.beginTransaction();
 
       await connection.query(
-        `UPDATE passwords SET temporary_password = ?, time_stamp = ? WHERE user_id = (SELECT id FROM user WHERE username = ?);`,
-        [hashedTempPassword, Date.now() / 1000, username]
+        `UPDATE passwords 
+         SET temporary_password = ?, time_stamp = ? 
+         WHERE user_id = ?;`,
+        [hashedTempPassword, Date.now() / 1000, userId]
       );
       await connection.commit();
     } catch (error) {
@@ -158,9 +166,16 @@ export class UserDAO {
   async validateTempPassword({ username, tempPassword }) {
     const connection = await this.pool.getConnection();
     try {
+      const userId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+
       let [temporaryPasswords] = await connection.query(
-        `SELECT temporary_password, time_stamp FROM passwords WHERE user_id = (SELECT id FROM user WHERE username = ?);`,
-        [username]
+        `SELECT temporary_password, time_stamp FROM passwords 
+         WHERE user_id = ?;`,
+        [username, userId]
       );
       if (
         await ReusableFunctions.validatePassword(
@@ -229,7 +244,9 @@ export class UserDAO {
     const connection = await this.pool.getConnection();
     try {
       const [passwords] = await connection.query(
-        `SELECT password FROM passwords LEFT JOIN user ON user.id = passwords.user_id WHERE username = ?;`,
+        `SELECT password FROM passwords 
+         LEFT JOIN user ON user.id = passwords.user_id 
+        WHERE username = ?;`,
         [username]
       );
 
@@ -391,11 +408,14 @@ export class UserDAO {
         connection
       );
       const [getHabitsWithBadge] = await connection.query(
-        `SELECT badges.badge, badge_level, habit, habit_completion.times_completed FROM habit_completion JOIN badges ON badges.id = habit_completion.badge_id WHERE habit_completion.user_id = ?;`,
+        `SELECT badges.badge, badge_level, habit, habit_completion.times_completed FROM habit_completion 
+         JOIN badges ON badges.id = habit_completion.badge_id 
+         WHERE habit_completion.user_id = ?;`,
         [userId]
       );
       const [getHabitsWithoutBadge] = await connection.query(
-        `SELECT habit, times_completed FROM habit_completion WHERE badge_id IS NULL AND user_id = ?;`,
+        `SELECT habit, times_completed FROM habit_completion 
+         WHERE badge_id IS NULL AND user_id = ?;`,
         [userId]
       );
 
@@ -442,7 +462,8 @@ export class UserDAO {
       await connection.beginTransaction();
 
       await connection.query(
-        `INSERT INTO friends(friend_1, friend_2, status) VALUES(?,?,?);`,
+        `INSERT INTO friends(friend_1, friend_2, status) 
+         VALUES(?,?,?);`,
         [senderId, receiverId, "PENDING"]
       );
 
