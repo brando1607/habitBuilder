@@ -2,16 +2,28 @@
 POST http://localhost:1234/api/user/createUser
 Content-Type: application/json
 
+# {
+#     "firstName": "Brando",
+#     "lastName": "Hernandez",
+#     "username": "brando16", 
+#     "userEmail": "brandodavid16@gmail.com",
+#     "theme": "greek_gods",
+#     "dateOfBirth": "1994-07-16",
+#     "country": "Venezuela", 
+#     "password": "Leslie2505."
+# }
+
 {
-    "firstName": "Brando",
+    "firstName": "Hiran",
     "lastName": "Hernandez",
-    "username": "brando16", 
-    "userEmail": "brandodavid16@gmail.com",
-    "theme": "greek_gods",
-    "dateOfBirth": "1994-07-16",
+    "username": "hiran06", 
+    "userEmail": "hiran@gmail.com",
+    "theme": "magic",
+    "dateOfBirth": "1990-05-06",
     "country": "Venezuela", 
-    "password": "Leslie2505."
+    "password": "Brando1607."
 }
+
 
 # {
 #     "firstName": "Leslie",    
@@ -74,7 +86,7 @@ Content-Type: application/json
 
 ### get user profile        
     
-GET http://localhost:1234/api/user/profile/brando16
+GET http://localhost:1234/api/user/profile/leslie25
 
 ### get user's achievements        
     
@@ -82,11 +94,11 @@ GET http://localhost:1234/api/user/achievements/brando16
 
 ### send friend request
 
-POST http://localhost:1234/api/user/sendFriendRequest/brando16
+POST http://localhost:1234/api/user/sendFriendRequest/leslie25
 
 ### get friend requests
 
-GET http://localhost:1234/api/user/getFriendRequests/brando16
+GET http://localhost:1234/api/user/getFriendRequests/leslie25
 
 ### get friends
 
@@ -94,10 +106,19 @@ GET http://localhost:1234/api/user/getFriends/brando16
 
 ### respond to friend request
 
-POST http://localhost:1234/api/user/respondToFriendRequest/brando16
+POST http://localhost:1234/api/user/respondToFriendRequest/leslie25
 Content-Type: application/json
 
 {
-    "id": 3,
-    "response": "rejected"
+    "id": 1,
+    "response": "accepted"
+}
+
+### send message
+
+POST http://localhost:1234/api/user/sendMessage/leslie25
+Content-Type: application/json
+
+{
+    "message": "Todo bien y tú?"
 }

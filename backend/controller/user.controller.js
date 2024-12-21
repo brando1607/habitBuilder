@@ -2,6 +2,7 @@ import { DaoIndex } from "../dao/dao.index.js";
 import { generateToken } from "../utils/jwt.js";
 import { errors } from "../utils/errors/errors.js";
 import { CustomError } from "../utils/errors/customErrors.js";
+import { verifyToken } from "../utils/jwt.js";
 
 export class UserController {
   static async addUser(req, res, next) {
@@ -75,8 +76,30 @@ export class UserController {
   static async profile(req, res, next) {
     try {
       let username = req.params.username;
+      const viewer = verifyToken(req.cookies.token);
 
-      let result = await DaoIndex.userDao.profile({ username });
+      let result = await DaoIndex.userDao.profile({
+        username,
+        viewer: viewer.login,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async sendMessage(req, res, next) {
+    try {
+      const viewer = verifyToken(req.cookies.token);
+
+      const user = req.params.username;
+      const { message } = req.body;
+
+      let result = await DaoIndex.userDao.sendMessage({
+        message,
+        viewer: viewer.login,
+        user,
+      });
+
       res.send(result);
     } catch (error) {
       next(error);

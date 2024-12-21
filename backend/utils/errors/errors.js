@@ -4,6 +4,7 @@ export const errors = {
       message: "Friend request has to be sent to a different user",
       statusCode: 400,
     },
+    messageTooLong: { message: "Message is too long", statusCode: 400 },
   },
   auth: {
     unauthorized: { message: "Invalid Credentials", statusCode: 401 },

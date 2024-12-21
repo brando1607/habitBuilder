@@ -324,7 +324,36 @@ export class UserDAO {
       connection.release();
     }
   }
-  async profile({ username }) {
+  async checkIfUsersAreFriends({ viewer, user }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const getId = await ReusableFunctions.getId("user", viewer, connection);
+
+      const [firstCheck] = await connection.query(
+        `SELECT * FROM friends 
+         WHERE friend_1 = ? AND friend_2 = ?;`,
+        [getId, user]
+      );
+
+      const [secondCheck] = await connection.query(
+        `SELECT * FROM friends WHERE friend_2 = ? AND friend_1 = ?;`,
+        [getId, user]
+      );
+
+      const firstCheckTrue = firstCheck.length > 0;
+      const secondCheckTrue = secondCheck.length > 0;
+
+      if (!firstCheckTrue && !secondCheckTrue) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async profile({ username, viewer }) {
     const connection = await this.pool.getConnection();
     try {
       const [getUserTheme] = await connection.query(
@@ -351,6 +380,11 @@ export class UserDAO {
 
       const { id, first_name, last_name, country, points, theme, level_name } =
         userData;
+
+      const userAreFriends = await this.checkIfUsersAreFriends({
+        viewer,
+        user: id,
+      });
 
       const [getHabitCompletion] = await connection.query(
         `SELECT COUNT(times_completed) AS 'Habits completed', SUM(times_completed) AS 'Amount of times habits were completed' FROM user
@@ -379,6 +413,7 @@ export class UserDAO {
       const badgesInformation = getBadges;
 
       const userInformation = {
+        userAreFriends,
         first_name,
         last_name,
         country,
@@ -397,6 +432,53 @@ export class UserDAO {
       throw error;
     } finally {
       connection.release();
+    }
+  }
+  async sendMessage({ message, viewer, user }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const userId = await ReusableFunctions.getId("user", user, connection);
+      const viewerId = await ReusableFunctions.getId(
+        "user",
+        viewer,
+        connection
+      );
+
+      const isMessageTooLong = message.length > 500;
+
+      if (isMessageTooLong) {
+        return CustomError.newError(errors.error.messageTooLong);
+      }
+
+      await connection.beginTransaction();
+
+      await connection.query(
+        `INSERT INTO messages (sender_id, receiver_id, message)
+         VALUES(?,?,?);`,
+        [viewerId, userId, message]
+      );
+
+      await connection.commit();
+
+      const [messageInfo] = await connection.query(
+        `SELECT * FROM messages 
+         WHERE sender_id = ? AND receiver_id = ? AND message = ?
+         ORDER BY id DESC;`,
+        [viewerId, userId, message]
+      );
+
+      const result = {
+        id: messageInfo[0].id,
+        from: viewer,
+        to: user,
+        message: messageInfo[0].message,
+        at: messageInfo[0].sent_at,
+      };
+
+      return { message: "Message sent", result };
+    } catch (error) {
+      connection.rollback();
+      throw error;
     }
   }
   async achievements({ username }) {

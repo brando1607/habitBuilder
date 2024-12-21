@@ -31,6 +31,12 @@ userRoutes.get(
   IndexController.userController.profile
 );
 
+userRoutes.post(
+  "/sendMessage/:username",
+  passportCall("jwt", { session: false }),
+  IndexController.userController.sendMessage
+);
+
 userRoutes.get(
   "/achievements/:username",
   passportCall("jwt", { session: false }),
