@@ -44,6 +44,10 @@ Backend development is my strongest suit, so I will focus on creating a robust b
 - Friend requests can be **accepted** or **rejected** by the recipient.
 - Once accepted, both users are added to each other's friend list.
 
+### Messages System
+
+- Messages can be sent only if the users are friends with each other.
+
 ## Technical Details
 
 The **`backend/config`** folder contains a `script.sql` file with:
