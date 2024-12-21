@@ -1,5 +1,4 @@
 - use artillery to test the leveling up process works.
-- when a person's profile is pulled up. indicate if they're friends with the person watching it
-- add hability for users to send messages to each other if they're friends
+- add ability to modify and delete messages
 - add real time functionalities with websockets
-- cache frequentrly queried information 
+- cache frequently queried information 
