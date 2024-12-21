@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS frequency;
 DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
+DROP TABLE IF EXISTS messages;
 DROP TRIGGER IF EXISTS add_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
 
@@ -48,6 +49,17 @@ CREATE TABLE friends (
     FOREIGN KEY (friend_1) REFERENCES user(id),
     FOREIGN KEY (friend_2) REFERENCES user(id)
 );
+
+CREATE TABLE messages(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    sender_id BINARY(16) NOT NULL, 
+    receiver_id BINARY(16) NOT NULL, 
+    message VARCHAR(500) NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(sender_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY(receiver_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
 
 CREATE TABLE levels(
 	id INT AUTO_INCREMENT,
@@ -140,6 +152,7 @@ CREATE TABLE frequency(
 CREATE INDEX username_index ON user(username);
 CREATE INDEX habit_id_index ON user_habits(id);
 CREATE INDEX level_id ON levels(id, points_or_completions_required);
+CREATE INDEX message_id_index ON messages(id);
 
 DELIMITER $
 CREATE TRIGGER check_status_before_completion
