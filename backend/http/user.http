@@ -13,28 +13,28 @@ Content-Type: application/json
 #     "password": "Leslie2505."
 # }
 
-{
-    "firstName": "Hiran",
-    "lastName": "Hernandez",
-    "username": "hiran06", 
-    "userEmail": "hiran@gmail.com",
-    "theme": "magic",
-    "dateOfBirth": "1990-05-06",
-    "country": "Venezuela", 
-    "password": "Brando1607."
-}
-
-
 # {
-#     "firstName": "Leslie",    
-#     "lastName": "Caro",
-#     "username": "leslie25", 
-#     "userEmail": "leslie@gmail.com",
-#     "theme": "traveler",
-#     "dateOfBirth": "1989-05-25",
-#     "country": "Chile", 
+#     "firstName": "Hiran",
+#     "lastName": "Hernandez",
+#     "username": "hiran06", 
+#     "userEmail": "hiran@gmail.com",
+#     "theme": "magic",
+#     "dateOfBirth": "1990-05-06",
+#     "country": "Venezuela", 
 #     "password": "Brando1607."
 # }
+
+
+{
+    "firstName": "Leslie",    
+    "lastName": "Caro",
+    "username": "leslie25", 
+    "userEmail": "leslie@gmail.com",
+    "theme": "traveler",
+    "dateOfBirth": "1989-05-25",
+    "country": "Chile", 
+    "password": "Brando1607."
+}
 
 
 ###
@@ -114,11 +114,3 @@ Content-Type: application/json
     "response": "accepted"
 }
 
-### send message
-
-POST http://localhost:1234/api/user/sendMessage/leslie25
-Content-Type: application/json
-
-{
-    "message": "Todo bien y tú?"
-}

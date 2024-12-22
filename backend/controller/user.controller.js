@@ -87,24 +87,6 @@ export class UserController {
       next(error);
     }
   }
-  static async sendMessage(req, res, next) {
-    try {
-      const viewer = verifyToken(req.cookies.token);
-
-      const user = req.params.username;
-      const { message } = req.body;
-
-      let result = await DaoIndex.userDao.sendMessage({
-        message,
-        viewer: viewer.login,
-        user,
-      });
-
-      res.send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
   static async achievements(req, res, next) {
     try {
       const username = req.params.username;
