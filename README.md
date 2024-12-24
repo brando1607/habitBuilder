@@ -49,6 +49,7 @@ Backend development is my strongest suit, so I will focus on creating a robust b
 - Chats between two users can be retrieved.
 - Messages can be sent only if the users are friends with each other.
 - Messages can be modified.
+- Messages can be deleted.
 
 ## Technical Details
 
