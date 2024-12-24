@@ -1,4 +1,4 @@
 - use artillery to test the leveling up process works.
-- add ability to modify and delete messages
+- add ability to delete messages
 - add real time functionalities with websockets
 - cache frequently queried information 
