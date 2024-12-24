@@ -2,6 +2,21 @@ import { DaoIndex } from "../dao/dao.index.js";
 import { verifyToken } from "../utils/jwt.js";
 
 export class MessagesController {
+  static async getChat(req, res, next) {
+    try {
+      const sender = verifyToken(req.cookies.token);
+      const { receiver } = req.params;
+
+      const result = await DaoIndex.messagesDao.getChat({
+        sender: sender.login,
+        receiver,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
   static async sendMessage(req, res, next) {
     try {
       const viewer = verifyToken(req.cookies.token);
@@ -13,6 +28,20 @@ export class MessagesController {
         message,
         viewer: viewer.login,
         user,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async editMessage(req, res, next) {
+    try {
+      const { id, newMessage } = req.body;
+
+      const result = await DaoIndex.messagesDao.editMessage({
+        messageId: id,
+        newMessage,
       });
 
       res.send(result);

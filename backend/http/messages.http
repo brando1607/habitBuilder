@@ -1,8 +1,22 @@
+### get chat
+
+GET  http://localhost:1234/api/messages/getChat/leslie25
+
 ### send message
 
 POST http://localhost:1234/api/messages/sendMessage/leslie25
 Content-Type: application/json
 
 {
-    "message": "Hola! Bien y tú? :D"
+    "message": "Hablame de ti, qué has hecho?"
+}
+
+### edit message
+
+PUT http://localhost:1234/api/messages/editMessage
+Content-Type: application/json
+
+{
+    "id": 1,
+    "newMessage": "Hola! Bien y tú? Cómo has estado?"
 }

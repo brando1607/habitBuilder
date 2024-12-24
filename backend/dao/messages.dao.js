@@ -6,6 +6,32 @@ export class MessagesDao {
   constructor(pool) {
     this.pool = pool;
   }
+  async getChat({ sender, receiver }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const receiver_id = await ReusableFunctions.getId(
+        "user",
+        receiver,
+        connection
+      );
+
+      const sender_id = await ReusableFunctions.getId(
+        "user",
+        sender,
+        connection
+      );
+
+      let chat = await ReusableFunctions.getChat(
+        sender_id,
+        receiver_id,
+        connection
+      );
+
+      return chat;
+    } catch (error) {
+      throw error;
+    }
+  }
   async sendMessage({ message, viewer, user }) {
     const connection = await this.pool.getConnection();
     try {
@@ -50,6 +76,46 @@ export class MessagesDao {
       return { message: "Message sent", result };
     } catch (error) {
       connection.rollback();
+      throw error;
+    }
+  }
+  async editMessage({ messageId, newMessage }) {
+    //sender id is not checked because only the sender will be given
+    //the option to edit the message on the fron end
+    const connection = await this.pool.getConnection();
+    try {
+      const isMessageTooLong = newMessage.length > 500;
+
+      if (isMessageTooLong) {
+        return CustomError.newError(errors.error.messageTooLong);
+      }
+
+      await connection.beginTransaction();
+
+      await connection.query(
+        `UPDATE messages 
+         SET message = ? 
+         WHERE id = ?;`,
+        [newMessage, messageId]
+      );
+
+      await connection.commit();
+
+      const [messageInfo] = await connection.query(
+        `SELECT username, message FROM messages
+        JOIN user ON user.id = messages.sender_id
+         WHERE messages.id = ?;`,
+        [messageId]
+      );
+
+      return {
+        message: "message edited",
+        result: {
+          sent_by: messageInfo[0].username,
+          newMessage: messageInfo[0].message,
+        },
+      };
+    } catch (error) {
       throw error;
     }
   }
