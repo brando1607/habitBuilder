@@ -149,4 +149,27 @@ export class ReusableFunctions {
     );
     return findHabit.length > 0;
   };
+  static getChat = async (sender_id, receiver_id, connection) => {
+    try {
+      const [chat] = await connection.query(
+        `SELECT id, username, message, sent_at FROM (
+          SELECT m.id AS id, username, m.message, m.sent_at 
+          FROM user
+          JOIN messages m ON sender_id = user.id
+          WHERE receiver_id = ?
+          UNION
+          SELECT m.id AS id, username, m.message, m.sent_at
+          FROM user
+          JOIN messages m ON sender_id = user.id
+          WHERE receiver_id = ?
+          ) AS combined_messages
+        ORDER BY sent_at ASC;
+`,
+        [sender_id, receiver_id]
+      );
+      return chat;
+    } catch (error) {
+      throw error;
+    }
+  };
 }
