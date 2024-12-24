@@ -20,3 +20,8 @@ messagesRouter.put(
   "/editMessage",
   IndexController.messagesController.editMessage
 );
+
+messagesRouter.delete(
+  "/deleteMessage",
+  IndexController.messagesController.deleteMessage
+);

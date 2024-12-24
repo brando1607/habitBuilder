@@ -319,6 +319,7 @@ export class UserDAO {
         }
       }
     } catch (error) {
+      await connection.rollback();
       console.error(error);
     } finally {
       connection.release();
@@ -506,6 +507,7 @@ export class UserDAO {
 
       return "Friend request sent.";
     } catch (error) {
+      await connection.rollback();
       throw error;
     } finally {
       connection.release();
@@ -595,6 +597,7 @@ export class UserDAO {
         ? "Friend request accepted"
         : "Friend request rejected";
     } catch (error) {
+      await connection.rollback();
       console.error(error);
     } finally {
       connection.release();

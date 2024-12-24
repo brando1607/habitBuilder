@@ -20,3 +20,12 @@ Content-Type: application/json
     "id": 1,
     "newMessage": "Hola! Bien y tú? Cómo has estado?"
 }
+
+### delete message
+
+DELETE  http://localhost:1234/api/messages/deleteMessage
+Content-Type: application/json
+
+{
+    "id": 2
+}

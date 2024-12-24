@@ -30,6 +30,8 @@ export class MessagesDao {
       return chat;
     } catch (error) {
       throw error;
+    } finally {
+      connection.release();
     }
   }
   async sendMessage({ message, viewer, user }) {
@@ -77,6 +79,8 @@ export class MessagesDao {
     } catch (error) {
       connection.rollback();
       throw error;
+    } finally {
+      connection.release();
     }
   }
   async editMessage({ messageId, newMessage }) {
@@ -116,7 +120,31 @@ export class MessagesDao {
         },
       };
     } catch (error) {
+      await connection.rollback();
       throw error;
+    } finally {
+      connection.release();
+    }
+  }
+  async deleteMessage({ messageId }) {
+    {
+      const connection = await this.pool.getConnection();
+      try {
+        await connection.beginTransaction();
+
+        await connection.query(`DELETE FROM messages WHERE id = ?;`, [
+          messageId,
+        ]);
+
+        await connection.commit();
+
+        return { message: "Message deleted" };
+      } catch (error) {
+        connection.rollback();
+        throw error;
+      } finally {
+        connection.release();
+      }
     }
   }
 }

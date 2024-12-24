@@ -49,4 +49,16 @@ export class MessagesController {
       next(error);
     }
   }
+  static async deleteMessage(req, res, next) {
+    try {
+      const { id } = req.body;
+      const result = await DaoIndex.messagesDao.deleteMessage({
+        messageId: id,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
