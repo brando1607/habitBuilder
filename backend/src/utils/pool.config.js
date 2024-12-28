@@ -1,5 +1,5 @@
 import { createPool } from "mysql2/promise";
-import { config } from "./mysql.config.js";
+import { config } from "../config/mysql.config.js";
 export const pool = createPool(config);
 
 export async function dbConnection() {

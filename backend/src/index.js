@@ -5,7 +5,7 @@ import { initializePassport } from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
 import compression from "express-compression";
 import { errorHandler } from "./middlewares/errorHandler.middlewares.js";
-import { dbConnection } from "./config/pool.config.js";
+import { dbConnection } from "./utils/pool.config.js";
 process.loadEnvFile();
 
 //express config

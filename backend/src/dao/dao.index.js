@@ -2,8 +2,7 @@ import { UserDAO } from "./user.dao.js";
 import { HabitsDAO } from "./habits.dao.js";
 import { BadgesAndLevelsDAO } from "./badges_levels.dao.js";
 import { MessagesDao } from "./messages.dao.js";
-import { pool } from "../config/pool.config.js";
-
+import { pool } from "../utils/pool.config.js";
 const userDao = new UserDAO(pool);
 const habitsDao = new HabitsDAO(pool);
 const badgesAndLevelsDao = new BadgesAndLevelsDAO(pool);
