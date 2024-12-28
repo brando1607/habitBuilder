@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
     "habit": "read a book in french",
-    "deadline": "2024-12-16"
+    "deadline": "2024-12-28"
 }
 
 ###  complete habit
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "habit": "read a book in french",
-    "deadline": "2024-12-16"
+    "deadline": "2024-12-28"
 }
 
 ###  delete habit

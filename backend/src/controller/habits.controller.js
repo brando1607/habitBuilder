@@ -1,22 +1,23 @@
-import { DaoIndex } from "../dao/dao.index.js";
-
 export class HabitsController {
-  static async addHabit(req, res, next) {
+  constructor({ DaoIndex }) {
+    this.daoIndex = DaoIndex;
+  }
+  addHabit = async (req, res, next) => {
     let username = req.params.username;
     let input = req.body;
     try {
-      let result = await DaoIndex.habitsDao.addHabit({ input, username });
+      let result = await this.daoIndex.habitsDao.addHabit({ input, username });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async completeHabit(req, res, next) {
+  };
+  completeHabit = async (req, res, next) => {
     let username = req.params.username;
     let input = req.body;
 
     try {
-      let result = await DaoIndex.habitsDao.completeHabit({
+      let result = await this.daoIndex.habitsDao.completeHabit({
         username,
         input,
       });
@@ -24,13 +25,13 @@ export class HabitsController {
     } catch (error) {
       next(error);
     }
-  }
-  static async deleteHabit(req, res, next) {
+  };
+  deleteHabit = async (req, res, next) => {
     let input = req.body;
     let username = req.params.username;
 
     try {
-      let result = await DaoIndex.habitsDao.deleteHabit({
+      let result = await this.daoIndex.habitsDao.deleteHabit({
         input,
         username,
       });
@@ -38,5 +39,5 @@ export class HabitsController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
