@@ -1,12 +1,17 @@
 import { Router } from "express";
-import { userRoutes } from "./user.routes.js";
-import { habitsRoutes } from "./habits.routes.js";
-import { badgesAndLevelsRoutes } from "./badges_levels.routes.js";
-import { messagesRouter } from "./messages.routes.js";
-export const router = Router();
+import { createUserRouter } from "./user.routes.js";
+import { createHabitsRouter } from "./habits.routes.js";
+import { createBadgesAndLevelsRouter } from "./badges_levels.routes.js";
+import { createMessagesRouter } from "./messages.routes.js";
 
 //router config
-router.use("/habits", habitsRoutes);
-router.use("/user", userRoutes);
-router.use("/badgesAndLevels", badgesAndLevelsRoutes);
-router.use("/messages", messagesRouter);
+
+export const createRouter = ({ DaoIndex }) => {
+  const router = Router();
+  router.use("/habits", createHabitsRouter({ DaoIndex }));
+  router.use("/user", createUserRouter({ DaoIndex }));
+  router.use("/badgesAndLevels", createBadgesAndLevelsRouter({ DaoIndex }));
+  router.use("/messages", createMessagesRouter({ DaoIndex }));
+
+  return router;
+};

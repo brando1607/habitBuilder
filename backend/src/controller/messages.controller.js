@@ -1,7 +1,7 @@
 import { verifyToken } from "../utils/jwt.js";
 
 export class MessagesController {
-  constructor(DaoIndex) {
+  constructor({ DaoIndex }) {
     this.daoIndex = DaoIndex;
   }
   getChat = async (req, res, next) => {

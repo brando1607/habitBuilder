@@ -1,27 +1,33 @@
 import Router from "express";
-export const badgesAndLevelsRoutes = Router();
 import { IndexController } from "../controller/index.controller.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
 import { checkUsernameInUrl } from "../middlewares/username.middleware.js";
 
-badgesAndLevelsRoutes.post(
-  "/sendToPendingBadges/:username",
-  passportCall("jwt", { session: false }),
-  checkUsernameInUrl(),
-  IndexController.badgesAndLevelsController.sendToPendingBadges
-);
+export const createBadgesAndLevelsRouter = ({ DaoIndex }) => {
+  const badgesAndLevelsRoutes = Router();
 
-badgesAndLevelsRoutes.get(
-  "/getUserAndBadgeLevels",
-  IndexController.badgesAndLevelsController.getUserAndBadgeLevels
-);
+  const indexController = new IndexController({ DaoIndex });
 
-badgesAndLevelsRoutes.get(
-  "/getBadges",
-  IndexController.badgesAndLevelsController.getBadges
-);
+  badgesAndLevelsRoutes.post(
+    "/sendToPendingBadges/:username",
+    passportCall("jwt", { session: false }),
+    checkUsernameInUrl(),
+    indexController.badgesAndLevelsController.sendToPendingBadges
+  );
 
-badgesAndLevelsRoutes.post(
-  "/evaluateBadge",
-  IndexController.badgesAndLevelsController.evaluateBadge
-);
+  badgesAndLevelsRoutes.get(
+    "/getUserAndBadgeLevels",
+    indexController.badgesAndLevelsController.getUserAndBadgeLevels
+  );
+
+  badgesAndLevelsRoutes.get(
+    "/getBadges",
+    indexController.badgesAndLevelsController.getBadges
+  );
+
+  badgesAndLevelsRoutes.post(
+    "/evaluateBadge",
+    indexController.badgesAndLevelsController.evaluateBadge
+  );
+  return badgesAndLevelsRoutes;
+};

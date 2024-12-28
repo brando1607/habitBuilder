@@ -1,21 +1,23 @@
-import { DaoIndex } from "../dao/dao.index.js";
 import { generateToken } from "../utils/jwt.js";
 import { errors } from "../utils/errors/errors.js";
 import { CustomError } from "../utils/errors/customErrors.js";
 import { verifyToken } from "../utils/jwt.js";
 
 export class UserController {
-  static async addUser(req, res, next) {
+  constructor({ DaoIndex }) {
+    this.daoIndex = DaoIndex;
+  }
+  addUser = async (req, res, next) => {
     try {
       const user = req.body;
 
-      let result = await DaoIndex.userDao.addUser({ user });
+      let result = await this.daoIndex.userDao.addUser({ user });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async logIn(req, res, next) {
+  };
+  logIn = async (req, res, next) => {
     let user = req.body;
 
     try {
@@ -23,7 +25,7 @@ export class UserController {
         return res.send(CustomError.newError(errors.conflict.user));
       }
 
-      let result = await DaoIndex.userDao.logIn({ user });
+      let result = await this.daoIndex.userDao.logIn({ user });
 
       if (result) {
         const payload = {
@@ -43,42 +45,42 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
-  static async changePassword(req, res, next) {
+  };
+  changePassword = async (req, res, next) => {
     try {
       let password = req.body;
-      let result = await DaoIndex.userDao.changePassword({ password });
+      let result = await this.daoIndex.userDao.changePassword({ password });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async changeLogin(req, res, next) {
+  };
+  changeLogin = async (req, res, next) => {
     try {
       let username = req.params.username;
 
       let input = req.body;
-      let result = await DaoIndex.userDao.changeLogin({ username, input });
+      let result = await this.daoIndex.userDao.changeLogin({ username, input });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async sendTemporaryPassword(req, res, next) {
+  };
+  sendTemporaryPassword = async (req, res, next) => {
     try {
       let input = req.body;
-      let result = await DaoIndex.userDao.sendTemporaryPassword({ input });
+      let result = await this.daoIndex.userDao.sendTemporaryPassword({ input });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async profile(req, res, next) {
+  };
+  profile = async (req, res, next) => {
     try {
       let username = req.params.username;
       const viewer = verifyToken(req.cookies.token);
 
-      let result = await DaoIndex.userDao.profile({
+      let result = await this.daoIndex.userDao.profile({
         username,
         viewer: viewer.login,
       });
@@ -86,26 +88,26 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
-  static async achievements(req, res, next) {
+  };
+  achievements = async (req, res, next) => {
     try {
       const username = req.params.username;
 
-      let result = await DaoIndex.userDao.achievements({ username });
+      let result = await this.daoIndex.userDao.achievements({ username });
       res.send(result);
     } catch (error) {
       next(error);
     }
-  }
-  static async logout(req, res) {
+  };
+  logout = async (req, res) => {
     res.cookie("token", "", { expires: new Date(0) });
     res.send("User logged out.");
-  }
-  static async sendFriendRequest(req, res, next) {
+  };
+  sendFriendRequest = async (req, res, next) => {
     const sender = req.user.login;
     const receiver = req.params.username;
     try {
-      const result = await DaoIndex.userDao.sendFriendRequest({
+      const result = await this.daoIndex.userDao.sendFriendRequest({
         sender,
         receiver,
       });
@@ -114,11 +116,11 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
-  static async getFriendRequests(req, res) {
+  };
+  getFriendRequests = async (req, res) => {
     const username = req.params.username;
     try {
-      const result = await DaoIndex.userDao.getFriendRequests({
+      const result = await this.daoIndex.userDao.getFriendRequests({
         username,
       });
 
@@ -126,21 +128,21 @@ export class UserController {
     } catch (error) {
       console.error(error);
     }
-  }
-  static async getFriends(req, res) {
+  };
+  getFriends = async (req, res) => {
     const username = req.params.username;
     try {
-      const result = await DaoIndex.userDao.getFriends({ username });
+      const result = await this.daoIndex.userDao.getFriends({ username });
 
       res.send(result);
     } catch (error) {
       console.error(error);
     }
-  }
-  static async respondToFriendRequest(req, res) {
+  };
+  respondToFriendRequest = async (req, res) => {
     const { id, response } = req.body;
     try {
-      const result = await DaoIndex.userDao.respondToFriendRequest({
+      const result = await this.daoIndex.userDao.respondToFriendRequest({
         id,
         response,
       });
@@ -148,5 +150,5 @@ export class UserController {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 }
