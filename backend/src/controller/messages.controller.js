@@ -1,13 +1,15 @@
-import { DaoIndex } from "../dao/dao.index.js";
 import { verifyToken } from "../utils/jwt.js";
 
 export class MessagesController {
-  static async getChat(req, res, next) {
+  constructor(DaoIndex) {
+    this.daoIndex = DaoIndex;
+  }
+  getChat = async (req, res, next) => {
     try {
       const sender = verifyToken(req.cookies.token);
       const { receiver } = req.params;
 
-      const result = await DaoIndex.messagesDao.getChat({
+      const result = await this.daoIndex.messagesDao.getChat({
         sender: sender.login,
         receiver,
       });
@@ -16,15 +18,15 @@ export class MessagesController {
     } catch (error) {
       next(error);
     }
-  }
-  static async sendMessage(req, res, next) {
+  };
+  sendMessage = async (req, res, next) => {
     try {
       const viewer = verifyToken(req.cookies.token);
 
       const user = req.params.username;
       const { message } = req.body;
 
-      let result = await DaoIndex.messagesDao.sendMessage({
+      let result = await this.daoIndex.messagesDao.sendMessage({
         message,
         viewer: viewer.login,
         user,
@@ -34,12 +36,12 @@ export class MessagesController {
     } catch (error) {
       next(error);
     }
-  }
-  static async editMessage(req, res, next) {
+  };
+  editMessage = async (req, res, next) => {
     try {
       const { id, newMessage } = req.body;
 
-      const result = await DaoIndex.messagesDao.editMessage({
+      const result = await this.daoIndex.messagesDao.editMessage({
         messageId: id,
         newMessage,
       });
@@ -48,11 +50,11 @@ export class MessagesController {
     } catch (error) {
       next(error);
     }
-  }
-  static async deleteMessage(req, res, next) {
+  };
+  deleteMessage = async (req, res, next) => {
     try {
       const { id } = req.body;
-      const result = await DaoIndex.messagesDao.deleteMessage({
+      const result = await this.daoIndex.messagesDao.deleteMessage({
         messageId: id,
       });
 
@@ -60,5 +62,5 @@ export class MessagesController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
