@@ -8,7 +8,7 @@ export const createUserRouter = ({ DaoIndex }) => {
 
   const indexController = new IndexController({ DaoIndex });
 
-  userRoutes.post("/createUser", indexController.userController.addUser);
+  userRoutes.post("/createUser", indexController.userController.createUser);
 
   userRoutes.post("/login", indexController.userController.logIn);
 

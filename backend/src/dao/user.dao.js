@@ -31,7 +31,7 @@ export class UserDao {
       throw error;
     }
   }
-  async addUser({ user }) {
+  async createUser({ user }) {
     const {
       firstName,
       lastName,

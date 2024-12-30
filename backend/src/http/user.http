@@ -1,4 +1,4 @@
-## add user
+## create user
 POST http://localhost:1234/api/user/createUser
 Content-Type: application/json
 

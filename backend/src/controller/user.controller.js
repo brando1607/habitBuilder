@@ -6,11 +6,11 @@ export class UserController {
   constructor({ DaoIndex }) {
     this.daoIndex = DaoIndex;
   }
-  addUser = async (req, res, next) => {
+  createUser = async (req, res, next) => {
     try {
       const user = req.body;
 
-      let result = await this.daoIndex.userDao.addUser({ user });
+      let result = await this.daoIndex.userDao.createUser({ user });
       res.send(result);
     } catch (error) {
       next(error);
