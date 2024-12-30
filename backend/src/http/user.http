@@ -84,33 +84,3 @@ Content-Type: application/json
     "new_email": "brando16@gmail.com"
 }
 
-### get user profile        
-    
-GET http://localhost:1234/api/user/profile/leslie25
-
-### get user's achievements        
-    
-GET http://localhost:1234/api/user/achievements/brando16 
-
-### send friend request
-
-POST http://localhost:1234/api/user/sendFriendRequest/leslie25
-
-### get friend requests
-
-GET http://localhost:1234/api/user/getFriendRequests/leslie25
-
-### get friends
-
-GET http://localhost:1234/api/user/getFriends/brando16
-
-### respond to friend request
-
-POST http://localhost:1234/api/user/respondToFriendRequest/leslie25
-Content-Type: application/json
-
-{
-    "id": 1,
-    "response": "accepted"
-}
-

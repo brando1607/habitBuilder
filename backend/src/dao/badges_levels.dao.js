@@ -3,7 +3,7 @@ import { errors } from "../utils/errors/errors.js";
 import { sendEmail } from "../utils/nodemailer.js";
 import { encryption } from "../utils/encryptAndDecryptFunctions.js";
 
-export class BadgesAndLevelsDAO {
+export class BadgesAndLevelsDao {
   constructor(pool) {
     this.pool = pool;
   }

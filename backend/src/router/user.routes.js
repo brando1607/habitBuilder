@@ -29,44 +29,6 @@ export const createUserRouter = ({ DaoIndex }) => {
     indexController.userController.changeLogin
   );
 
-  userRoutes.get(
-    "/profile/:username",
-    passportCall("jwt", { session: false }),
-    indexController.userController.profile
-  );
-
-  userRoutes.get(
-    "/achievements/:username",
-    passportCall("jwt", { session: false }),
-    indexController.userController.achievements
-  );
-
-  userRoutes.post(
-    "/sendFriendRequest/:username",
-    passportCall("jwt", { session: false }),
-    indexController.userController.sendFriendRequest
-  );
-
-  userRoutes.get(
-    "/getFriendRequests/:username",
-    passportCall("jwt", { session: false }),
-    checkUsernameInUrl(),
-    indexController.userController.getFriendRequests
-  );
-
-  userRoutes.get(
-    "/getFriends/:username",
-    passportCall("jwt", { session: false }),
-    indexController.userController.getFriends
-  );
-
-  userRoutes.post(
-    "/respondToFriendRequest/:username",
-    passportCall("jwt", { session: false }),
-    checkUsernameInUrl(),
-    indexController.userController.respondToFriendRequest
-  );
-
   userRoutes.get("/logout", indexController.userController.logout);
 
   return userRoutes;

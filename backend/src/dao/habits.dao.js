@@ -2,7 +2,7 @@ import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { CustomError } from "../utils/errors/customErrors.js";
 import { errors } from "../utils/errors/errors.js";
 
-export class HabitsDAO {
+export class HabitsDao {
   constructor(pool) {
     this.pool = pool;
   }

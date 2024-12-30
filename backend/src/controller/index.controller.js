@@ -2,6 +2,7 @@ import { UserController } from "./user.controller.js";
 import { HabitsController } from "./habits.controller.js";
 import { BadgesAndLevelsController } from "./badges_levels.controller.js";
 import { MessagesController } from "./messages.controller.js";
+import { ProfileController } from "./profile.controller.js";
 
 export class IndexController {
   constructor({ DaoIndex }) {
@@ -11,5 +12,6 @@ export class IndexController {
       DaoIndex,
     });
     this.messagesController = new MessagesController({ DaoIndex });
+    this.profileController = new ProfileController({ DaoIndex });
   }
 }
