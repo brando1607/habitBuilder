@@ -31,7 +31,7 @@ export class ProfileDao {
         return true;
       }
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
 
@@ -148,7 +148,7 @@ export class ProfileDao {
       };
       return userAchievements;
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -214,7 +214,7 @@ export class ProfileDao {
         ? getRequests
         : "No friend requests at the moment.";
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -241,7 +241,7 @@ export class ProfileDao {
 
       return getFriends.length > 0 ? getFriends : "No friends yet.";
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -279,7 +279,7 @@ export class ProfileDao {
         : "Friend request rejected";
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }

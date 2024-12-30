@@ -42,7 +42,7 @@ export class ProfileController {
       next(error);
     }
   };
-  getFriendRequests = async (req, res) => {
+  getFriendRequests = async (req, res, next) => {
     const username = req.params.username;
     try {
       const result = await this.daoIndex.profileDao.getFriendRequests({
@@ -51,20 +51,20 @@ export class ProfileController {
 
       res.send(result);
     } catch (error) {
-      console.error(error);
+      next(error);
     }
   };
-  getFriends = async (req, res) => {
+  getFriends = async (req, res, next) => {
     const username = req.params.username;
     try {
       const result = await this.daoIndex.profileDao.getFriends({ username });
 
       res.send(result);
     } catch (error) {
-      console.error(error);
+      next(error);
     }
   };
-  respondToFriendRequest = async (req, res) => {
+  respondToFriendRequest = async (req, res, next) => {
     const { id, response } = req.body;
     try {
       const result = await this.daoIndex.profileDao.respondToFriendRequest({
@@ -73,7 +73,7 @@ export class ProfileController {
       });
       res.send(result);
     } catch (error) {
-      console.error(error);
+      next(error);
     }
   };
 }

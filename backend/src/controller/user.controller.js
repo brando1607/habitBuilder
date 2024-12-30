@@ -74,8 +74,12 @@ export class UserController {
       next(error);
     }
   };
-  logout = async (req, res) => {
-    res.cookie("token", "", { expires: new Date(0) });
-    res.send("User logged out.");
+  logout = async (req, res, next) => {
+    try {
+      res.cookie("token", "", { expires: new Date(0) });
+      res.send("User logged out.");
+    } catch (error) {
+      next(error);
+    }
   };
 }

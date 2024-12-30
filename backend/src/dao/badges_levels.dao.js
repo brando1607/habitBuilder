@@ -20,7 +20,7 @@ export class BadgesAndLevelsDao {
       );
       return { userLevels: getUserLevels, badgeLevels: getBadgeLevels };
     } catch (error) {
-      console.error(error);
+      throw error();
     } finally {
       connection.release();
     }
@@ -33,7 +33,6 @@ export class BadgesAndLevelsDao {
       );
       return getBadges;
     } catch (error) {
-      console.error(error);
       throw error;
     } finally {
       connection.release();
@@ -126,7 +125,6 @@ export class BadgesAndLevelsDao {
         ? "Badge accepted and email sent to user."
         : "Badge rejected and email sent to user";
     } catch (error) {
-      console.error(error);
       throw error;
     } finally {
       connection.release();

@@ -86,18 +86,18 @@ export class UserDao {
       await connection.commit();
 
       return `User created.`;
-    } catch (e) {
+    } catch (error) {
       await connection.rollback();
-      console.error(`Error adding user`, e.sqlMessage);
-      if (e.code === "ER_DUP_ENTRY") {
-        if (e.sqlMessage.includes("hashed_email")) {
+      if (error.code === "ER_DUP_ENTRY") {
+        if (error.sqlMessage.includes("hashed_email")) {
           return CustomError.newError(errors.conflict.userEmail);
-        } else if (e.sqlMessage.includes("username")) {
+        } else if (error.sqlMessage.includes("username")) {
           return CustomError.newError(errors.conflict.username);
         }
-      } else if (e.code === "ER_CHECK_CONSTRAINT_VIOLATED") {
+      } else if (error.code === "ER_CHECK_CONSTRAINT_VIOLATED") {
         return CustomError.newError(errors.unprocessableEntity);
       }
+      throw error;
     } finally {
       connection.release();
     }
@@ -130,7 +130,7 @@ export class UserDao {
         return false;
       }
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -158,7 +158,7 @@ export class UserDao {
       );
       await connection.commit();
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -195,7 +195,7 @@ export class UserDao {
         return false;
       }
     } catch (error) {
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -231,7 +231,6 @@ export class UserDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
       throw error;
     } finally {
       connection.release();
@@ -281,7 +280,6 @@ export class UserDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
       throw error;
     } finally {
       connection.release();
@@ -320,7 +318,7 @@ export class UserDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }

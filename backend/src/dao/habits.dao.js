@@ -61,7 +61,7 @@ export class HabitsDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -93,7 +93,7 @@ export class HabitsDao {
       await connection.commit();
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -138,7 +138,6 @@ export class HabitsDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
       throw error;
     } finally {
       connection.release();
@@ -169,7 +168,6 @@ export class HabitsDao {
         : "Habit added without badge";
     } catch (error) {
       await connection.rollback();
-      console.error(error);
       throw error;
     } finally {
       connection.release();
@@ -187,7 +185,7 @@ export class HabitsDao {
       let { badge_id } = getBadgeId[0];
       return badge_id;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }
   async givePoints({ habit, username }) {
@@ -229,7 +227,7 @@ export class HabitsDao {
       await connection.commit();
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -268,7 +266,7 @@ export class HabitsDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
@@ -324,7 +322,7 @@ export class HabitsDao {
       }
     } catch (error) {
       await connection.rollback();
-      console.error(error);
+      throw error;
     } finally {
       connection.release();
     }
