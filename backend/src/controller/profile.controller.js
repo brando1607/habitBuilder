@@ -1,17 +1,17 @@
-import { verifyToken } from "../utils/jwt.js";
+import { ServiceIndex } from "../service/index.service.js";
 
 export class ProfileController {
   constructor({ DaoIndex }) {
-    this.daoIndex = DaoIndex;
+    this.serviceIndex = new ServiceIndex({ DaoIndex });
   }
   profile = async (req, res, next) => {
     try {
       let username = req.params.username;
-      const viewer = verifyToken(req.cookies.token);
+      const { token } = req.cookies;
 
-      let result = await this.daoIndex.profileDao.profile({
+      let result = await this.serviceIndex.profileService.profile({
         username,
-        viewer: viewer.login,
+        token,
       });
       res.send(result);
     } catch (error) {
@@ -22,7 +22,9 @@ export class ProfileController {
     try {
       const username = req.params.username;
 
-      let result = await this.daoIndex.profileDao.achievements({ username });
+      let result = await this.serviceIndex.profileService.achievements({
+        username,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -32,7 +34,7 @@ export class ProfileController {
     const sender = req.user.login;
     const receiver = req.params.username;
     try {
-      const result = await this.daoIndex.profileDao.sendFriendRequest({
+      const result = await this.serviceIndex.profileService.sendFriendRequest({
         sender,
         receiver,
       });
@@ -57,7 +59,9 @@ export class ProfileController {
   getFriends = async (req, res, next) => {
     const username = req.params.username;
     try {
-      const result = await this.daoIndex.profileDao.getFriends({ username });
+      const result = await this.serviceIndex.profileService.getFriends({
+        username,
+      });
 
       res.send(result);
     } catch (error) {

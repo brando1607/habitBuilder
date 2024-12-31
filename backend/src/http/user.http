@@ -70,7 +70,7 @@ Content-Type: application/json
 
 {
     "username": "brando16",
-    "tempPassword": "7207e457ee",
+    "tempPassword": "cc5b6dccce",
     "newPassword": "Leslie2505."
 }
 
@@ -81,6 +81,6 @@ Content-Type: application/json
 
 {
     "passwordToCheck": "Leslie2505.",
-    "new_email": "brando16@gmail.com"
+    "new_email": "brandodavid16@gmail.com"
 }
 

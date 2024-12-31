@@ -1,16 +1,16 @@
-import { verifyToken } from "../utils/jwt.js";
+import { ServiceIndex } from "../service/index.service.js";
 
 export class MessagesController {
   constructor({ DaoIndex }) {
-    this.daoIndex = DaoIndex;
+    this.serviceIndex = new ServiceIndex({ DaoIndex });
   }
   getChat = async (req, res, next) => {
     try {
-      const sender = verifyToken(req.cookies.token);
+      const { token } = req.cookies;
       const { receiver } = req.params;
 
-      const result = await this.daoIndex.messagesDao.getChat({
-        sender: sender.login,
+      const result = await this.serviceIndex.messagesService.getChat({
+        token,
         receiver,
       });
 
@@ -21,14 +21,14 @@ export class MessagesController {
   };
   sendMessage = async (req, res, next) => {
     try {
-      const viewer = verifyToken(req.cookies.token);
+      const { token } = req.cokkies;
 
       const user = req.params.username;
       const { message } = req.body;
 
-      let result = await this.daoIndex.messagesDao.sendMessage({
+      let result = await this.serviceIndex.messagesService.sendMessage({
         message,
-        viewer: viewer.login,
+        token,
         user,
       });
 
@@ -41,7 +41,7 @@ export class MessagesController {
     try {
       const { id, newMessage } = req.body;
 
-      const result = await this.daoIndex.messagesDao.editMessage({
+      const result = await this.serviceIndex.messagesService.editMessage({
         messageId: id,
         newMessage,
       });
@@ -54,7 +54,7 @@ export class MessagesController {
   deleteMessage = async (req, res, next) => {
     try {
       const { id } = req.body;
-      const result = await this.daoIndex.messagesDao.deleteMessage({
+      const result = await this.serviceIndex.messagesService.deleteMessage({
         messageId: id,
       });
 

@@ -1,12 +1,17 @@
+import { ServiceIndex } from "../service/index.service.js";
+
 export class HabitsController {
   constructor({ DaoIndex }) {
-    this.daoIndex = DaoIndex;
+    this.serviceIndex = new ServiceIndex({ DaoIndex });
   }
   addHabit = async (req, res, next) => {
     let username = req.params.username;
     let input = req.body;
     try {
-      let result = await this.daoIndex.habitsDao.addHabit({ input, username });
+      let result = await this.serviceIndex.habitService.addHabit({
+        input,
+        username,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -17,7 +22,7 @@ export class HabitsController {
     let input = req.body;
 
     try {
-      let result = await this.daoIndex.habitsDao.completeHabit({
+      let result = await this.serviceIndex.habitService.completeHabit({
         username,
         input,
       });
@@ -31,7 +36,7 @@ export class HabitsController {
     let username = req.params.username;
 
     try {
-      let result = await this.daoIndex.habitsDao.deleteHabit({
+      let result = await this.serviceIndex.habitService.deleteHabit({
         input,
         username,
       });
