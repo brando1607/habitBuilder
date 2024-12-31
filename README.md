@@ -73,7 +73,7 @@ This project is built using the following technologies and libraries:
 - **express-compression**: To compress responses.
 - **jsonwebtoken**: For authentication via JWTs.
 - **MySQL2**: To interact with the MySQL database.
-- **Nodemailer**: To send emails for notifications (e.g., badge suggestions).
+- **Nodemailer**: To send emails for notifications (e.g., badge suggestions, temporary passwords and password changes).
 - **Passport.js**: For user authentication.
 - **Passport-JWT**: For handling JWT-based authentication.
 
