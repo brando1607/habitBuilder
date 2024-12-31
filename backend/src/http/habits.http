@@ -25,5 +25,5 @@ Content-Type: application/json
 
 {
     "habit": "read a book in french",
-    "deadline": "2024-12-18"
+    "deadline": "2025-01-31"
 }

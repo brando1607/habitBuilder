@@ -86,7 +86,9 @@ export class ProfileDao {
       );
 
       const [getHabits] = await connection.query(
-        `SELECT habit, times_completed FROM habit_completion WHERE user_id = ? ORDER BY times_completed DESC LIMIT 3;`,
+        `SELECT h.habit, times_completed FROM habit_completion c
+         JOIN habits h ON h.id = c.habit_id
+         WHERE user_id = ? ORDER BY times_completed DESC LIMIT 3;`,
         [id]
       );
 
@@ -125,13 +127,15 @@ export class ProfileDao {
         connection
       );
       const [getHabitsWithBadge] = await connection.query(
-        `SELECT badges.badge, badge_level, habit, habit_completion.times_completed FROM habit_completion 
-         JOIN badges ON badges.id = habit_completion.badge_id 
-         WHERE habit_completion.user_id = ?;`,
+        `SELECT badges.badge, badge_level, h.habit, habit_completion.times_completed FROM habit_completion c
+         JOIN habits h ON h.id = c.habit_id 
+         JOIN badges ON badges.id = c.badge_id 
+         WHERE c.user_id = ?;`,
         [userId]
       );
       const [getHabitsWithoutBadge] = await connection.query(
-        `SELECT habit, times_completed FROM habit_completion 
+        `SELECT h.habit, times_completed FROM habit_completion c
+        JOIN habits h ON h.id = c.habit_id
          WHERE badge_id IS NULL AND user_id = ?;`,
         [userId]
       );
@@ -230,11 +234,11 @@ export class ProfileDao {
 
       const [getFriends] = await connection.query(
         `SELECT first_name, last_name FROM friends
-         JOIN user ON user.id = friend_1 
+         JOIN user ON user.id = friend_2 
          WHERE friend_1 = ? AND status = 'ACCEPTED'
          UNION 
          SELECT first_name, last_name FROM friends 
-         JOIN user ON user.id = friend_2 
+         JOIN user ON user.id = friend_1 
          WHERE friend_2 = ? AND status = 'ACCEPTED';`,
         [userId, userId]
       );

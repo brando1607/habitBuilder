@@ -47,7 +47,7 @@ export class ProfileController {
   getFriendRequests = async (req, res, next) => {
     const username = req.params.username;
     try {
-      const result = await this.daoIndex.profileDao.getFriendRequests({
+      const result = await this.serviceIndex.profileService.getFriendRequests({
         username,
       });
 
@@ -71,10 +71,11 @@ export class ProfileController {
   respondToFriendRequest = async (req, res, next) => {
     const { id, response } = req.body;
     try {
-      const result = await this.daoIndex.profileDao.respondToFriendRequest({
-        id,
-        response,
-      });
+      const result =
+        await this.serviceIndex.profileService.respondToFriendRequest({
+          id,
+          response,
+        });
       res.send(result);
     } catch (error) {
       next(error);

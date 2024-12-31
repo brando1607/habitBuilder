@@ -69,9 +69,10 @@ export class ReusableFunctions {
         return id;
       } else if (id === "habit") {
         let [habitId] = await connection.query(
-          `SELECT id FROM user_habits WHERE habit = ?;`,
+          `SELECT id FROM habits WHERE habit = ?;`,
           [element]
         );
+
         let { id } = habitId[0];
         return id;
       }
@@ -107,15 +108,15 @@ export class ReusableFunctions {
   };
 
   static decreaseCurrendOrScheduledHabits = async (
-    habit,
+    habit_id,
     deadline,
     username,
     connection
   ) => {
     try {
       let [getStatus] = await connection.query(
-        `SELECT status FROM user_habits WHERE habit = ? AND deadline = ?;`,
-        [habit, deadline]
+        `SELECT status FROM user_habits WHERE habit_id = ? AND deadline = ?;`,
+        [habit_id, deadline]
       );
 
       let { status } = getStatus[0];
@@ -142,11 +143,12 @@ export class ReusableFunctions {
       connection.release();
     }
   };
-  static findHabit = async (habit, deadline, connection) => {
+  static findHabit = async (habit, connection) => {
     let [findHabit] = await connection.query(
-      `SELECT habit FROM user_habits WHERE habit = ? AND deadline = ?;`,
-      [habit, deadline]
+      `SELECT habits.habit FROM user_habits JOIN habits ON habits.id = user_habits.habit_id WHERE habits.habit = ?;`,
+      [habit]
     );
+
     return findHabit.length > 0;
   };
   static getChat = async (sender_id, receiver_id, connection) => {

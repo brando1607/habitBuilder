@@ -1,6 +1,7 @@
 import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { CustomError } from "../utils/errors/customErrors.js";
 import { errors } from "../utils/errors/errors.js";
+import { randomUUID } from "crypto";
 
 export class HabitsDao {
   constructor(pool) {
@@ -12,6 +13,7 @@ export class HabitsDao {
 
     try {
       let user_id = await ReusableFunctions.getId("user", username, connection);
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
 
       let [getKeyWords] = await connection.query(`SELECT keyword FROM badges`);
 
@@ -20,7 +22,8 @@ export class HabitsDao {
       );
 
       let [hasHabitBeenCompletedBefore] = await connection.query(
-        `SELECT habit FROM habit_completion 
+        `SELECT h.habit FROM habit_completion c 
+        JOIN habits h ON c.habit_id = h.id
          WHERE user_id = ? AND habit = ?;`,
         [user_id, habit]
       );
@@ -37,9 +40,9 @@ export class HabitsDao {
         if (hasHabitBeenCompletedBefore.length < 1) {
           await connection.beginTransaction();
           await connection.query(
-            `INSERT INTO habit_completion(user_id, habit, badge_id, badge_level) 
+            `INSERT INTO habit_completion(user_id, habit_id, badge_id, badge_level) 
              VALUES (?,?,?, ?);`,
-            [user_id, habit, badge_id, "NO LEVEL"]
+            [user_id, habit_id, badge_id, "NO LEVEL"]
           );
           await connection.commit();
         }
@@ -50,9 +53,9 @@ export class HabitsDao {
 
         if (hasHabitBeenCompletedBefore.length < 1) {
           await connection.query(
-            `INSERT INTO habit_completion(user_id, habit) 
+            `INSERT INTO habit_completion(user_id, habit_id) 
              VALUES (?,?);`,
-            [user_id, habit]
+            [user_id, habit_id]
           );
         }
 
@@ -77,18 +80,13 @@ export class HabitsDao {
       let { day } = dayForDeadline[0];
       let id_day = await ReusableFunctions.getId("day", day, connection);
 
-      let [habitId] = await connection.query(
-        `SELECT id FROM user_habits 
-         WHERE habit = ? AND deadline = ?;`,
-        [habit, deadline]
-      );
-      let { id } = habitId[0];
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
 
       await connection.beginTransaction();
       await connection.query(
         `INSERT INTO frequency(habit_id, id_day) 
          VALUES(?, ?);`,
-        [id, id_day]
+        [habit_id, id_day]
       );
       await connection.commit();
     } catch (error) {
@@ -100,22 +98,43 @@ export class HabitsDao {
   }
   async addHabitAndIncreaseCounter({ habit, deadline, username }) {
     let connection = await this.pool.getConnection();
+    const uuid = randomUUID();
 
     try {
       let user_id = await ReusableFunctions.getId("user", username, connection);
 
+      const [habitExists] = await connection.query(
+        `SELECT habit FROM habits WHERE habit = ?;`,
+        [habit]
+      );
+
+      if (habitExists.length === 0) {
+        await connection.beginTransaction();
+
+        await connection.query(
+          `INSERT INTO habits(id, habit) VALUES(UUID_TO_BIN(?),?);`,
+          [uuid, habit]
+        );
+
+        await connection.commit();
+      }
+      const habit_id = await ReusableFunctions.getId(
+        "habit",
+        habit,
+        connection
+      );
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO user_habits(user_id, habit, deadline) 
+        `INSERT INTO user_habits(user_id, habit_id, deadline) 
          VALUES (?, ?, ?);`,
-        [user_id, habit, deadline]
+        [user_id, habit_id, deadline]
       );
       await connection.commit();
 
       let [getStatus] = await connection.query(
         `SELECT status FROM user_habits 
-         WHERE habit = ? AND deadline = ?;`,
-        [habit, deadline]
+         WHERE habit_id = ? AND deadline = ?;`,
+        [habit_id, deadline]
       );
       let { status } = getStatus[0];
 
@@ -150,11 +169,7 @@ export class HabitsDao {
     let { habit, deadline } = input;
 
     try {
-      const habitFound = await ReusableFunctions.findHabit(
-        habit,
-        deadline,
-        connection
-      );
+      const habitFound = await ReusableFunctions.findHabit(habit, connection);
       if (habitFound) return CustomError.newError(errors.conflict.habit);
 
       await this.addHabitAndIncreaseCounter({ habit, deadline, username });
@@ -176,11 +191,12 @@ export class HabitsDao {
   async checkBadges({ habit, username }) {
     let connection = await this.pool.getConnection();
     try {
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
       let user_id = await ReusableFunctions.getId("user", username, connection);
       let [getBadgeId] = await connection.query(
         `SELECT badge_id FROM habit_completion 
-         WHERE habit = ? AND user_id = ?;`,
-        [habit, user_id]
+         WHERE habit_id = ? AND user_id = ?;`,
+        [habit_id, user_id]
       );
       let { badge_id } = getBadgeId[0];
       return badge_id;
@@ -191,11 +207,12 @@ export class HabitsDao {
   async givePoints({ habit, username }) {
     let connection = await this.pool.getConnection();
     try {
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
       let user_id = await ReusableFunctions.getId("user", username, connection);
       let [getCompletion] = await connection.query(
         `SELECT times_completed FROM habit_completion 
-         WHERE user_id = ? AND habit = ?;`,
-        [user_id, habit]
+         WHERE user_id = ? AND habit_id = ?;`,
+        [user_id, habit_id]
       );
       let { times_completed } = getCompletion[0];
       let [getAllPoints] = await connection.query(
@@ -275,17 +292,18 @@ export class HabitsDao {
     let connection = await this.pool.getConnection();
 
     try {
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
       let user_id = await ReusableFunctions.getId("user", username, connection);
       let [getCompletion] = await connection.query(
         `SELECT times_completed FROM habit_completion 
-         WHERE user_id = ? AND habit = ?;`,
-        [user_id, habit]
+         WHERE user_id = ? AND habit_id = ?;`,
+        [user_id, habit_id]
       );
 
       let [currentId] = await connection.query(
         `SELECT badge_level FROM habit_completion 
-         WHERE user_id = ? AND habit = ?;`,
-        [user_id, habit]
+         WHERE user_id = ? AND habit_id = ?;`,
+        [user_id, habit_id]
       );
       let { badge_level } = currentId[0];
 
@@ -315,8 +333,8 @@ export class HabitsDao {
 
         await connection.query(
           `UPDATE habit_completion SET badge_level = ? 
-           WHERE habit = ? AND user_id = ?;`,
-          [badge_level, habit, user_id]
+           WHERE habit_id = ? AND user_id = ?;`,
+          [badge_level, habit_id, user_id]
         );
         await connection.commit();
       }
@@ -329,25 +347,23 @@ export class HabitsDao {
   }
   async completeHabit({ username, input }) {
     let connection = await this.pool.getConnection();
-    let { habit, deadline } = input;
+    let { habit } = input;
 
     try {
       await this.checkUserLevel({ username });
 
-      const habitFound = await ReusableFunctions.findHabit(
-        habit,
-        deadline,
-        connection
-      );
+      const habitFound = await ReusableFunctions.findHabit(habit, connection);
       if (!habitFound) return `Habit not found.`;
 
       let user_id = await ReusableFunctions.getId("user", username, connection);
       let habit_id = await ReusableFunctions.getId("habit", habit, connection);
+
       await connection.beginTransaction();
+
       await connection.query(
         `UPDATE user_habits SET status = 'COMPLETED' 
-         WHERE habit = ? AND id = ?;`,
-        [habit, habit_id]
+         WHERE habit_id = ?;`,
+        [habit_id]
       );
 
       await connection.commit();
@@ -356,8 +372,8 @@ export class HabitsDao {
 
       await connection.query(
         `DELETE FROM user_habits 
-         WHERE habit = ? AND id = ?;`,
-        [habit, habit_id]
+         WHERE habit_id = ?;`,
+        [habit_id]
       );
 
       await connection.commit();
@@ -377,8 +393,8 @@ export class HabitsDao {
 
       await connection.query(
         `UPDATE habit_completion SET times_completed = times_completed + 1 
-         WHERE habit = ? AND user_id = ?;`,
-        [habit, user_id]
+         WHERE habit_id = ? AND user_id = ?;`,
+        [habit_id, user_id]
       );
 
       await connection.commit();
@@ -403,22 +419,19 @@ export class HabitsDao {
     let connection = await this.pool.getConnection();
 
     try {
+      let habit_id = await ReusableFunctions.getId("habit", habit, connection);
       let user_id = await ReusableFunctions.getId("user", username, connection);
 
       await connection.beginTransaction();
 
-      const habitFound = await ReusableFunctions.findHabit(
-        habit,
-        deadline,
-        connection
-      );
+      const habitFound = await ReusableFunctions.findHabit(habit, connection);
 
       if (!habitFound) {
         return CustomError.newError(errors.notFound.habitNotFound);
       }
 
       await ReusableFunctions.decreaseCurrendOrScheduledHabits(
-        habit,
+        habit_id,
         deadline,
         username,
         connection
@@ -429,8 +442,8 @@ export class HabitsDao {
 
       await connection.query(
         `DELETE FROM user_habits 
-         WHERE user_id = ? AND habit = ? AND deadline = ?;`,
-        [user_id, habit, deadline]
+         WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
+        [user_id, habit_id, deadline]
       );
 
       await connection.commit();
@@ -439,8 +452,8 @@ export class HabitsDao {
 
       await connection.query(
         `UPDATE habit_completion SET times_not_completed = times_not_completed + 1 
-         WHERE habit = ?;`,
-        [habit]
+         WHERE habit_id = ?;`,
+        [habit_id]
       );
 
       await connection.commit();

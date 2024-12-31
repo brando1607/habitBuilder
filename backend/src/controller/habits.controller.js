@@ -36,7 +36,7 @@ export class HabitsController {
     let username = req.params.username;
 
     try {
-      let result = await this.serviceIndex.habitService.deleteHabit({
+      let result = await this.serviceIndex.habitService.delete({
         input,
         username,
       });

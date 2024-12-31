@@ -8,11 +8,11 @@ GET http://localhost:1234/api/profile/achievements/brando16
 
 ### send friend request
 
-POST http://localhost:1234/api/profile/sendFriendRequest/leslie25
+POST http://localhost:1234/api/profile/sendFriendRequest/brando16
 
 ### get friend requests
 
-GET http://localhost:1234/api/profile/getFriendRequests/leslie25
+GET http://localhost:1234/api/profile/getFriendRequests/brando16
 
 ### get friends
 
@@ -20,11 +20,11 @@ GET http://localhost:1234/api/profile/getFriends/brando16
 
 ### respond to friend request
 
-POST http://localhost:1234/api/profile/respondToFriendRequest/leslie25
+POST http://localhost:1234/api/profile/respondToFriendRequest/brando16
 Content-Type: application/json
 
 {
-    "id": 1,
+    "id": 2,
     "response": "accepted"
 }
 

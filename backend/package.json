@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/injections/dao.injection.js"
+    "dev": "node --watch src/injections/dao.injection.js",
+    "habit-cycle": "artillery run src/test/artillery.yaml -o src/test/habit.cycle.json"
   },
   "author": "brando hernandez",
   "license": "ISC",
