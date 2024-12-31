@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS habits;
 DROP TRIGGER IF EXISTS add_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
 
@@ -37,6 +38,12 @@ CREATE TABLE user(
     theme VARCHAR(20) NOT NULL,
     date_of_birth VARCHAR(15) NOT NULL,
     country VARCHAR(20) NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE habits(
+	id BINARY(16),
+	habit VARCHAR(30) NOT NULL UNIQUE,
     PRIMARY KEY(id)
 );
 
@@ -107,23 +114,25 @@ PRIMARY KEY(id)
 CREATE TABLE user_habits(
 	id INT AUTO_INCREMENT,
 	user_id BINARY(16) NOT NULL,
-    habit VARCHAR(30) NOT NULL,
+    habit_id BINARY(16),
 	status VARCHAR(20),
     deadline VARCHAR(10) NOT NULL,
     PRIMARY KEY(id), 
-    UNIQUE(habit, deadline),
-    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+    UNIQUE(habit_id, deadline),
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY(habit_id) REFERENCES habits(id)
 );
 
 CREATE TABLE habit_completion(
 	user_id BINARY(16),
-    habit VARCHAR(30) NOT NULL,
+    habit_id BINARY(16),
 	badge_id INT,
 	badge_level VARCHAR(30),
 	times_completed INT DEFAULT 0,
 	times_not_completed INT DEFAULT 0,
     FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
-	FOREIGN KEY(badge_id) REFERENCES badges(id)
+	FOREIGN KEY(badge_id) REFERENCES badges(id),
+    FOREIGN KEY(habit_id) REFERENCES habits(id)
 );
 
 CREATE TABLE passwords(
@@ -143,9 +152,9 @@ CREATE TABLE days(
 );
 
 CREATE TABLE frequency(
-	habit_id INT,
+	habit_id BINARY(16),
     id_day INT,
-    FOREIGN KEY(habit_id) REFERENCES user_habits(id) ON DELETE CASCADE,
+    FOREIGN KEY(habit_id) REFERENCES user_habits(habit_id) ON DELETE CASCADE,
     FOREIGN KEY(id_day) REFERENCES days(id),
 	PRIMARY KEY (habit_id, id_day)
 );
