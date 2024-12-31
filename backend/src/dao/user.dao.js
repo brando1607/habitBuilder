@@ -175,8 +175,9 @@ export class UserDao {
       let [temporaryPasswords] = await connection.query(
         `SELECT temporary_password, time_stamp FROM passwords 
          WHERE user_id = ?;`,
-        [username, userId]
+        [userId]
       );
+
       if (
         await ReusableFunctions.validatePassword(
           tempPassword,
@@ -225,6 +226,19 @@ export class UserDao {
           username,
           connection
         );
+        const [getUserEmail] = await connection.query(
+          `SELECT user_email FROM user WHERE username = ?;`,
+          [username]
+        );
+        const userEmail = getUserEmail[0];
+
+        const email = encryption.decrypt(userEmail.user_email);
+        const text =
+          "Password changed successfully. If you didn't do it, please get in touch with us.";
+
+        const subject = "Habit Builder password change.";
+
+        await sendEmail(email, text, subject);
         return `Password changed`;
       } else {
         return CustomError.newError(errors.auth.unauthorized);
@@ -237,6 +251,8 @@ export class UserDao {
     }
   }
   async changeLogin({ username, input }) {
+    //verification if new email/username is the same as the current one
+    //will be done in the front end
     let { passwordToCheck } = input;
     const values = Object.keys(input);
 

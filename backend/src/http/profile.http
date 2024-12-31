@@ -1,6 +1,6 @@
 ### get user profile        
     
-GET http://localhost:1234/api/profile/profile/leslie25
+GET http://localhost:1234/api/profile/brando16
 
 ### get user's achievements        
     

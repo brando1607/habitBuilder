@@ -4,8 +4,8 @@ POST http://localhost:1234/api/badgesAndLevels/sendToPendingBadges/brando16
 Content-Type: application/json
 
 {
-    "badge": "hiker",
-    "keyword": "hike"
+    "badge": "dog lover",
+    "keyword": "walk"
 }
 
 
@@ -15,8 +15,8 @@ POST http://localhost:1234/api/badgesAndLevels/evaluateBadge
 Content-Type: application/json
 
 {
-    "id": 2,
-    "decision": "accepted"
+    "id": 3,
+    "decision": "rejected"
 }
 
 ### get user and badge levels

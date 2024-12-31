@@ -13,7 +13,7 @@ export const createRouter = ({ DaoIndex }) => {
   router.use("/user", createUserRouter({ DaoIndex }));
   router.use("/badgesAndLevels", createBadgesAndLevelsRouter({ DaoIndex }));
   router.use("/messages", createMessagesRouter({ DaoIndex }));
-  router.use("/profile", createProfileRouter(DaoIndex));
+  router.use("/profile", createProfileRouter({ DaoIndex }));
 
   return router;
 };
