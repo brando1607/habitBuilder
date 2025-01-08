@@ -8,7 +8,7 @@ POST http://localhost:1234/api/messages/sendMessage/leslie25
 Content-Type: application/json
 
 {
-    "message": "Hablame de ti, qué has hecho?"
+    "message": "Por qué no respondes? :("
 }
 
 ### edit message

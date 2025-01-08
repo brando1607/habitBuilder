@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import compression from "express-compression";
 import { errorHandler } from "./middlewares/errorHandler.middlewares.js";
 import { dbConnection } from "./utils/pool.config.js";
+import responseTime from "response-time";
+import { redisConnection } from "./utils/redisConfig.js";
 process.loadEnvFile();
 
 export const createApp = ({ DaoIndex }) => {
@@ -14,6 +16,7 @@ export const createApp = ({ DaoIndex }) => {
   app.use(express.json());
   app.use(cookieParser());
   app.use(compression());
+  app.use(responseTime());
 
   //passport config
   initializePassport();
@@ -32,4 +35,5 @@ export const createApp = ({ DaoIndex }) => {
     );
   });
   dbConnection();
+  redisConnection();
 };

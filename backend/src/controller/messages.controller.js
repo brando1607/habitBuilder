@@ -21,7 +21,7 @@ export class MessagesController {
   };
   sendMessage = async (req, res, next) => {
     try {
-      const { token } = req.cokkies;
+      const { token } = req.cookies;
 
       const user = req.params.username;
       const { message } = req.body;
