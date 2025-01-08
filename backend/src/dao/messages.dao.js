@@ -63,7 +63,7 @@ export class MessagesDao {
       const [messageInfo] = await connection.query(
         `SELECT * FROM messages 
            WHERE sender_id = ? AND receiver_id = ? AND message = ?
-           ORDER BY id DESC;`,
+           ORDER BY sent_at DESC;`,
         [viewerId, userId, message]
       );
 
