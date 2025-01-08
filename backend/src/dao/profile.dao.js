@@ -1,6 +1,7 @@
 import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { errors } from "../utils/errors/errors.js";
 import { CustomError } from "../utils/errors/customErrors.js";
+import { client } from "../utils/redisConfig.js";
 
 export class ProfileDao {
   constructor(pool) {
@@ -38,6 +39,12 @@ export class ProfileDao {
   async profile({ username, viewer }) {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("userInformation");
+
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+
       const [getUserTheme] = await connection.query(
         `SELECT theme FROM user
          WHERE username = ?;`,
@@ -110,6 +117,10 @@ export class ProfileDao {
         threeMostCompletedHabits: getHabits,
       };
 
+      await client.set("userInformation", JSON.stringify(userInformation), {
+        EX: 3600,
+      });
+
       return userInformation;
     } catch (error) {
       await connection.rollback();
@@ -121,13 +132,19 @@ export class ProfileDao {
   async achievements({ username }) {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("userAchievements");
+
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+
       const userId = await ReusableFunctions.getId(
         "user",
         username,
         connection
       );
       const [getHabitsWithBadge] = await connection.query(
-        `SELECT badges.badge, badge_level, h.habit, habit_completion.times_completed FROM habit_completion c
+        `SELECT badges.badge, badge_level, h.habit, c.times_completed FROM habit_completion c
          JOIN habits h ON h.id = c.habit_id 
          JOIN badges ON badges.id = c.badge_id 
          WHERE c.user_id = ?;`,
@@ -150,6 +167,11 @@ export class ProfileDao {
             ? "No habits yet"
             : `${getHabitsWithoutBadge}`,
       };
+
+      await client.set("userAchievements", JSON.stringify(userAchievements), {
+        EX: 3600,
+      });
+
       return userAchievements;
     } catch (error) {
       throw error;
@@ -201,6 +223,16 @@ export class ProfileDao {
   async getFriendRequests({ username }) {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("getRequests");
+
+      if (cachedData) {
+        const friendRequests = JSON.parse(cachedData);
+
+        return friendRequests.length > 0
+          ? friendRequests
+          : "No friend requests at the moment.";
+      }
+
       const receiverId = await ReusableFunctions.getId(
         "user",
         username,
@@ -214,6 +246,10 @@ export class ProfileDao {
         [receiverId]
       );
 
+      await client.set("getRequests", JSON.stringify(getRequests), {
+        EX: 3600,
+      });
+
       return getRequests.length > 0
         ? getRequests
         : "No friend requests at the moment.";
@@ -226,6 +262,14 @@ export class ProfileDao {
   async getFriends({ username }) {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("getFriends");
+
+      if (cachedData) {
+        const friends = JSON.parse(cachedData);
+
+        return friends.length > 0 ? friends : "No friends yet.";
+      }
+
       const userId = await ReusableFunctions.getId(
         "user",
         username,
@@ -242,6 +286,8 @@ export class ProfileDao {
          WHERE friend_2 = ? AND status = 'ACCEPTED';`,
         [userId, userId]
       );
+
+      await client.set("getFriends", JSON.stringify(getFriends), { EX: 3600 });
 
       return getFriends.length > 0 ? getFriends : "No friends yet.";
     } catch (error) {
