@@ -2,6 +2,7 @@ import { CustomError } from "../utils/errors/customErrors.js";
 import { errors } from "../utils/errors/errors.js";
 import { sendEmail } from "../utils/nodemailer.js";
 import { encryption } from "../utils/encryptAndDecryptFunctions.js";
+import { client } from "../utils/redisConfig.js";
 
 export class BadgesAndLevelsDao {
   constructor(pool) {
@@ -10,6 +11,12 @@ export class BadgesAndLevelsDao {
   async getUserAndBadgeLevels() {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("userAndBadgesLevels");
+
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+
       const [getUserLevels] = await connection.query(
         `SELECT theme, level_name, level_number, points_or_completions_required FROM levels 
          JOIN themes ON themes.level_number = levels.user_level;`
@@ -18,9 +25,21 @@ export class BadgesAndLevelsDao {
         `SELECT badge_level, points_or_completions_required, points_given FROM levels 
          WHERE user_level IS NULL;`
       );
-      return { userLevels: getUserLevels, badgeLevels: getBadgeLevels };
+
+      const userAndBadgesLevels = {
+        userLevels: getUserLevels,
+        badgeLevels: getBadgeLevels,
+      };
+
+      await client.set(
+        "userAndBadgesLevels",
+        JSON.stringify(userAndBadgesLevels),
+        { EX: 3600 }
+      );
+
+      return userAndBadgesLevels;
     } catch (error) {
-      throw error();
+      throw error;
     } finally {
       connection.release();
     }
@@ -28,9 +47,18 @@ export class BadgesAndLevelsDao {
   async getBadges() {
     const connection = await this.pool.getConnection();
     try {
+      const cachedData = await client.get("badges");
+
+      if (cachedData) {
+        return JSON.parse(cachedData);
+      }
+
       const [getBadges] = await connection.query(
         `SELECT badge, keyword, username AS "created by" FROM badges;`
       );
+
+      await client.set("badges", JSON.stringify(getBadges), { EX: 3600 });
+
       return getBadges;
     } catch (error) {
       throw error;
