@@ -1,14 +1,14 @@
-import { ServiceIndex } from "../service/index.service.js";
+import { HabitService } from "../service/habits.service.js";
 
 export class HabitsController {
   constructor({ DaoIndex }) {
-    this.serviceIndex = new ServiceIndex({ DaoIndex });
+    this.habitService = new HabitService({ DaoIndex });
   }
   addHabit = async (req, res, next) => {
     let username = req.params.username;
     let input = req.body;
     try {
-      let result = await this.serviceIndex.habitService.addHabit({
+      let result = await this.habitService.addHabit({
         input,
         username,
       });
@@ -22,7 +22,7 @@ export class HabitsController {
     let input = req.body;
 
     try {
-      let result = await this.serviceIndex.habitService.completeHabit({
+      let result = await this.habitService.completeHabit({
         username,
         input,
       });
@@ -36,7 +36,7 @@ export class HabitsController {
     let username = req.params.username;
 
     try {
-      let result = await this.serviceIndex.habitService.delete({
+      let result = await this.habitService.delete({
         input,
         username,
       });

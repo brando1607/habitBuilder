@@ -1,15 +1,15 @@
-import { ServiceIndex } from "../service/index.service.js";
+import { ProfileService } from "../service/profile.service.js";
 
 export class ProfileController {
   constructor({ DaoIndex }) {
-    this.serviceIndex = new ServiceIndex({ DaoIndex });
+    this.profileService = new ProfileService({ DaoIndex });
   }
   profile = async (req, res, next) => {
     try {
       let username = req.params.username;
       const { token } = req.cookies;
 
-      let result = await this.serviceIndex.profileService.profile({
+      let result = await this.profileService.profile({
         username,
         token,
       });
@@ -22,7 +22,7 @@ export class ProfileController {
     try {
       const username = req.params.username;
 
-      let result = await this.serviceIndex.profileService.achievements({
+      let result = await this.profileService.achievements({
         username,
       });
       res.send(result);
@@ -34,7 +34,7 @@ export class ProfileController {
     const sender = req.user.login;
     const receiver = req.params.username;
     try {
-      const result = await this.serviceIndex.profileService.sendFriendRequest({
+      const result = await this.profileService.sendFriendRequest({
         sender,
         receiver,
       });
@@ -47,7 +47,7 @@ export class ProfileController {
   getFriendRequests = async (req, res, next) => {
     const username = req.params.username;
     try {
-      const result = await this.serviceIndex.profileService.getFriendRequests({
+      const result = await this.profileService.getFriendRequests({
         username,
       });
 
@@ -59,7 +59,7 @@ export class ProfileController {
   getFriends = async (req, res, next) => {
     const username = req.params.username;
     try {
-      const result = await this.serviceIndex.profileService.getFriends({
+      const result = await this.profileService.getFriends({
         username,
       });
 
@@ -71,11 +71,10 @@ export class ProfileController {
   respondToFriendRequest = async (req, res, next) => {
     const { id, response } = req.body;
     try {
-      const result =
-        await this.serviceIndex.profileService.respondToFriendRequest({
-          id,
-          response,
-        });
+      const result = await this.profileService.respondToFriendRequest({
+        id,
+        response,
+      });
       res.send(result);
     } catch (error) {
       next(error);

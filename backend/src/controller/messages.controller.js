@@ -1,15 +1,15 @@
-import { ServiceIndex } from "../service/index.service.js";
+import { MessagesService } from "../service/messages.service.js";
 
 export class MessagesController {
   constructor({ DaoIndex }) {
-    this.serviceIndex = new ServiceIndex({ DaoIndex });
+    this.messagesService = new MessagesService({ DaoIndex });
   }
   getChat = async (req, res, next) => {
     try {
       const { token } = req.cookies;
       const { receiver } = req.params;
 
-      const result = await this.serviceIndex.messagesService.getChat({
+      const result = await this.messagesService.getChat({
         token,
         receiver,
       });
@@ -26,7 +26,7 @@ export class MessagesController {
       const user = req.params.username;
       const { message } = req.body;
 
-      let result = await this.serviceIndex.messagesService.sendMessage({
+      let result = await this.messagesService.sendMessage({
         message,
         token,
         user,
@@ -41,7 +41,7 @@ export class MessagesController {
     try {
       const { id, newMessage } = req.body;
 
-      const result = await this.serviceIndex.messagesService.editMessage({
+      const result = await this.messagesService.editMessage({
         messageId: id,
         newMessage,
       });
@@ -54,7 +54,7 @@ export class MessagesController {
   deleteMessage = async (req, res, next) => {
     try {
       const { id } = req.body;
-      const result = await this.serviceIndex.messagesService.deleteMessage({
+      const result = await this.messagesService.deleteMessage({
         messageId: id,
       });
 

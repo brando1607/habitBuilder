@@ -1,3 +1,2 @@
 - add real time functionalities with websockets
-- cache frequently queried information 
 - document app with Swagger

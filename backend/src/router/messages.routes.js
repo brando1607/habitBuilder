@@ -1,33 +1,27 @@
 import { Router } from "express";
 import { passportCall } from "../middlewares/passport.middleware.js";
-import { IndexController } from "../controller/index.controller.js";
+import { MessagesController } from "../controller/messages.controller.js";
 
 export const createMessagesRouter = ({ DaoIndex }) => {
   const messagesRouter = Router();
 
-  const indexController = new IndexController({ DaoIndex });
+  const messagesController = new MessagesController({ DaoIndex });
 
   messagesRouter.get(
     "/getChat/:receiver",
     passportCall("jwt", { session: false }),
-    indexController.messagesController.getChat
+    messagesController.getChat
   );
 
   messagesRouter.post(
     "/sendMessage/:username",
     passportCall("jwt", { session: false }),
-    indexController.messagesController.sendMessage
+    messagesController.sendMessage
   );
 
-  messagesRouter.put(
-    "/editMessage",
-    indexController.messagesController.editMessage
-  );
+  messagesRouter.put("/editMessage", messagesController.editMessage);
 
-  messagesRouter.delete(
-    "/deleteMessage",
-    indexController.messagesController.deleteMessage
-  );
+  messagesRouter.delete("/deleteMessage", messagesController.deleteMessage);
 
   return messagesRouter;
 };

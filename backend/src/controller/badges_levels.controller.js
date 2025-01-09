@@ -1,19 +1,18 @@
-import { ServiceIndex } from "../service/index.service.js";
+import { BadgesAndLevelsService } from "../service/badges_levels.service.js";
 
 export class BadgesAndLevelsController {
   constructor({ DaoIndex }) {
-    this.serviceIndex = new ServiceIndex({ DaoIndex });
+    this.badgesAndLevelsService = new BadgesAndLevelsService({ DaoIndex });
   }
   sendToPendingBadges = async (req, res, next) => {
     try {
       let input = req.body;
       let username = req.params.username;
 
-      let result =
-        await this.serviceIndex.badgesAndLevelsService.sendToPendingBadges({
-          input,
-          username,
-        });
+      let result = await this.badgesAndLevelsService.sendToPendingBadges({
+        input,
+        username,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -21,8 +20,7 @@ export class BadgesAndLevelsController {
   };
   getUserAndBadgeLevels = async (req, res, next) => {
     try {
-      let result =
-        await this.serviceIndex.badgesAndLevelsService.getUserAndBadgeLevels();
+      let result = await this.badgesAndLevelsService.getUserAndBadgeLevels();
       res.send(result);
     } catch (error) {
       next(error);
@@ -30,7 +28,7 @@ export class BadgesAndLevelsController {
   };
   getBadges = async (req, res, next) => {
     try {
-      const result = await this.serviceIndex.badgesAndLevelsService.getBadges();
+      const result = await this.badgesAndLevelsService.getBadges();
       res.send(result);
     } catch (error) {
       next(error);
@@ -41,11 +39,10 @@ export class BadgesAndLevelsController {
       const accepted = req.body.decision === "accepted" ? true : false;
       const { id } = req.body;
 
-      const result =
-        await this.serviceIndex.badgesAndLevelsService.evaluateBadge({
-          id,
-          accepted,
-        });
+      const result = await this.badgesAndLevelsService.evaluateBadge({
+        id,
+        accepted,
+      });
       res.send(result);
     } catch (error) {
       next(error);

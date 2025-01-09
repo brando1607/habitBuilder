@@ -8,6 +8,10 @@ import { errorHandler } from "./middlewares/errorHandler.middlewares.js";
 import { dbConnection } from "./utils/pool.config.js";
 import responseTime from "response-time";
 import { redisConnection } from "./utils/redisConfig.js";
+import { serve, setup } from "swagger-ui-express";
+import { opts } from "./utils/swagger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+
 process.loadEnvFile();
 
 export const createApp = ({ DaoIndex }) => {
@@ -31,9 +35,13 @@ export const createApp = ({ DaoIndex }) => {
   //Server and Db connection
   app.listen(process.env.PORT, () => {
     console.log(
-      `Server listening on port http://localhost:${process.env.PORT}`
+      `Server listening on port http://localhost:${process.env.PORT} and Swagger UI on http://localhost:${process.env.PORT}/api/doc`
     );
   });
   dbConnection();
   redisConnection();
+
+  //Documentation config
+  const specs = swaggerJSDoc(opts);
+  app.use("/api/doc", serve, setup(specs));
 };

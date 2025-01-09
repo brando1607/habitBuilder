@@ -1,14 +1,14 @@
-import { ServiceIndex } from "../service/index.service.js";
+import { UserService } from "../service/user.service.js";
 
 export class UserController {
   constructor({ DaoIndex }) {
-    this.serviceIndex = new ServiceIndex({ DaoIndex });
+    this.userService = new UserService({ DaoIndex });
   }
   createUser = async (req, res, next) => {
     try {
       const user = req.body;
 
-      let result = await this.serviceIndex.userService.createUser({ user });
+      let result = await this.userService.createUser({ user });
       res.send(result);
     } catch (error) {
       next(error);
@@ -19,7 +19,7 @@ export class UserController {
     let { token } = req.cookies;
 
     try {
-      let result = await this.serviceIndex.userService.logIn({ user, token });
+      let result = await this.userService.logIn({ user, token });
 
       res.cookie("token", result, {
         maxAge: 1000 * 60 * 60,
@@ -34,7 +34,7 @@ export class UserController {
   changePassword = async (req, res, next) => {
     try {
       let password = req.body;
-      let result = await this.serviceIndex.userService.changePassword({
+      let result = await this.userService.changePassword({
         password,
       });
       res.send(result);
@@ -47,7 +47,7 @@ export class UserController {
       let username = req.params.username;
 
       let input = req.body;
-      let result = await this.serviceIndex.userService.changeLogin({
+      let result = await this.userService.changeLogin({
         username,
         input,
       });
@@ -59,7 +59,7 @@ export class UserController {
   sendTemporaryPassword = async (req, res, next) => {
     try {
       let input = req.body;
-      let result = await this.serviceIndex.userService.sendTemporaryPassword({
+      let result = await this.userService.sendTemporaryPassword({
         input,
       });
       res.send(result);
