@@ -39,15 +39,15 @@ Content-Type: application/json
 
 ###
 
-
+    
 ### log user in
 
 POST http://localhost:1234/api/user/login
 Content-Type: application/json
 
 {
-    "login": "brando16",
-    "password": "Leslie2505."
+    "login": "leslie25",
+    "password": "Brando1607."
 }
 
 ### logout

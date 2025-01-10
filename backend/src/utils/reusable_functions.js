@@ -115,7 +115,7 @@ export class ReusableFunctions {
   ) => {
     try {
       let [getStatus] = await connection.query(
-        `SELECT status FROM user_habits WHERE habit_id = ? AND deadline = ?;`,
+        `SELECT status FROM habit_status WHERE habit_id = ? AND deadline = ?;`,
         [habit_id, deadline]
       );
 
@@ -143,10 +143,12 @@ export class ReusableFunctions {
       connection.release();
     }
   };
-  static findHabit = async (habit, connection) => {
+  static findHabit = async (habit, deadline, connection) => {
     let [findHabit] = await connection.query(
-      `SELECT habits.habit FROM user_habits JOIN habits ON habits.id = user_habits.habit_id WHERE habits.habit = ?;`,
-      [habit]
+      `SELECT habits.habit FROM habit_status 
+       JOIN habits ON habits.id = habit_status.habit_id 
+       WHERE habits.habit = ? AND deadline = ?;`,
+      [habit, deadline]
     );
 
     return findHabit.length > 0;

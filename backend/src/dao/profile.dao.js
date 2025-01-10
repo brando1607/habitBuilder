@@ -93,9 +93,10 @@ export class ProfileDao {
       );
 
       const [getHabits] = await connection.query(
-        `SELECT h.habit, times_completed FROM habit_completion c
+        `SELECT h.habit, c.times_completed FROM habit_completion c
          JOIN habits h ON h.id = c.habit_id
-         WHERE user_id = ? ORDER BY times_completed DESC LIMIT 3;`,
+         WHERE user_id = ? AND c.times_completed > 0
+         ORDER BY times_completed DESC LIMIT 3;`,
         [id]
       );
 
@@ -114,7 +115,8 @@ export class ProfileDao {
         ...levelAndHabitsData,
         badges:
           badgesInformation.length > 0 ? badgesInformation : "No badges yet.",
-        threeMostCompletedHabits: getHabits,
+        threeMostCompletedHabits:
+          getHabits.length > 0 ? getHabits : "No habits completed yet.",
       };
 
       await client.set("userInformation", JSON.stringify(userInformation), {

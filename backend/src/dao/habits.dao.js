@@ -69,7 +69,7 @@ export class HabitsDao {
       connection.release();
     }
   }
-  async addFrequency({ habit, deadline }) {
+  async addFrequency({ userId, habit, deadline }) {
     let connection = await this.pool.getConnection();
 
     try {
@@ -78,15 +78,29 @@ export class HabitsDao {
         [deadline]
       );
       let { day } = dayForDeadline[0];
+
+      let [getCurrentDate] = await connection.query(
+        `SELECT CURDATE() AS 'today'`
+      );
+
+      let { today } = getCurrentDate[0];
+      let status;
+
+      if (deadline === today.toLocaleDateString("en-CA")) {
+        status = "IN PROGRESS";
+      } else {
+        status = "SCHEDULED";
+      }
+
       let id_day = await ReusableFunctions.getId("day", day, connection);
 
       let habit_id = await ReusableFunctions.getId("habit", habit, connection);
 
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO frequency(habit_id, id_day) 
-         VALUES(?, ?);`,
-        [habit_id, id_day]
+        `INSERT INTO habit_status(user_id, habit_id, id_day, deadline, status) 
+         VALUES(?, ?, ?, ?, ?);`,
+        [userId, habit_id, id_day, deadline, status]
       );
       await connection.commit();
     } catch (error) {
@@ -123,16 +137,17 @@ export class HabitsDao {
         habit,
         connection
       );
-      await connection.beginTransaction();
-      await connection.query(
-        `INSERT INTO user_habits(user_id, habit_id, deadline) 
-         VALUES (?, ?, ?);`,
-        [user_id, habit_id, deadline]
+
+      const userId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
       );
-      await connection.commit();
+
+      await this.addFrequency({ userId, habit, deadline });
 
       let [getStatus] = await connection.query(
-        `SELECT status FROM user_habits 
+        `SELECT status FROM habit_status 
          WHERE habit_id = ? AND deadline = ?;`,
         [habit_id, deadline]
       );
@@ -169,14 +184,16 @@ export class HabitsDao {
     let { habit, deadline } = input;
 
     try {
-      const habitFound = await ReusableFunctions.findHabit(habit, connection);
+      const habitFound = await ReusableFunctions.findHabit(
+        habit,
+        deadline,
+        connection
+      );
       if (habitFound) return CustomError.newError(errors.conflict.habit);
 
       await this.addHabitAndIncreaseCounter({ habit, deadline, username });
 
       const badgeAssigned = await this.assignBadge({ habit, username });
-
-      await this.addFrequency({ habit, deadline });
 
       return badgeAssigned
         ? "Habit added and badge assigned"
@@ -345,38 +362,47 @@ export class HabitsDao {
       connection.release();
     }
   }
+  async changeFrequencyStatus({ habit, username, deadline }) {
+    let connection = await this.pool.getConnection();
+    try {
+      const userId = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+
+      const habitId = await ReusableFunctions.getId("habit", habit, connection);
+
+      await connection.beginTransaction();
+
+      await connection.query(
+        `UPDATE habit_status 
+         SET status = 'COMPLETED'
+         WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
+        [userId, habitId, deadline]
+      );
+
+      await connection.commit();
+    } catch (error) {
+      throw error;
+    }
+  }
   async completeHabit({ username, input }) {
     let connection = await this.pool.getConnection();
-    let { habit } = input;
+    let { habit, deadline } = input;
 
     try {
       await this.checkUserLevel({ username });
 
-      const habitFound = await ReusableFunctions.findHabit(habit, connection);
+      const habitFound = await ReusableFunctions.findHabit(
+        habit,
+        deadline,
+        connection
+      );
       if (!habitFound) return `Habit not found.`;
 
       let user_id = await ReusableFunctions.getId("user", username, connection);
       let habit_id = await ReusableFunctions.getId("habit", habit, connection);
-
-      await connection.beginTransaction();
-
-      await connection.query(
-        `UPDATE user_habits SET status = 'COMPLETED' 
-         WHERE habit_id = ?;`,
-        [habit_id]
-      );
-
-      await connection.commit();
-
-      await connection.beginTransaction();
-
-      await connection.query(
-        `DELETE FROM user_habits 
-         WHERE habit_id = ?;`,
-        [habit_id]
-      );
-
-      await connection.commit();
 
       await connection.beginTransaction();
 
@@ -405,6 +431,8 @@ export class HabitsDao {
         await this.checkBadgeLevel({ username, habit });
       }
 
+      await this.changeFrequencyStatus({ habit, username, deadline });
+
       return `Habit completed`;
     } catch (error) {
       await connection.rollback();
@@ -424,7 +452,11 @@ export class HabitsDao {
 
       await connection.beginTransaction();
 
-      const habitFound = await ReusableFunctions.findHabit(habit, connection);
+      const habitFound = await ReusableFunctions.findHabit(
+        habit,
+        deadline,
+        connection
+      );
 
       if (!habitFound) {
         return CustomError.newError(errors.notFound.habitNotFound);
@@ -441,9 +473,10 @@ export class HabitsDao {
       await connection.beginTransaction();
 
       await connection.query(
-        `DELETE FROM user_habits 
+        `UPDATE habit_status
+         SET status = ? 
          WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
-        [user_id, habit_id, deadline]
+        ["DELETED", user_id, habit_id, deadline]
       );
 
       await connection.commit();
