@@ -76,6 +76,7 @@ This project is built using the following technologies and libraries:
 - **Nodemailer**: To send emails for notifications (e.g., badge suggestions, temporary passwords and password changes).
 - **Passport.js**: For user authentication.
 - **Passport-JWT**: For handling JWT-based authentication.
+- **Redis**: For caching.
 
 ## Development Status
 
