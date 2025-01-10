@@ -4,18 +4,19 @@ CREATE DATABASE habit_builder_db;
 
 USE habit_builder_db;
 
+SET GLOBAL event_scheduler = ON;
+
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS themes;
 DROP TABLE IF EXISTS levels;
 DROP TABLE IF EXISTS user_level;
 DROP TABLE IF EXISTS habits;
-DROP TABLE IF EXISTS user_habits;
 DROP TABLE If EXISTS badges;
 DROP TABLE IF EXISTS user_badges;
 DROP TABLE IF EXISTS habit_completion;
 DROP TABLE IF EXISTS passwords;
 DROP TABLE IF EXISTS days;
-DROP TABLE IF EXISTS frequency;
+DROP TABLE IF EXISTS habit_status;
 DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
@@ -23,7 +24,7 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS habits;
 DROP TRIGGER IF EXISTS add_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
-
+DROP EVENT IF EXISTS update_user_habit_status;
 
 CREATE TABLE user(
 	id BINARY(16),
@@ -47,7 +48,7 @@ CREATE TABLE habits(
     PRIMARY KEY(id)
 );
 
-CREATE TABLE friends (
+CREATE TABLE friends(
     id INT AUTO_INCREMENT PRIMARY KEY, 
     friend_1 BINARY(16),
     friend_2 BINARY(16),
@@ -66,7 +67,6 @@ CREATE TABLE messages(
     FOREIGN KEY(sender_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY(receiver_id) REFERENCES user(id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE levels(
 	id INT AUTO_INCREMENT,
@@ -111,18 +111,6 @@ username VARCHAR(20) NOT NULL UNIQUE,
 PRIMARY KEY(id)
 );
 
-CREATE TABLE user_habits(
-	id INT AUTO_INCREMENT,
-	user_id BINARY(16) NOT NULL,
-    habit_id BINARY(16),
-	status VARCHAR(20),
-    deadline VARCHAR(10) NOT NULL,
-    PRIMARY KEY(id), 
-    UNIQUE(habit_id, deadline),
-    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY(habit_id) REFERENCES habits(id)
-);
-
 CREATE TABLE habit_completion(
 	user_id BINARY(16),
     habit_id BINARY(16),
@@ -151,25 +139,29 @@ CREATE TABLE days(
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE frequency(
+CREATE TABLE habit_status(
+    user_id BINARY(16),
 	habit_id BINARY(16),
     id_day INT,
-    FOREIGN KEY(habit_id) REFERENCES user_habits(habit_id) ON DELETE CASCADE,
+    deadline VARCHAR(10) NOT NULL,
+    status ENUM('IN PROGRESS', 'SCHEDULED', 'COMPLETED', 'DELETED'),
+    FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE,
     FOREIGN KEY(id_day) REFERENCES days(id),
-	PRIMARY KEY (habit_id, id_day)
+    FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
 CREATE INDEX username_index ON user(username);
-CREATE INDEX habit_id_index ON user_habits(id);
+CREATE INDEX user_id ON user(id);
+CREATE INDEX habit_id_index ON habits(id);
 CREATE INDEX level_id ON levels(id, points_or_completions_required);
 CREATE INDEX message_id_index ON messages(id);
 
 DELIMITER $
 CREATE TRIGGER check_status_before_completion
-	BEFORE UPDATE ON user_habits
+	BEFORE UPDATE ON habit_status
     FOR EACH ROW
 BEGIN
- 	IF OLD.status != 'IN PROGRESS' THEN 
+ 	IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
  		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only habits that are in progress can be completed.';
  	END IF;
 END $
@@ -177,18 +169,33 @@ DELIMITER ;
 
 
 DELIMITER $
-CREATE TRIGGER add_habit_status
-	BEFORE INSERT ON user_habits
-    FOR EACH ROW
+
+CREATE EVENT update_user_habit_status
+ON SCHEDULE EVERY 1 DAY
+STARTS CURRENT_DATE + INTERVAL 1 DAY 
+DO
 BEGIN
-	IF NEW.deadline > CURDATE() THEN 
-		SET NEW.status = 'SCHEDULED';
-	ELSEIF NEW.deadline = CURDATE() THEN 
-		SET NEW.status = 'IN PROGRESS';
-	ELSE
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deadline cannot be before today.';
-	END IF;
-END $
+    START TRANSACTION;
+
+    UPDATE habit_status
+    SET status = 'IN PROGRESS'
+    WHERE deadline = CURRENT_DATE
+    AND status != 'IN PROGRESS';
+
+    UPDATE habit_status
+    SET status = 'NOT COMPLETED'
+    WHERE deadline = CURRENT_DATE - INTERVAL 1 DAY
+    AND status = 'IN PROGRESS';
+
+    UPDATE habit_completion hc
+    JOIN habit_status hs ON hc.habit_id = hs.habit_id
+    SET hc.times_not_completed = hc.times_not_completed + 1
+    WHERE hs.deadline = CURRENT_DATE - INTERVAL 1 DAY
+    AND hs.status = 'NOT COMPLETED';
+    
+    COMMIT;
+END$
+
 DELIMITER ;
 
 INSERT INTO levels(user_level, points_or_completions_required)
@@ -259,21 +266,21 @@ VALUES
 
 INSERT INTO themes (theme, level_name, level_number)
 VALUES
-('athele', 'Beginner', 1),
-('athele', 'Trainee', 2),
-('athele', 'Amateur', 3),
-('athele', 'Competitor', 4),
-('athele', 'Contender', 5),
-('athele', 'Specialist', 6),
-('athele', 'Skilled Player', 7),
-('athele', 'Professional', 8),
-('athele', 'Elite athlete', 9),
-('athele', 'Champion', 10),
-('athele', 'Record Holder', 11),
-('athele', 'Icon', 12),
-('athele', 'Olympian', 13),
-('athele', 'World Champion', 14),
-('athele', 'Legend', 15);
+('athlete', 'Beginner', 1),
+('athlete', 'Trainee', 2),
+('athlete', 'Amateur', 3),
+('athlete', 'Competitor', 4),
+('athlete', 'Contender', 5),
+('athlete', 'Specialist', 6),
+('athlete', 'Skilled Player', 7),
+('athlete', 'Professional', 8),
+('athlete', 'Elite athlete', 9),
+('athlete', 'Champion', 10),
+('athlete', 'Record Holder', 11),
+('athlete', 'Icon', 12),
+('athlete', 'Olympian', 13),
+('athlete', 'World Champion', 14),
+('athlete', 'Legend', 15);
 
 INSERT INTO themes (theme, level_name, level_number)
 VALUES
@@ -298,11 +305,11 @@ VALUES
 ('magic', 'Apprentice mage', 1),
 ('magic', 'Novice enchanter', 2),
 ('magic', 'Adept spellcaster', 3),
-('magic', 'Skiler Sorcerer', 4),
+('magic', 'Skilled Sorcerer', 4),
 ('magic', 'Cunning illusionist', 5),
 ('magic', 'Mystic conjurer', 6),
 ('magic', 'Master alchemist', 7),
-('magic', 'Archane wizard', 8),
+('magic', 'Arcane wizard', 8),
 ('magic', 'Elemental warlock', 9),
 ('magic', 'Shadow necromancer', 10),
 ('magic', 'Divine cleric', 11),
