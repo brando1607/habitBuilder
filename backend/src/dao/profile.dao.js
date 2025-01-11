@@ -39,7 +39,7 @@ export class ProfileDao {
   async profile({ username, viewer }) {
     const connection = await this.pool.getConnection();
     try {
-      const cachedData = await client.get("userInformation");
+      const cachedData = await client.get(`userInformation:${username}`);
 
       if (cachedData) {
         return JSON.parse(cachedData);
@@ -119,9 +119,13 @@ export class ProfileDao {
           getHabits.length > 0 ? getHabits : "No habits completed yet.",
       };
 
-      await client.set("userInformation", JSON.stringify(userInformation), {
-        EX: 3600,
-      });
+      await client.set(
+        `userInformation:${username}`,
+        JSON.stringify(userInformation),
+        {
+          EX: 3600,
+        }
+      );
 
       return userInformation;
     } catch (error) {
@@ -134,7 +138,7 @@ export class ProfileDao {
   async achievements({ username }) {
     const connection = await this.pool.getConnection();
     try {
-      const cachedData = await client.get("userAchievements");
+      const cachedData = await client.get(`userAchievements:${username}`);
 
       if (cachedData) {
         return JSON.parse(cachedData);
@@ -168,9 +172,13 @@ export class ProfileDao {
             : getHabitsWithoutBadge,
       };
 
-      await client.set("userAchievements", JSON.stringify(userAchievements), {
-        EX: 3600,
-      });
+      await client.set(
+        `userAchievements:${username}`,
+        JSON.stringify(userAchievements),
+        {
+          EX: 3600,
+        }
+      );
 
       return userAchievements;
     } catch (error) {
@@ -262,7 +270,7 @@ export class ProfileDao {
   async getFriends({ username }) {
     const connection = await this.pool.getConnection();
     try {
-      const cachedData = await client.get("getFriends");
+      const cachedData = await client.get(`getFriends:${username}`);
 
       if (cachedData) {
         const friends = JSON.parse(cachedData);
@@ -287,7 +295,9 @@ export class ProfileDao {
         [userId, userId]
       );
 
-      await client.set("getFriends", JSON.stringify(getFriends), { EX: 3600 });
+      await client.set(`getFriends:${username}`, JSON.stringify(getFriends), {
+        EX: 3600,
+      });
 
       return getFriends.length > 0 ? getFriends : "No friends yet.";
     } catch (error) {
