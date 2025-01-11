@@ -1,10 +1,10 @@
 ### get user profile        
     
-GET http://localhost:1234/api/profile/brando16
+GET http://localhost:1234/api/profile/hiran06
 
 ### get user's achievements        
     
-GET http://localhost:1234/api/profile/achievements/brando16 
+GET http://localhost:1234/api/profile/achievements/hiran06 
 
 ### send friend request
 

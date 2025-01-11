@@ -1,3 +1,4 @@
 - add real time functionalities with websockets
 - create statistics endpoint
+- make caching dynamic
 - document app with Swagger

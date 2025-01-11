@@ -161,13 +161,11 @@ export class ProfileDao {
 
       const userAchievements = {
         badge:
-          getHabitsWithBadge.length < 1
-            ? "No habits yet"
-            : `${getHabitsWithBadge}`,
+          getHabitsWithBadge.length < 1 ? "No habits yet" : getHabitsWithBadge,
         noBadge:
           getHabitsWithoutBadge.length < 1
             ? "No habits yet"
-            : `${getHabitsWithoutBadge}`,
+            : getHabitsWithoutBadge,
       };
 
       await client.set("userAchievements", JSON.stringify(userAchievements), {

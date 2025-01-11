@@ -58,8 +58,8 @@ POST http://localhost:1234/api/user/login
 Content-Type: application/json
 
 {
-    "login": "tim31",
-    "password": "Brando1607."
+    "login": "brando16",
+    "password": "Leslie2505."
 }
 
 ### logout
