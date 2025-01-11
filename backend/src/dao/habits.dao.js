@@ -172,6 +172,9 @@ export class HabitsDao {
       }
     } catch (error) {
       await connection.rollback();
+      if (error.sqlMessage.includes("Duplicate entry")) {
+        return CustomError.newError(errors.conflict.habit);
+      }
       throw error;
     } finally {
       connection.release();
@@ -184,12 +187,26 @@ export class HabitsDao {
     let { habit, deadline } = input;
 
     try {
-      const habitFound = await ReusableFunctions.findHabit(
+      const habit_id = await ReusableFunctions.getId(
+        "habit",
         habit,
-        deadline,
         connection
       );
-      if (habitFound) return CustomError.newError(errors.conflict.habit);
+
+      const user_id = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+
+      const [habitFound] = await connection.query(
+        `SELECT * FROM habit_status 
+         WHERE user_id = ? AND habit_id = ? AND deadline = ? AND status IN (?,?);`,
+        [user_id, habit_id, deadline, "IN PROGRESS", "COMPLETED"]
+      );
+
+      if (habitFound.length > 0)
+        return CustomError.newError(errors.conflict.habit);
 
       await this.addHabitAndIncreaseCounter({ habit, deadline, username });
 

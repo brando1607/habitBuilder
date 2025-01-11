@@ -1,26 +1,26 @@
 ### add habit
 
-POST http://localhost:1234/api/habits/addHabit/leslie25
+POST http://localhost:1234/api/habits/addHabit/tim31
 Content-Type: application/json
 
 {
-    "habit": "read a book in french",
-    "deadline": "2025-01-11"
+    "habit": "work out",
+    "deadline": "2025-01-10"
 }
 
 ###  complete habit
 
-PUT http://localhost:1234/api/habits/completeHabit/leslie25
+PUT http://localhost:1234/api/habits/completeHabit/tim31
 Content-Type: application/json
 
 {
-    "habit": "read a book in french",
+    "habit": "work out",
     "deadline": "2025-01-10"
 }
 
 ###  delete habit
 
-DELETE http://localhost:1234/api/habits/deleteHabit/leslie25
+DELETE http://localhost:1234/api/habits/deleteHabit/brando16
 Content-Type: application/json
 
 {

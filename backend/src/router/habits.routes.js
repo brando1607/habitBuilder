@@ -10,8 +10,8 @@ export const createHabitsRouter = ({ DaoIndex }) => {
 
   habitsRoutes.post(
     "/addHabit/:username",
-    checkUsernameInUrl(),
     passportCall("jwt", { session: false }),
+    checkUsernameInUrl(),
     habitsController.addHabit
   );
 
