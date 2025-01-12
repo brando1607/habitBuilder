@@ -3,6 +3,7 @@ import { HabitsDao } from "./habits.dao.js";
 import { BadgesAndLevelsDao } from "./badges_levels.dao.js";
 import { MessagesDao } from "./messages.dao.js";
 import { ProfileDao } from "./profile.dao.js";
+import { StatisticsDao } from "./statistics.dao.js";
 
 export class DaoIndex {
   constructor(pool) {
@@ -11,5 +12,6 @@ export class DaoIndex {
     this.badgesAndLevelsDao = new BadgesAndLevelsDao(pool);
     this.messagesDao = new MessagesDao(pool);
     this.profileDao = new ProfileDao(pool);
+    this.statisticsDao = new StatisticsDao(pool);
   }
 }

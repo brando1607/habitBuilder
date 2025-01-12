@@ -34,7 +34,7 @@ export class BadgesAndLevelsDao {
       await client.set(
         "userAndBadgesLevels",
         JSON.stringify(userAndBadgesLevels),
-        { EX: 3600 }
+        { EX: 600 }
       );
 
       return userAndBadgesLevels;
@@ -57,7 +57,7 @@ export class BadgesAndLevelsDao {
         `SELECT badge, keyword, username AS "created by" FROM badges;`
       );
 
-      await client.set("badges", JSON.stringify(getBadges), { EX: 3600 });
+      await client.set("badges", JSON.stringify(getBadges), { EX: 600 });
 
       return getBadges;
     } catch (error) {

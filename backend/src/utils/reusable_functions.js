@@ -11,7 +11,7 @@ export class ReusableFunctions {
   static findUser = async (login, connection, hashedEmail) => {
     try {
       const [user] = await connection.query(
-        "SELECT username, password, user_email FROM user LEFT JOIN passwords ON user.id = passwords.user_id WHERE user_email = ? OR username = ?",
+        "SELECT username, password, user_email, country FROM user LEFT JOIN passwords ON user.id = passwords.user_id WHERE user_email = ? OR username = ?",
         [hashedEmail, login]
       );
       return user;

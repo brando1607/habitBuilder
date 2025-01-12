@@ -1,0 +1,17 @@
+### get ranking in user's country        
+    
+GET http://localhost:1234/api/statistics/rankingInUsersCountry/brando16
+
+### get worldwide ranking      
+    
+GET http://localhost:1234/api/statistics/rankingWorlWide
+
+
+
+### get worldwide ranking for user's theme       
+    
+GET http://localhost:1234/api/statistics/themeWorldWideRanking/leslie25
+
+### get  ranking for user's country by theme       
+    
+GET http://localhost:1234/api/statistics/rankingInUsersCountryByTheme/brando16

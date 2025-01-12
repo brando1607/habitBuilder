@@ -13,16 +13,16 @@ Content-Type: application/json
 #     "password": "Leslie2505."
 # }
 
-{
-    "firstName": "Timothy",
-    "lastName": "Bates",
-    "username": "tim31", 
-    "userEmail": "tim31@gmail.com",
-    "theme": "medieval_fantasy",
-    "dateOfBirth": "1971-12-31",
-    "country": "United States", 
-    "password": "Brando1607."
-}
+# {
+#     "firstName": "Timothy",
+#     "lastName": "Bates",
+#     "username": "tim31", 
+#     "userEmail": "tim31@gmail.com",
+#     "theme": "medieval_fantasy",
+#     "dateOfBirth": "1971-12-31",
+#     "country": "United States", 
+#     "password": "Brando1607."
+# }
 
 
 # {
@@ -48,6 +48,17 @@ Content-Type: application/json
 #     "password": "Brando1607."
 # }
 
+{
+    "firstName": "Eugenia",    
+    "lastName": "Rivas",
+    "username": "eugenia12", 
+    "userEmail": "eugenia@gmail.com",
+    "theme": "traveler",
+    "dateOfBirth": "1060-06-12",
+    "country": "Venezuela", 
+    "password": "Brando1607."
+}
+
 
 ###
 
@@ -58,8 +69,8 @@ POST http://localhost:1234/api/user/login
 Content-Type: application/json
 
 {
-    "login": "brando16",
-    "password": "Leslie2505."
+    "login": "eugenia12",
+    "password": "Brando1607."
 }
 
 ### logout
