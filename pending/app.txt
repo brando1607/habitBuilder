@@ -1,4 +1,1 @@
-- add real time functionalities with websockets
-- create statistics endpoint
-- make middleware to make sure user's exist
 - document app with Swagger
