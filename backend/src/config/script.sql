@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS user_badges;
 DROP TABLE IF EXISTS habit_completion;
 DROP TABLE IF EXISTS passwords;
 DROP TABLE IF EXISTS days;
-DROP TABLE IF EXISTS daily_daily_habit_status;
+DROP TABLE IF EXISTS daily_habit_status;
 DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
@@ -139,7 +139,7 @@ CREATE TABLE days(
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE daily_daily_habit_status(
+CREATE TABLE daily_habit_status(
     user_id BINARY(16),
 	habit_id BINARY(16),
     id_day INT,
@@ -159,7 +159,7 @@ CREATE INDEX message_id_index ON messages(id);
 
 DELIMITER $
 CREATE TRIGGER check_status_before_completion
-	BEFORE UPDATE ON daily_daily_habit_status
+	BEFORE UPDATE ON daily_habit_status
     FOR EACH ROW
 BEGIN
  	IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
