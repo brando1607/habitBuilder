@@ -28,7 +28,7 @@ export class StatisticsDao {
 
       const [getRanking] = await connection.query(
         `SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
-         JOIN habit_status ON habit_status.user_id = user.id
+         JOIN daily_habit_status ON daily_habit_status.user_id = user.id
          WHERE status = 'COMPLETED'
          GROUP BY user.id
          HAVING country = ?
@@ -59,7 +59,7 @@ export class StatisticsDao {
 
       const [worldRanking] =
         await connection.query(`SELECT id, username, COUNT(status) AS HabitsCompleted, country FROM user
-           JOIN habit_status ON habit_status.user_id = user.id
+           JOIN daily_habit_status ON daily_habit_status.user_id = user.id
            WHERE status = 'COMPLETED'
            GROUP BY country, user.id
            ORDER BY HabitsCompleted DESC;
@@ -95,7 +95,7 @@ export class StatisticsDao {
 
       const [themeWorldWideRanking] = await connection.query(
         `SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
-        JOIN habit_status ON habit_status.user_id = user.id
+        JOIN daily_habit_status ON daily_habit_status.user_id = user.id
         WHERE status = 'COMPLETED'
         GROUP BY theme, user.id
         HAVING theme = ?
@@ -138,7 +138,7 @@ export class StatisticsDao {
 
       const [rankingInUsersCountryByTheme] = await connection.query(
         `SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
-         JOIN habit_status ON habit_status.user_id = user.id
+         JOIN daily_habit_status ON daily_habit_status.user_id = user.id
          WHERE status = 'COMPLETED'
          GROUP BY user.id
          HAVING country = ? AND theme = ?
@@ -154,6 +154,55 @@ export class StatisticsDao {
       );
 
       return rankingInUsersCountryByTheme;
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+
+  async atLeast45Completions({ username }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const user_id = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+      const [search] = await connection.query(
+        `SELECT habit_id FROM habit_completion 
+         WHERE times_completed >= 45 AND user_id = ?;`,
+        [user_id]
+      );
+      return search.length > 0
+        ? search
+        : "No habits with at least 45 completions yet";
+    } catch (error) {
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
+  async mostFrequentDays({ username, id }) {
+    const connection = await this.pool.getConnection();
+    try {
+      const user_id = await ReusableFunctions.getId(
+        "user",
+        username,
+        connection
+      );
+      const [mostFrequentDays] = await connection.query(
+        `SELECT habits.habit, day, COUNT(day) AS TimesComletedOnThatDay FROM days
+         JOIN daily_habit_status ON daily_habit_status.id_day = days.id
+         JOIN habits ON habits.id = habit_status.habit_id
+         WHERE daily_habit_status.habit_id = ? AND daily_habit_status.user_id = ?
+         GROUP BY day
+         ORDER BY TimesCompletedOnThatDay DESC;
+`,
+        [id, user_id]
+      );
+
+      return mostFrequentDays;
     } catch (error) {
       throw error;
     } finally {

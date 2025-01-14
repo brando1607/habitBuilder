@@ -49,4 +49,30 @@ export class StatisticsController {
       next(error);
     }
   };
+  atLeast45Completions = async (req, res, next) => {
+    const { username } = req.params;
+    try {
+      const result = await this.statisticsService.atLeast45Completions({
+        username,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+  mostFrequentDays = async (req, res, next) => {
+    const { username } = req.params;
+    const { id } = req.body;
+    try {
+      const result = await this.statisticsService.mostFrequentDays({
+        username,
+        id,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { passportCall } from "../middlewares/passport.middleware.js";
 import { MessagesController } from "../controller/messages.controller.js";
+import { userExists } from "../middlewares/checkIfUserExists.middleware.js";
 
 export const createMessagesRouter = ({ DaoIndex }) => {
   const messagesRouter = Router();
@@ -10,12 +11,14 @@ export const createMessagesRouter = ({ DaoIndex }) => {
   messagesRouter.get(
     "/getChat/:receiver",
     passportCall("jwt", { session: false }),
+    userExists(),
     messagesController.getChat
   );
 
   messagesRouter.post(
     "/sendMessage/:username",
     passportCall("jwt", { session: false }),
+    userExists(),
     messagesController.sendMessage
   );
 

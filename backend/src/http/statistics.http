@@ -15,3 +15,16 @@ GET http://localhost:1234/api/statistics/themeWorldWideRanking/leslie25
 ### get  ranking for user's country by theme       
     
 GET http://localhost:1234/api/statistics/rankingInUsersCountryByTheme/brando16
+
+### get habits that have been completed at least 45 times      
+    
+GET http://localhost:1234/api/statistics/atLeast45Completions/brando16
+
+### get days where the habit was completed the most     
+    
+GET http://localhost:1234/api/statistics/mostFrequentDays/brando16
+Content-Type: application/json
+
+{
+    "id": 1
+}

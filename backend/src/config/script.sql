@@ -16,15 +16,15 @@ DROP TABLE IF EXISTS user_badges;
 DROP TABLE IF EXISTS habit_completion;
 DROP TABLE IF EXISTS passwords;
 DROP TABLE IF EXISTS days;
-DROP TABLE IF EXISTS habit_status;
+DROP TABLE IF EXISTS daily_daily_habit_status;
 DROP TABLE IF EXISTS badge_level;
 DROP TABLE IF EXISTS pending_badges;
 DROP TABLE IF EXISTS friends;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS habits;
-DROP TRIGGER IF EXISTS add_habit_status;
+DROP TRIGGER IF EXISTS add_daily_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
-DROP EVENT IF EXISTS update_user_habit_status;
+DROP EVENT IF EXISTS update_user_daily_habit_status;
 
 CREATE TABLE user(
 	id BINARY(16),
@@ -139,7 +139,7 @@ CREATE TABLE days(
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE habit_status(
+CREATE TABLE daily_daily_habit_status(
     user_id BINARY(16),
 	habit_id BINARY(16),
     id_day INT,
@@ -147,7 +147,8 @@ CREATE TABLE habit_status(
     status ENUM('IN PROGRESS', 'SCHEDULED', 'COMPLETED', 'DELETED'),
     FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE,
     FOREIGN KEY(id_day) REFERENCES days(id),
-    FOREIGN KEY(user_id) REFERENCES user(id)
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
+    UNIQUE (user_id, habit_id, deadline, status)
 );
 
 CREATE INDEX username_index ON user(username);
@@ -158,7 +159,7 @@ CREATE INDEX message_id_index ON messages(id);
 
 DELIMITER $
 CREATE TRIGGER check_status_before_completion
-	BEFORE UPDATE ON habit_status
+	BEFORE UPDATE ON daily_daily_habit_status
     FOR EACH ROW
 BEGIN
  	IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
@@ -170,25 +171,25 @@ DELIMITER ;
 
 DELIMITER $
 
-CREATE EVENT update_user_habit_status
+CREATE EVENT update_user_daily_habit_status
 ON SCHEDULE EVERY 1 DAY
 STARTS CURRENT_DATE + INTERVAL 1 DAY 
 DO
 BEGIN
     START TRANSACTION;
 
-    UPDATE habit_status
+    UPDATE daily_daily_habit_status
     SET status = 'IN PROGRESS'
     WHERE deadline = CURRENT_DATE
     AND status != 'IN PROGRESS';
 
-    UPDATE habit_status
+    UPDATE daily_daily_habit_status
     SET status = 'NOT COMPLETED'
     WHERE deadline = CURRENT_DATE - INTERVAL 1 DAY
     AND status = 'IN PROGRESS';
 
     UPDATE habit_completion hc
-    JOIN habit_status hs ON hc.habit_id = hs.habit_id
+    JOIN daily_daily_habit_status hs ON hc.habit_id = hs.habit_id
     SET hc.times_not_completed = hc.times_not_completed + 1
     WHERE hs.deadline = CURRENT_DATE - INTERVAL 1 DAY
     AND hs.status = 'NOT COMPLETED';

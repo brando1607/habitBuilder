@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
     "habit": "work out",
-    "deadline": "2025-01-12"
+    "deadline": "2025-01-14"
 }
 
 ###  complete habit
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
     "habit": "work out",
-    "deadline": "2025-01-12"
+    "deadline": "2025-01-14"
 }
 
 ###  delete habit

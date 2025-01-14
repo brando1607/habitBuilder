@@ -2,6 +2,7 @@ import Router from "express";
 import { UserController } from "../controller/user.controller.js";
 import { passportCall } from "../middlewares/passport.middleware.js";
 import { checkUsernameInUrl } from "../middlewares/username.middleware.js";
+import { userExists } from "../middlewares/checkIfUserExists.middleware.js";
 
 export const createUserRouter = ({ DaoIndex }) => {
   const userRoutes = Router();
@@ -22,6 +23,7 @@ export const createUserRouter = ({ DaoIndex }) => {
   userRoutes.put(
     "/changeLogin/:username",
     passportCall("jwt", { session: false }),
+    userExists(),
     checkUsernameInUrl(),
     userController.changeLogin
   );

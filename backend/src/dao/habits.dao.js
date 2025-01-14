@@ -98,7 +98,7 @@ export class HabitsDao {
 
       await connection.beginTransaction();
       await connection.query(
-        `INSERT INTO habit_status(user_id, habit_id, id_day, deadline, status) 
+        `INSERT INTO daily_habit_status(user_id, habit_id, id_day, deadline, status) 
          VALUES(?, ?, ?, ?, ?);`,
         [userId, habit_id, id_day, deadline, status]
       );
@@ -147,7 +147,7 @@ export class HabitsDao {
       await this.addFrequency({ userId, habit, deadline });
 
       let [getStatus] = await connection.query(
-        `SELECT status FROM habit_status 
+        `SELECT status FROM daily_habit_status 
          WHERE habit_id = ? AND deadline = ?;`,
         [habit_id, deadline]
       );
@@ -200,7 +200,7 @@ export class HabitsDao {
       );
 
       const [habitFound] = await connection.query(
-        `SELECT * FROM habit_status 
+        `SELECT * FROM daily_habit_status 
          WHERE user_id = ? AND habit_id = ? AND deadline = ? AND status IN (?,?);`,
         [user_id, habit_id, deadline, "IN PROGRESS", "COMPLETED"]
       );
@@ -393,7 +393,7 @@ export class HabitsDao {
       await connection.beginTransaction();
 
       await connection.query(
-        `UPDATE habit_status 
+        `UPDATE daily_habit_status 
          SET status = 'COMPLETED'
          WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
         [userId, habitId, deadline]
@@ -490,7 +490,7 @@ export class HabitsDao {
       await connection.beginTransaction();
 
       await connection.query(
-        `UPDATE habit_status
+        `UPDATE daily_habit_status
          SET status = ? 
          WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
         ["DELETED", user_id, habit_id, deadline]

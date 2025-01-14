@@ -44,4 +44,24 @@ export class StatisticsService {
       throw error;
     }
   }
+  async atLeast45Completions({ username }) {
+    try {
+      const result = this.daoIndex.statisticsDao.atLeast45Completions({
+        username,
+      });
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async mostFrequentDays({ username, id }) {
+    try {
+      const result = this.daoIndex.mostFrequentDays({ username, id });
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
