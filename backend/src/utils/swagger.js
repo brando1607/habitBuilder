@@ -5,8 +5,9 @@ export const opts = {
     openapi: "3.1.1",
     info: {
       title: "Habit Builder",
+      version: "1.0.0",
       description: "Habit builder's documentation",
     },
   },
-  apis: [`${__dirname}/docs/*.yaml`],
+  apis: [`${__dirname}/docs/index.yaml`],
 };

@@ -5,6 +5,10 @@ export const errors = {
       statusCode: 400,
     },
     messageTooLong: { message: "Message is too long", statusCode: 400 },
+    notFriends: {
+      message:
+        "Messages can only be sent if users are friends with each other.",
+    },
   },
   auth: {
     unauthorized: { message: "Invalid Credentials", statusCode: 401 },

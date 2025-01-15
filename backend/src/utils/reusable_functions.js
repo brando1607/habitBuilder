@@ -176,4 +176,29 @@ export class ReusableFunctions {
       throw error;
     }
   };
+  static checkIfUsersAreFriends = async ({ viewer, user, connection }) => {
+    try {
+      const [firstCheck] = await connection.query(
+        `SELECT * FROM friends 
+         WHERE friend_1 = ? AND friend_2 = ?;`,
+        [viewer, user]
+      );
+
+      const [secondCheck] = await connection.query(
+        `SELECT * FROM friends WHERE friend_2 = ? AND friend_1 = ?;`,
+        [viewer, user]
+      );
+
+      const firstCheckTrue = firstCheck.length > 0;
+      const secondCheckTrue = secondCheck.length > 0;
+
+      if (!firstCheckTrue && !secondCheckTrue) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 }

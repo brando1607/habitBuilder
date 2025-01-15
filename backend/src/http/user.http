@@ -2,16 +2,16 @@
 POST http://localhost:1234/api/user/createUser
 Content-Type: application/json
 
-# {
-#     "firstName": "Brando",
-#     "lastName": "Hernandez",
-#     "username": "brando16", 
-#     "userEmail": "brandodavid16@gmail.com",
-#     "theme": "greek_gods",
-#     "dateOfBirth": "1994-07-16",
-#     "country": "Venezuela", 
-#     "password": "Leslie2505."
-# }
+{
+    "firstName": "Brando",
+    "lastName": "Hernandez",
+    "username": "brando16", 
+    "userEmail": "brandodavid16@gmail.com",
+    "theme": "greek_gods",
+    "dateOfBirth": "1994-07-16",
+    "country": "Venezuela", 
+    "password": "Leslie2505."
+}
 
 # {
 #     "firstName": "Timothy",
@@ -48,16 +48,16 @@ Content-Type: application/json
 #     "password": "Brando1607."
 # }
 
-{
-    "firstName": "Eugenia",    
-    "lastName": "Rivas",
-    "username": "eugenia12", 
-    "userEmail": "eugenia@gmail.com",
-    "theme": "traveler",
-    "dateOfBirth": "1060-06-12",
-    "country": "Venezuela", 
-    "password": "Brando1607."
-}
+# {
+#     "firstName": "Eugenia",    
+#     "lastName": "Rivas",
+#     "username": "eugenia12", 
+#     "userEmail": "eugenia@gmail.com",
+#     "theme": "traveler",
+#     "dateOfBirth": "1060-06-12",
+#     "country": "Venezuela", 
+#     "password": "Brando1607."
+# }
 
 
 ###

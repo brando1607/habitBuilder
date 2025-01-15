@@ -44,6 +44,16 @@ export class MessagesDao {
         connection
       );
 
+      const usersAreFriends = await ReusableFunctions.checkIfUsersAreFriends({
+        viewer: viewerId,
+        user: userId,
+        connection,
+      });
+
+      if (!usersAreFriends) {
+        return CustomError.newError(errors.error.notFriends);
+      }
+
       const isMessageTooLong = message.length > 500;
 
       if (isMessageTooLong) {

@@ -70,9 +70,16 @@ export class ProfileDao {
       const { id, first_name, last_name, country, points, theme, level_name } =
         userData;
 
-      const userAreFriends = await this.checkIfUsersAreFriends({
+      const viewerId = await ReusableFunctions.getId(
+        "user",
         viewer,
+        connection
+      );
+
+      const userAreFriends = await ReusableFunctions.checkIfUsersAreFriends({
+        viewer: viewerId,
         user: id,
+        connection,
       });
 
       const [getHabitCompletion] = await connection.query(

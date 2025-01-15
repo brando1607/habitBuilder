@@ -4,7 +4,7 @@ GET  http://localhost:1234/api/messages/getChat/leslie25
 
 ### send message
 
-POST http://localhost:1234/api/messages/sendMessage/leslie25
+POST http://localhost:1234/api/messages/sendMessage/brando16
 Content-Type: application/json
 
 {
