@@ -7,35 +7,6 @@ export class ProfileDao {
   constructor(pool) {
     this.pool = pool;
   }
-  async checkIfUsersAreFriends({ viewer, user }) {
-    const connection = await this.pool.getConnection();
-    try {
-      const getId = await ReusableFunctions.getId("user", viewer, connection);
-
-      const [firstCheck] = await connection.query(
-        `SELECT * FROM friends 
-         WHERE friend_1 = ? AND friend_2 = ?;`,
-        [getId, user]
-      );
-
-      const [secondCheck] = await connection.query(
-        `SELECT * FROM friends WHERE friend_2 = ? AND friend_1 = ?;`,
-        [getId, user]
-      );
-
-      const firstCheckTrue = firstCheck.length > 0;
-      const secondCheckTrue = secondCheck.length > 0;
-
-      if (!firstCheckTrue && !secondCheckTrue) {
-        return false;
-      } else {
-        return true;
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async profile({ username, viewer }) {
     const connection = await this.pool.getConnection();
     try {
