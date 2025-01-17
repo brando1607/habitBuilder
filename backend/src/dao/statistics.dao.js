@@ -1,6 +1,4 @@
 import { ReusableFunctions } from "../utils/reusable_functions.js";
-import { errors } from "../utils/errors/errors.js";
-import { CustomError } from "../utils/errors/customErrors.js";
 import { client } from "../utils/redisConfig.js";
 
 export class StatisticsDao {
