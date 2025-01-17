@@ -46,6 +46,10 @@ export class UserDao {
 
     const connection = await this.pool.getConnection();
     try {
+      if (username.includes("@")) {
+        return CustomError.newError(errors.error.characterNotAllowed);
+      }
+
       const hashedAndEncryptedELements = await this.encryptAndHashUserInfo({
         userEmail,
         password,
@@ -253,8 +257,7 @@ export class UserDao {
   async changeLogin({ username, input }) {
     //verification if new email/username is the same as the current one
     //will be done in the front end
-    let { passwordToCheck } = input;
-    const values = Object.keys(input);
+    let { passwordToCheck, login } = input;
 
     const connection = await this.pool.getConnection();
     try {
@@ -272,8 +275,8 @@ export class UserDao {
       );
 
       if (passwordIsValid) {
-        if (values.includes("new_email")) {
-          const hashedEmail = encryption.encrypt(input.new_email);
+        if (login.includes("@")) {
+          const hashedEmail = encryption.encrypt(login);
 
           await connection.beginTransaction();
           await connection.query(
@@ -281,14 +284,16 @@ export class UserDao {
             [hashedEmail, username]
           );
           await connection.commit();
+
           return `Email changed`;
-        } else if (values.includes("new_username")) {
+        } else {
           await connection.beginTransaction();
           await connection.query(
             `UPDATE user SET username = ? WHERE username = ?;`,
-            [input.new_username, username]
+            [login, username]
           );
           await connection.commit();
+
           return `Username changed`;
         }
       } else {
@@ -310,9 +315,10 @@ export class UserDao {
         username,
         connection
       );
+      console.log(userExists);
 
-      if (userExists.length === 0) {
-        return `Username not valid`;
+      if (!userExists || userExists.length === 0) {
+        return CustomError.newError(errors.notFound.userNotFound);
       } else {
         const temporaryPassword = ReusableFunctions.generateRandomString(10);
         const text = `Your temporary password is: ${temporaryPassword} - It will expire in 1 minute.`;
