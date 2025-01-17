@@ -1,0 +1,168 @@
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Error description"
+        statusCode:
+          type: number
+          description: "HTTP status code for the error"
+      example:
+        message: "Message is too long"
+        statusCode: 400
+  responses:
+    error400_friendRequestSameUser:
+      description: "Bad Request - Friend request sent to the same user"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Friend request has to be sent to a different user"
+            statusCode: 400
+    error400_messageTooLong:
+      description: "Bad Request - Message exceeds the maximum length allowed"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Message is too long"
+            statusCode: 400
+    error400_notFriends:
+      description: "Bad Request - Users must be friends to send messages"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Messages can only be sent if users are friends with each other."
+            statusCode: 400
+    error401_unauthorized:
+      description: "Unauthorized - Invalid credentials"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Invalid Credentials"
+            statusCode: 401
+    error401_expiredPassword:
+      description: "Unauthorized - Temporary password has expired"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Temporary password expired."
+            statusCode: 401
+    error403_forbidden:
+      description: "Forbidden - Permission required"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Permission Required"
+            statusCode: 403
+    error404_userNotFound:
+      description: "Not Found - User does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User not Found"
+            statusCode: 404
+    error404_habitNotFound:
+      description: "Not Found - Habit not found or not added on that day"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Habit not found, or not added on that day."
+            statusCode: 404
+    error500_serverError:
+      description: "Server Error - Internal server error occurred"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Server Error"
+            statusCode: 500
+    error204_noData:
+      description: "No Content - No data available"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Data not found"
+            statusCode: 204
+    error409_currentBadge:
+      description: "Conflict - Badge or keyword already exists"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Badge or keyword already exists."
+            statusCode: 409
+    error409_pendingBadge:
+      description: "Conflict - Badge or keyword under evaluation"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Badge or keyword currently under evaluation"
+            statusCode: 409
+    error409_habit:
+      description: "Conflict - Habit already added for the specified day"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User already has that habit added on that day."
+            statusCode: 409
+    error409_userEmail:
+      description: "Conflict - Email address already in use"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Email address already in use."
+            statusCode: 409
+    error409_username:
+      description: "Conflict - Username already in use"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Username already in use"
+            statusCode: 409
+    error409_user:
+      description: "Conflict - User already logged in"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User already logged in"
+            statusCode: 409
+    error422_unprocessableEntity:
+      description: "Unprocessable Entity - Invalid input data"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Names, email, or username too short / names include element different than text."
+            statusCode: 422

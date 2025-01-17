@@ -69,8 +69,8 @@ POST http://localhost:1234/api/user/login
 Content-Type: application/json
 
 {
-    "login": "eugenia12",
-    "password": "Brando1607."
+    "login": "brando16",
+    "password": "Leslie2505."
 }
 
 ### logout
@@ -99,11 +99,11 @@ Content-Type: application/json
 
 ### change username or email
 
-PUT  http://localhost:1234/api/user/changeLogin/brando16
+PUT  http://localhost:1234/api/user/changeLogin/brando1607
 Content-Type: application/json
 
 {
     "passwordToCheck": "Leslie2505.",
-    "new_email": "brandodavid16@gmail.com"
+    "login": "brando16"
 }
 

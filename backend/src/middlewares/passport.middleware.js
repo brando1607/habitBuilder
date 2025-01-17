@@ -8,7 +8,7 @@ export function passportCall(strategy) {
       if (!user)
         return res.status(401).send({
           error: "Unauthorized",
-          details: "please log in first so you can be verified",
+          details: "Please log in first so you can be verified",
         });
 
       req.user = user;

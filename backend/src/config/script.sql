@@ -30,7 +30,7 @@ CREATE TABLE user(
 	id BINARY(16),
     first_name VARCHAR(20) CHECK (CHAR_LENGTH(first_name) >= 2 AND first_name REGEXP '^[A-Za-z]+$') NOT NULL,
     last_name VARCHAR(20) CHECK (CHAR_LENGTH(last_name) >= 2 AND last_name REGEXP '^[A-Za-z]+$') NOT NULL,
-    username VARCHAR(20) CHECK (CHAR_LENGTH(username) > 1) NOT NULL UNIQUE,
+    username VARCHAR(20) CHECK (CHAR_LENGTH(username) > 1 AND username NOT LIKE '%@%') NOT NULL UNIQUE,
     user_email VARCHAR(256) CHECK (CHAR_LENGTH(user_email) > 10) NOT NULL UNIQUE,
     hashed_email VARCHAR(256) NOT NULL UNIQUE,
 	amount_in_progress INT DEFAULT 0,

@@ -1,0 +1,416 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "Unique identifier for the user (stored as BINARY(16) in the database)."
+        firstName:
+          type: string
+          minLength: 2
+          description: "First name of the user."
+        lastName:
+          type: string
+          minLength: 2
+          description: "Last name of the user."
+        username:
+          type: string
+          minLength: 2
+          description: "Unique username of the user."
+        userEmail:
+          type: string
+          description: "Encrypted user email."
+        theme:
+          type: string
+          enum:
+            - greek_gods
+            - travelers
+            - athletes
+            - medieval_fantasy
+            - magic
+          description: "Selected theme for the user's profile."
+        points:
+          type: integer
+          default: 0
+          description: "Points earned by the user."
+      required:
+        - firstName
+        - lastName
+        - username
+        - userEmail
+        - theme
+      example:
+        id: "3e3b0ff6-91c6-11ee-be56-0242ac120002"
+        firstName: "Brando"
+        lastName: "Hernandez"
+        username: "brando16"
+        userEmail: "encrypted@email.com"
+        theme: "greek_gods"
+        points: 150
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Error description"
+        statusCode:
+          type: number
+          description: "HTTP status code"
+      example:
+        message: "Message is too long"
+        statusCode: 400
+
+  responses:
+
+    200_user_logout:
+      description: "User logged out."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example: 
+            message: "User logged out."
+
+    200_login_Changed:
+      description: "User changed username or email address"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Email changed"
+
+    200_passwordChanged:
+      description: "Password successfully changed."
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Confirmation message that the password was changed."
+          example:
+            message: "Password changed."
+
+    200_temporaryPasswordSent:
+      description: "Temporary password sent successfully."
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Confirmation message including the username."
+          example:
+            message: "Temporary password sent to email for brando16."
+
+    200_login:
+      description: "Successful login"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "A confirmation message indicating successful login."
+              token:
+                type: string
+                description: "The JWT token for authenticated requests."
+          headers:
+            Set-cookie:
+              description: "JWT set as a cookie"
+              schema:
+                type: string
+                example: "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlnbmEyQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiZmlyc3RfbmFtZSI6ImJyYW5kbyIsImxhc3RfbmFtZSI6Imhlcm5hbmRleiIsImFnZSI6MzAsImlhdCI6MTczMjY0Mzc2MiwiZXhwIjoxNzMyNjQzOTQyfQ.QZ0zrhr_6yN4sDFkgBTBWlRrK5hJ_lq1eLrW5NLlT6g; HttpOnly; Max-Age=180"
+          example:
+            message: "Login successful"
+
+    201_userCreated:
+      description: "User created successfully."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"
+          example:
+            message: "User created"
+
+    401_unauthorized:
+      description: "Unauthorized - Invalid credentials"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Invalid Credentials"
+            statusCode: 401
+
+    401_expiredPassword:
+      description: "Unauthorized - Temporary password has expired"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Temporary password expired."
+            statusCode: 401
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Please log in first so you can be verified"
+            statusCode: 401
+
+    404_userNotFound:
+      description: "Not Found - User does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User not Found"
+            statusCode: 404
+
+    409_user:
+      description: "Conflict - User already logged in"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User already logged in"
+            statusCode: 409
+
+    409_conflict:
+      description: "Conflict - Either email or username is in use."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Username already in use"
+            statusCode: 409
+
+    422_unprocessableEntity:
+      description: "Unprocessable entity - Invalid input."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Names, email, or username too short / names include element different than text."
+            statusCode: 422
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Server Error"
+            statusCode: 500
+
+paths:
+  /api/user/createUser:
+    post:
+      summary: "Registers a new user"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          $ref: "#/components/responses/201_userCreated"
+        "409":
+          $ref: "#/components/responses/409_conflict"
+        "422":
+          $ref: "#/components/responses/422_unprocessableEntity"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/user/login:
+    post:
+      summary: "Logs in a user"
+      tags:
+        - User
+      description: "Authenticates a user with their login credentials and provides a token upon success."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                  description: "The username or email of the user."
+                password:
+                  type: string
+                  description: "The password of the user."
+              required:
+                - login
+                - password
+              example:
+                login: "brando16"
+                password: "Leslie2505."
+      responses:
+        "200":
+          $ref: "#/components/responses/200_login"
+        "401":
+          $ref: "#/components/responses/401_unauthorized"
+        "409":
+          $ref: "#/components/responses/409_user"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/user/sendTemporaryPassword:
+    post:
+      summary: "Send a temporary password to the user's email."
+      tags:
+        - User
+      description: "Sends a temporary password to the email associated with the username provided in the request body."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: "The username of the user requesting a temporary password."
+              required:
+                - username
+            example:
+              username: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_temporaryPasswordSent"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/user/changePassword:
+    put:
+      summary: "Change the user's password."
+      tags:
+        - User
+      description: "Allows a user to change their password. This operation requires the user to provide a valid temporary password."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: "The user's username."
+                tempPassword:
+                  type: string
+                  description: "Temporary password sent to the user's email."
+                newPassword:
+                  type: string
+                  description: "The new password the user wants to set."
+              required:
+                - username
+                - tempPassword
+                - newPassword
+            example:
+              username: "Brando1607."
+              tempPassword: "cc5b6dccce"
+              newPassword: "NewSecurePassword123!"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_passwordChanged"
+        "401":
+          description: "Invalid or expired password."
+          content:
+            application/json:
+              examples:
+                expired_password:
+                  $ref: "#/components/responses/401_expiredPassword"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/user/changeLogin/{username}:
+    put:
+      summary: "Either username or email address are changed"
+      tags:
+        - User
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "User's username"
+          schema:
+            type: string
+            example: "brando16"
+  
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                passwordToCheck:
+                  type: string
+                  description: "User's password."
+                login:
+                  type: string
+                  description: "User's new email or username"
+              required:
+                - passwordToCheck
+                - login
+            example:
+              passwordToCheck: "Leslie2505."
+              login: "brando1607"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_login_Changed"
+        "401":
+          description: "Invalid password or user not logged in."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+
+  /api/user/logout:
+    get:
+      summary: "Logs user out"
+      tags: 
+        - User
+      responses:
+        "200":
+          $ref: "#/components/responses/200_user_logout"
