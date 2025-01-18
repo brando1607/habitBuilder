@@ -22,6 +22,7 @@ export const createMessagesRouter = ({ DaoIndex }) => {
     messagesController.sendMessage
   );
 
+  //no middlewares because this is supposed to be a button only accessible through the chat
   messagesRouter.put("/editMessage", messagesController.editMessage);
 
   messagesRouter.delete("/deleteMessage", messagesController.deleteMessage);

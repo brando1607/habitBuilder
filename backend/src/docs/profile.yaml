@@ -1,0 +1,413 @@
+components:
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        userAreFriends:
+          type: boolean
+          description: "Indicates if the viewer is friends with the user."
+        first_name:
+          type: string
+          description: "The first name of the user."
+        last_name:
+          type: string
+          description: "The last name of the user."
+        country:
+          type: string
+          description: "The country of the user."
+        points:
+          type: integer
+          description: "The total points the user has earned."
+        level_name:
+          type: string
+          description: "The user's current level name."
+        theme:
+          type: string
+          description: "The theme the user is associated with."
+        HabitsCompleted:
+          type: integer
+          description: "The number of unique habits completed by the user."
+        TotalHabitCompletions:
+          type: integer
+          description: "The total number of times habits were completed by the user."
+        badges:
+          type: array
+          description: "A list of badges earned by the user. If no badges, 'No badges yet.'"
+          items:
+            type: object
+            properties:
+              badge:
+                type: string
+                description: "The name of the badge."
+              badge_level:
+                type: string
+                description: "The level of the badge."
+          example:
+            - badge: "Persistence"
+              badge_level: "Gold"
+            - badge: "Daily Streak"
+              badge_level: "Silver"
+        threeMostCompletedHabits:
+          type: array
+          description: "The user's three most completed habits. If none, 'No habits completed yet.'"
+          items:
+            type: object
+            properties:
+              habit:
+                type: string
+                description: "The name of the habit."
+              times_completed:
+                type: integer
+                description: "The number of times this habit was completed."
+          example:
+            - habit: "Morning Run"
+              times_completed: 15
+            - habit: "Meditation"
+              times_completed: 12
+            - habit: "Reading"
+              times_completed: 10
+      required:
+        - userAreFriends
+        - first_name
+        - last_name
+        - country
+        - points
+        - level_name
+        - theme
+      example:
+        userAreFriends: false
+        first_name: "Brando"
+        last_name: "Hernandez"
+        country: "Venezuela"
+        points: 1
+        level_name: "Human"
+        theme: "greek_gods"
+        HabitsCompleted: 1
+        TotalHabitCompletions: 1
+        badges: "No badges yet."
+        threeMostCompletedHabits:
+          - habit: "work out"
+            times_completed: 1
+
+  responses:
+
+    200_friendRequestResponse:
+      description: "Response to friend request processed successfully."
+      content:
+        application/json:
+          examples:
+            requestAccepted:
+              summary: "Request Accepted"
+              value: "Friend request accepted"
+            requestRejected:
+              summary: "Request Rejected"
+              value: "Friend request rejected"
+
+    200_getUsersFriends:
+      description: "Successfully retrieved user's friends."
+      content:
+        application/json:
+          examples:
+            noFriends:
+              summary: "No friends yet"
+              value: "No friends yet."
+            withFriends:
+              summary: "List of friends"
+              value:
+                - first_name: "Leslie"
+                  last_name: "Caro"
+                - first_name: "Hiran"
+                  last_name: "Hernandez"
+
+    200_getFriendRequests:
+      description: "Successfully retrieved friend requests."
+      content:
+        application/json:
+          examples:
+            noRequests:
+              summary: "No friend requests"
+              value: "No friend requests at the moment."
+            withRequests:
+              summary: "List of friend requests"
+              value:
+                - id: 1
+                  first_name: "Leslie"
+                  last_name: "Caro"
+                - id: 2
+                  first_name: "Hiran"
+                  last_name: "Hernandez"
+
+    200_friendRequestSent:
+      description: "Friend request sent."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Confirmation message that the friend request was sent."
+          example:
+            message: "Friend request sent."
+
+    200_userAchievementsRetrieved:
+      description: "Successfully retrieved user achievements."
+      content:
+        application/json:
+          examples:
+            noHabits:
+              summary: "No habits yet"
+              value:
+                badge: "No habits yet"
+                noBadge: "No habits yet"
+            withHabits:
+              summary: "Habits with and without badges"
+              value:
+                badge:
+                  - badge: "Book lover"
+                    badge_level: "Bronze"
+                    habit: "Read a book in french"
+                    times_completed: 27
+                noBadge:
+                  - habit: "Drink water"
+                    times_completed: 5
+
+    200_profile:
+      description: "Get user's profile."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserProfile"
+
+    400_friendRequestSameUser:
+      description: "Bad Request - Friend request sent to the same user"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Friend request has to be sent to a different user"
+            statusCode: 400        
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Please log in first so you can be verified"
+            statusCode: 401
+          
+    404_userNotFound:
+      description: "Not Found - User does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User not Found"
+            statusCode: 404
+
+    401_unauthorized:
+      description: "Unauthorized - Invalid credentials"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Invalid Credentials"
+            statusCode: 401
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Server Error"
+            statusCode: 500
+
+paths:
+  /api/profile/{username}:
+    get:
+      summary: "Get user's profile."
+      tags:
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_profile"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/profile/achievements/{username}:
+    get:
+      summary: "Get user's achievements"
+      tags: 
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_userAchievementsRetrieved"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/profile/sendFriendRequest/{username}:
+    post:
+      summary: "Send a friend request."
+      tags:
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_friendRequestSent"
+        "400":
+          $ref: "#/components/responses/400_friendRequestSameUser"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/profile/getFriendRequests/{username}:
+    get:
+      summary: "Get a user's friend requests."
+      tags:
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_getFriendRequests"
+        "401":
+          description: "No token or user checking private data for another user."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/profile/getFriends/{username}:
+    get:
+      summary: "Get a user's friends."
+      tags:
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_getUsersFriends"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/profile/respondToFriendRequest/{username}:
+    post:
+      summary: "Respond to a friend request."
+      tags:
+        - Profile
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: "Id for friend request."
+                response:
+                  type: string
+                  description: "Friend request accepted or rejected"
+              required:
+                - id
+                - response
+              example:
+                id: 1
+                response: accepted
+      responses:
+        "200":
+          $ref: "#/components/responses/200_friendRequestResponse"
+        "401":
+          description: "No token or user checking private data for another user."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+
+
+
+
+      
+
+  

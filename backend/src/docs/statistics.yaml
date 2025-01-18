@@ -1,0 +1,277 @@
+components:
+  responses:
+
+    200_most_frequent:
+      description: "Data retrieved"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                habit:
+                  type: string
+                  description: "Habit."
+                day:
+                  type: string
+                  description: "Day on which it was completed"
+                TimesComletedOnThatDay:
+                  type: number
+                  description: "Amount of times it was completed"
+          example:
+          - habit: "Work out"
+          - day: "Monday"
+          - TimesComletedOnThatDay: 10
+
+    200_45_completions:
+      description: "Data retrieved"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: binary
+                  description: "Habit's id in BINARY."
+                habit:
+                  type: string
+                  description: "Habit"
+                timesCompleted:
+                  type: number
+                  description:: "times the habit has been completed"
+          example:
+          - id: "binary"
+          - habit: "Read a book in french"
+          - timesCompleted: 70
+
+    200_national_or_worldwide_ranking:
+      description: "Data retrieved"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: binary
+                  description: "User's id in BINARY."
+                username:
+                  type: string
+                  description: "User's username"
+                theme:
+                  type: string
+                  description: "User's theme"
+                habitsCompleted: 
+                  type: number
+                  description: "Amount of habits the user has completed"
+                country: 
+                  type: string
+                  description: "User's country"
+          example: 
+            - id: "binary"
+            - username: "brando16"
+            - theme: "greek_gods"
+            - habitsCompleted: 1
+            - country: "Venezuela"
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Please log in first so you can be verified"
+            statusCode: 401
+
+    404_userNotFound:
+      description: "Not Found - User does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User not Found"
+            statusCode: 404
+
+    404_habitNotFound:
+      description: "Not Found - Habit not found or not added on that day"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Habit not found, or not added on that day."
+            statusCode: 404
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Server Error"
+            statusCode: 500
+     
+paths:
+  /api/statistics/rankingInUsersCountry/{username}:
+    get:
+      summary: "Gets users position in a national ranking. Information updated every 60 seconds"
+      tags:
+        - Statistics
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_national_or_worldwide_ranking"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/statistics/rankingWorlWide:
+    get:
+      summary: "Gets worldwide ranking."
+      tags:
+        - Statistics
+      responses:
+        "200":
+          $ref: "#/components/responses/200_national_or_worldwide_ranking"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/statistics/themeWorldWideRanking/{username}:
+    get:
+      summary: "Worldwide ranking by theme"
+      tags:
+        - Statistics
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_national_or_worldwide_ranking"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/statistics/rankingInUsersCountryByTheme/{username}:
+    get:
+      summary: "National ranking by user's country"
+      tags: 
+        - Statistics
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_national_or_worldwide_ranking"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/statistics/atLeast45Completions/{username}:
+    get:
+      summary: "Get habits that have been completed at least 45 times"
+      tags:
+        - Statistics
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_45_completions"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/statistics/mostFrequentDays/{username}:
+    get:
+      summary: "Get days where habits are most frequently completed"
+      tags:
+        - Statistics
+      parameters:
+        - username: Username
+          in: path
+          required: true
+          description: "Username"
+          schema:
+            type: string
+            example: "brando16"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                habit:
+                  type: string
+                  description: "Habit to check"
+              required:
+                - habit
+              example:
+                habit: "Read a book in french"
+
+      responses:
+        "200":
+          $ref: "#/components/responses/200_most_frequent"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+            description: "User or habit not found"
+            content:
+              application/json:
+                examples:
+                  userNotFound:
+                    $ref: "#/components/responses/404_userNotFound"
+                  habitNotFound:
+                    $ref: "#/components/responses/404_habitNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"            
+        
+          
+
+
+

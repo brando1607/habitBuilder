@@ -6,8 +6,15 @@ export const errors = {
     },
     messageTooLong: { message: "Message is too long", statusCode: 400 },
     notFriends: {
-      message:
-        "Messages can only be sent if users are friends with each other.",
+      message: {
+        message:
+          "Messages can only be sent if users are friends with each other.",
+        statusCode: 400,
+      },
+      chat: {
+        message: "Two users that are not friends can't have a chat",
+        statusCode: 400,
+      },
     },
     characterNotAllowed: {
       message: "Username can't include @ sign.",
@@ -28,6 +35,7 @@ export const errors = {
       message: `Habit not found, or not added on that day.`,
       statusCode: 404,
     },
+    messageNotFound: { message: "Message not found", statusCode: 404 },
   },
   fatal: { message: "Server Error", statusCode: 500 },
   noData: { message: "Data not found", statusCode: 204 },

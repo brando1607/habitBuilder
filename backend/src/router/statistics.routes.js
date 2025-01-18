@@ -18,7 +18,6 @@ export const createStatisticsRouter = ({ DaoIndex }) => {
   statisticsRouter.get(
     "/rankingWorlWide",
     passportCall("jwt", { session: false }),
-    userExists(),
     statisticsController.rankingWorlWide
   );
 

@@ -1,0 +1,346 @@
+components:
+  schemas:
+    Chat:
+      type: object
+      properties:
+        sender:
+          type: string
+          example: "Brando"
+          description: "Username of the message sender."
+        receiver:
+          type: string
+          example: "David"
+          description: "Username of the message receiver."
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+                example: "2025-01-17T10:00:00Z"
+                description: "The time the message was sent."
+              content:
+                type: string
+                example: "Hello! How are you?"
+                description: "The content of the message."
+              sent_by:
+                type: string
+                example: "Brando"
+                description: "The username of the sender of this message."
+      required:
+        - sender
+        - receiver
+        - messages
+  responses:
+
+    200_messageDeleted:
+      description: "Successful login"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "A confirmation message indicating successful login."
+          example:
+            message: "Message deleted"
+
+
+    200_messageSent:
+      description: Message sent successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Response"
+              result:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Message ID."
+                  from:
+                    type: string
+                    description: "Sender's username"
+                  to:
+                    type: string
+                    description: "Receiver's username"
+                  message:
+                    type: string
+                    description: "Message"
+                  at:
+                    type: string
+                    description: "Timestamp of when the message was sent"
+          example:
+            result: "Message sent"
+            id: 1
+            from: "brando16"
+            to: "tim31"
+            message: "Hi, how are you?"
+            at: "2025-01-18T10:30:00Z"
+
+    200_messageEdited:
+      description: Message edited successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Response"
+              result:
+                type: object
+                properties:
+                  sent_by:
+                    type: string
+                    description: "Sender's username"
+                  newMessage:
+                    type: string
+                    description: "Edited message content"
+          example:
+            message: "message edited"
+            result:
+              sent_by: "brando16"
+              newMessage: "Hey, how's everything going?"
+
+    200_getChatResponse:
+      description: "Chat retrieved successfully."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Chat"
+          examples:
+            chatWithMessages:
+              summary: "Chat with messages"
+              value:
+                sender: "Brando"
+                receiver: "David"
+                messages:
+                  - timestamp: "2025-01-17T10:00:00Z"
+                    content: "Hello! How are you?"
+                    sent_by: "Brando"
+                  - timestamp: "2025-01-17T10:05:00Z"
+                    content: "I'm good, thanks! How about you?"
+                    sent_by: "David"
+            chatNoMessages:
+              summary: "Chat without messages"
+              value: "Empty chat"
+
+    400_notFriendsChat:
+      description: "Bad Request - Users are not friends"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Two users that are not friends can't have a chat"
+            statusCode: 400
+
+    400_messageTooLong:
+      description: "Bad Request - Message exceeds the maximum length allowed"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Message is too long"
+            statusCode: 400        
+
+    400_notFriendsMessage:
+      description: "Bad Request - Users must be friends to send messages"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Messages can only be sent if users are friends with each other."
+            statusCode: 400
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Please log in first so you can be verified"
+            statusCode: 401
+          
+    404_userNotFound:
+      description: "Not Found - User does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "User not Found"
+            statusCode: 404
+
+    404_messageNotFound:
+      description: "Not Found - Message does not exist"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Message not Found"
+            statusCode: 404
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Server Error"
+            statusCode: 500
+
+paths:
+  /api/messages/getChat/{receiver}:
+    get:
+      summary: "Get chat between two users"
+      tags: 
+        - Messages
+      parameters:
+        - receiver: Receiver
+          in: path
+          required: true
+          description: "Username for the other user in the chat"
+          schema:
+            type: string
+            example: "tim31"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_getChatResponse"
+        "400":
+          $ref: "#/components/responses/400_notFriendsChat"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+  /api/messages/sendMessage/{username}:
+    post:
+      summary: "Send a message."
+      tags:
+        - Messages
+      parameters:
+        - receiver: Receiver
+          in: path
+          required: true
+          description: "Username for the other user in the chat"
+          schema:
+            type: string
+            example: "tim31"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: "Message."
+              required:
+                - message
+              example:
+                message: "Hi, how are you doing?"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_messageSent"
+        "400":
+          description: "Users are not friends, or message too long."
+          content:
+            application/json:
+              examples:
+                notFriends:
+                  $ref: "#/components/responses/400_notFriendsMessage"
+                tooLong:
+                  $ref: "#/components/responses/400_messageTooLong"          
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+      
+  /api/messages/editMessage:
+    put:
+      summary: "Edit a message"
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: "ID for message"
+                message:
+                  type: string
+                  description: "Message."
+              required:
+                - id
+                - message
+              example:
+                id: 5
+                message: "Hi, how are you doing?"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_messageEdited"
+        "400":
+          $ref: "#/components/responses/400_messageTooLong"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/messages/deleteMessage:
+    delete:
+      summary: "Delete a message"
+      tags: 
+        - Messages     
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: "ID for message"
+              required:
+                - id
+              example:
+                id: 5
+      responses:
+        "200":
+          $ref: "#/components/responses/200_messageDeleted"
+        "404":
+          $ref: "#/components/responses/404_messageNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"  
+
+     
+
+
+
+
+
+
+
+
+                

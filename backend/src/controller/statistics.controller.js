@@ -63,11 +63,11 @@ export class StatisticsController {
   };
   mostFrequentDays = async (req, res, next) => {
     const { username } = req.params;
-    const { id } = req.body;
+    const { habit } = req.body;
     try {
       const result = await this.statisticsService.mostFrequentDays({
         username,
-        id,
+        habit,
       });
 
       res.send(result);

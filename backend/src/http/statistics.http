@@ -10,7 +10,7 @@ GET http://localhost:1234/api/statistics/rankingWorlWide
 
 ### get worldwide ranking for user's theme       
     
-GET http://localhost:1234/api/statistics/themeWorldWideRanking/leslie25
+GET http://localhost:1234/api/statistics/themeWorldWideRanking/brando16
 
 ### get  ranking for user's country by theme       
     
@@ -26,5 +26,5 @@ GET http://localhost:1234/api/statistics/mostFrequentDays/brando16
 Content-Type: application/json
 
 {
-    "id": 1
+    "habit": "work out"
 }

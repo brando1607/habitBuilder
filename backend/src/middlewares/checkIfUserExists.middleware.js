@@ -6,7 +6,9 @@ export function userExists() {
   return async (req, res, next) => {
     const connection = await pool.getConnection();
     try {
-      const { username } = req.params;
+      const username = req.params.username
+        ? req.params.username
+        : req.params.receiver;
 
       const [getUser] = await connection.query(
         `SELECT id FROM user WHERE username = ?;`,

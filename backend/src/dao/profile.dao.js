@@ -24,8 +24,6 @@ export class ProfileDao {
 
       const userTheme = getUserTheme[0];
 
-      if (!userTheme) return CustomError.newError(errors.notFound.userNotFound);
-
       const [getUserData] = await connection.query(
         `SELECT user.id, first_name, last_name, country, date_of_birth, points, themes.theme, themes.level_name FROM user
         JOIN user_level ON user.id = user_level.user_id
@@ -35,8 +33,6 @@ export class ProfileDao {
       );
 
       const userData = getUserData[0];
-
-      if (!userData) return CustomError.newError(errors.notFound.userNotFound);
 
       const { id, first_name, last_name, country, points, theme, level_name } =
         userData;
@@ -78,7 +74,13 @@ export class ProfileDao {
         [id]
       );
 
-      const levelAndHabitsData = getHabitCompletion[0];
+      const habitsData =
+        getHabitCompletion.length === 0
+          ? {
+              "Habits completed": 0,
+              "Amount of times habits were completed": 0,
+            }
+          : getHabitCompletion[0];
 
       const badgesInformation = getBadges;
 
@@ -90,7 +92,7 @@ export class ProfileDao {
         points,
         level_name,
         theme,
-        ...levelAndHabitsData,
+        ...habitsData,
         badges:
           badgesInformation.length > 0 ? badgesInformation : "No badges yet.",
         threeMostCompletedHabits:

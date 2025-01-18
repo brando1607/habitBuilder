@@ -21,13 +21,23 @@ export class MessagesDao {
         connection
       );
 
+      const usersAreFriends = await ReusableFunctions.checkIfUsersAreFriends({
+        viewer: sender_id,
+        user: receiver_id,
+        connection,
+      });
+
+      if (!usersAreFriends) {
+        return CustomError.newError(errors.error.notFriends.chat);
+      }
+
       let chat = await ReusableFunctions.getChat(
         sender_id,
         receiver_id,
         connection
       );
 
-      return chat;
+      return chat.length === 0 ? "Empty chat" : chat;
     } catch (error) {
       throw error;
     } finally {
@@ -51,7 +61,7 @@ export class MessagesDao {
       });
 
       if (!usersAreFriends) {
-        return CustomError.newError(errors.error.notFriends);
+        return CustomError.newError(errors.error.notFriends.message);
       }
 
       const isMessageTooLong = message.length > 500;
@@ -141,6 +151,16 @@ export class MessagesDao {
       const connection = await this.pool.getConnection();
       try {
         await connection.beginTransaction();
+
+        const [findMessage] = await connection.query(
+          `SELECT message FROM messages 
+           WHERE id = ?;`,
+          [messageId]
+        );
+
+        if (!findMessage) {
+          return CustomError.newError(errors.notFound.messageNotFound);
+        }
 
         await connection.query(`DELETE FROM messages WHERE id = ?;`, [
           messageId,

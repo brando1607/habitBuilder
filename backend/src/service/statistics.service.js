@@ -55,9 +55,9 @@ export class StatisticsService {
       throw error;
     }
   }
-  async mostFrequentDays({ username, id }) {
+  async mostFrequentDays({ username, habit }) {
     try {
-      const result = this.daoIndex.mostFrequentDays({ username, id });
+      const result = this.daoIndex.mostFrequentDays({ username, habit });
 
       return result;
     } catch (error) {

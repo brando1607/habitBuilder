@@ -1,5 +1,7 @@
 import { ReusableFunctions } from "../utils/reusable_functions.js";
 import { client } from "../utils/redisConfig.js";
+import { CustomError } from "../utils/errors/customErrors.js";
+import { errors } from "../utils/errors/errors.js";
 
 export class StatisticsDao {
   constructor(pool) {
@@ -36,7 +38,7 @@ export class StatisticsDao {
       );
 
       await client.set(`getRanking:${country}`, JSON.stringify(getRanking), {
-        EX: 600,
+        EX: 60,
       });
 
       return getRanking;
@@ -56,11 +58,11 @@ export class StatisticsDao {
       }
 
       const [worldRanking] =
-        await connection.query(`SELECT id, username, COUNT(status) AS HabitsCompleted, country FROM user
-           JOIN daily_habit_status ON daily_habit_status.user_id = user.id
-           WHERE status = 'COMPLETED'
-           GROUP BY country, user.id
-           ORDER BY HabitsCompleted DESC;
+        await connection.query(`SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
+                                JOIN daily_habit_status ON daily_habit_status.user_id = user.id
+                                WHERE status = 'COMPLETED'
+                                GROUP BY country, user.id
+                                ORDER BY HabitsCompleted DESC;
 `);
 
       await client.set("worldRanking", JSON.stringify(worldRanking), {
@@ -168,7 +170,8 @@ export class StatisticsDao {
         connection
       );
       const [search] = await connection.query(
-        `SELECT habit_id FROM habit_completion 
+        `SELECT habit_id, habit, times_completed FROM habit_completion
+         JOIN habits ON habit_completion.habit_id = habits.id 
          WHERE times_completed >= 45 AND user_id = ?;`,
         [user_id]
       );
@@ -181,7 +184,7 @@ export class StatisticsDao {
       connection.release();
     }
   }
-  async mostFrequentDays({ username, id }) {
+  async mostFrequentDays({ username, habit }) {
     const connection = await this.pool.getConnection();
     try {
       const user_id = await ReusableFunctions.getId(
@@ -189,6 +192,16 @@ export class StatisticsDao {
         username,
         connection
       );
+
+      const habit_id = await ReusableFunctions.getId(
+        "habit",
+        habit,
+        connection
+      );
+
+      if (!habit_id) {
+        return CustomError.newError(errors.notFound.habitNotFound);
+      }
       const [mostFrequentDays] = await connection.query(
         `SELECT habits.habit, day, COUNT(day) AS TimesComletedOnThatDay FROM days
          JOIN daily_habit_status ON daily_habit_status.id_day = days.id
@@ -197,7 +210,7 @@ export class StatisticsDao {
          GROUP BY day
          ORDER BY TimesCompletedOnThatDay DESC;
 `,
-        [id, user_id]
+        [habit_id, user_id]
       );
 
       return mostFrequentDays;
