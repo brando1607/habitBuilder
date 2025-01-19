@@ -35,7 +35,7 @@ export const createApp = ({ DaoIndex }) => {
   //Server and Db connection
   app.listen(process.env.PORT, () => {
     console.log(
-      `Server listening on port http://localhost:${process.env.PORT} and Swagger UI on http://localhost:${process.env.PORT}/api/doc`
+      `Server listening on port http://localhost:${process.env.PORT}`
     );
   });
   dbConnection();
@@ -43,5 +43,5 @@ export const createApp = ({ DaoIndex }) => {
 
   //Documentation config
   const specs = swaggerJSDoc(opts);
-  app.use("/api/doc", serve, setup(specs));
+  app.use("/", serve, setup(specs));
 };
