@@ -53,6 +53,16 @@ components:
               value:
                 message: "Habit added without badge"
 
+    400_wrongDeadline:
+      description: "Bad Request - Wrong deadline."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Deadline cannot be before today."
+            statusCode: 400
+
     400_habitCompletionError:
       description: "Error response when attempting to complete a habit that is not in progress."
       content:
@@ -184,6 +194,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200_addHabit"
+        "400":
+          $ref: "#/components/responses/400_wrongDeadline"
         "401":
           description: "No token or user adding a habit on someone else's profile."
           content:

@@ -40,14 +40,14 @@ components:
           example:
             message: "Messages can only be sent if users are friends with each other."
             statusCode: 400
-    error400_notFriendsChat:
-      description: "Bad Request - Two users that are not friends can have a chat"
+    error400_wrongDeadline:
+      description: "Bad Request - Wrong deadline."
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            message: "Two users that are not friends can have a chat"
+            message: "Deadline cannot be before today."
             statusCode: 400
        
     error401_unauthorized:

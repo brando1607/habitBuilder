@@ -1,5 +1,6 @@
 export const errors = {
   error: {
+    deadline: { message: "Deadline can't be before today", statusCode: 400 },
     friendRequestSameUser: {
       message: "Friend request has to be sent to a different user",
       statusCode: 400,
