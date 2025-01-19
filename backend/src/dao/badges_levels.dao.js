@@ -57,7 +57,7 @@ export class BadgesAndLevelsDao {
         `SELECT badge, keyword, username AS "created by" FROM badges;`
       );
 
-      await client.set("badges", JSON.stringify(getBadges), { EX: 600 });
+      await client.set("badges", JSON.stringify(getBadges), { EX: 120 });
 
       return getBadges;
     } catch (error) {

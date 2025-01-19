@@ -51,6 +51,9 @@ export class UserController {
         username,
         input,
       });
+
+      res.cookie("token", "", { expires: new Date(0) });
+
       res.send(result);
     } catch (error) {
       next(error);

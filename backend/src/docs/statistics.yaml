@@ -125,10 +125,10 @@ paths:
       tags:
         - Statistics
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose ranking position will be retrieved"
           schema:
             type: string
             example: "brando16"
@@ -163,10 +163,10 @@ paths:
       tags:
         - Statistics
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose ranking position will be retrieved"
           schema:
             type: string
             example: "brando16"
@@ -186,10 +186,10 @@ paths:
       tags: 
         - Statistics
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose ranking position will be retrieved"
           schema:
             type: string
             example: "brando16"
@@ -209,10 +209,10 @@ paths:
       tags:
         - Statistics
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for user whose habits will be retrieved."
           schema:
             type: string
             example: "brando16"
@@ -232,10 +232,10 @@ paths:
       tags:
         - Statistics
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for user whose habits will be checked"
           schema:
             type: string
             example: "brando16"

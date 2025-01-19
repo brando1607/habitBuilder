@@ -236,10 +236,10 @@ paths:
       tags:
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose profile will be retrieved."
           schema:
             type: string
             example: "brando16"
@@ -259,10 +259,10 @@ paths:
       tags: 
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user's whose achievements will be retrieved."
           schema:
             type: string
             example: "brando16"
@@ -282,10 +282,10 @@ paths:
       tags:
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user getting the friend request."
           schema:
             type: string
             example: "brando16"
@@ -307,10 +307,10 @@ paths:
       tags:
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose friend requests will be retrieved."
           schema:
             type: string
             example: "brando16"
@@ -337,10 +337,10 @@ paths:
       tags:
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user whose friends will be retrieved."
           schema:
             type: string
             example: "brando16"
@@ -360,10 +360,10 @@ paths:
       tags:
         - Profile
       parameters:
-        - username: Username
+        - name: Username
           in: path
           required: true
-          description: "Username"
+          description: "Username for the user that sent the friend request."
           schema:
             type: string
             example: "brando16"

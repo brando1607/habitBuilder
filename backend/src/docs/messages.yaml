@@ -210,10 +210,10 @@ paths:
       tags: 
         - Messages
       parameters:
-        - receiver: Receiver
+        - name: receiver
           in: path
           required: true
-          description: "Username for the other user in the chat"
+          description: "Username for the other user in the chat."
           schema:
             type: string
             example: "tim31"
@@ -235,7 +235,7 @@ paths:
       tags:
         - Messages
       parameters:
-        - receiver: Receiver
+        - name: username
           in: path
           required: true
           description: "Username for the other user in the chat"

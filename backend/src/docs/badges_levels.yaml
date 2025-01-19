@@ -1,0 +1,310 @@
+components:
+  responses:
+
+    200_evaluateBadge:
+      description: "Response indicating the result of badge evaluation."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Status of the badge evaluation process."
+          examples:
+            acceptedExample:
+              summary: "Badge approved and user notified."
+              value:
+                message: "Badge accepted and email sent to user."
+            rejectedExample:
+              summary: "Badge rejected and user notified."
+              value:
+                message: "Badge rejected and email sent to user."
+
+    200_getBadges:
+      description: "List of all badges retrieved successfully."
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                badge:
+                  type: string
+                  description: "Name of the badge."
+                keyword:
+                  type: string
+                  description: "Keyword associated with the badge."
+                created_by:
+                  type: string
+                  description: "Username of the person who created the badge."
+          examples:
+            successExample:
+              summary: "Badges retrieved successfully."
+              value:
+                - badge: "Master Coder"
+                  keyword: "coding"
+                  created_by: "brando123"
+                - badge: "Time Wizard"
+                  keyword: "time-management"
+                  created_by: "johndoe42"
+
+    200_sendToPendingBadges:
+      description: "Badge sent for evaluation."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Badge sent to be evaluated"
+          example:
+            message: "Badge sent to be evaluated"
+
+    200_userAndBadgeLevels:
+      description: "Response containing user levels and badge levels data."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userLevels:
+                type: array
+                description: "Details of user levels."
+                items:
+                  type: object
+                  properties:
+                    theme:
+                      type: string
+                      description: "The theme of the user level."
+                      example: "Greek Gods"
+                    level_name:
+                      type: string
+                      description: "The name of the user level."
+                      example: "Zeus"
+                    level_number:
+                      type: integer
+                      description: "The numeric representation of the level."
+                      example: 3
+                    points_or_completions_required:
+                      type: integer
+                      description: "Points or completions required for this level."
+                      example: 150
+              badgeLevels:
+                type: array
+                description: "Details of badge levels."
+                items:
+                  type: object
+                  properties:
+                    badge_level:
+                      type: string
+                      description: "The name of the badge level."
+                      example: "Gold Badge"
+                    points_or_completions_required:
+                      type: integer
+                      description: "Points or completions required for this badge level."
+                      example: 1000
+                    points_given:
+                      type: integer
+                      description: "Points granted upon achieving this badge level."
+                      example: 50
+          examples:
+            userAndBadgeLevelsExample:
+              summary: "Example response for user and badge levels."
+              value:
+                userLevels:
+                  - theme: "Greek Gods"
+                    level_name: "Zeus"
+                    level_number: 3
+                    points_or_completions_required: 150
+                  - theme: "Travelers"
+                    level_name: "Explorer"
+                    level_number: 2
+                    points_or_completions_required: 100
+                badgeLevels:
+                  - badge_level: "Gold"
+                    points_or_completions_required: 1000
+                    points_given: 50
+                  - badge_level: "Silver"
+                    points_or_completions_required: 500
+                    points_given: 25
+
+    401_unauthorized:
+      description: "Unauthorized - Invalid credentials."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            unauthorized:
+              summary: "Invalid credentials."
+              value:
+                message: "Invalid Credentials"
+                statusCode: 401
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            noToken:
+              summary: "No token provided."
+              value:
+                message: "Please log in first so you can be verified"
+                statusCode: 401
+
+    404_userNotFound:
+      description: "Not Found - User does not exist."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            userNotFound:
+              summary: "User does not exist."
+              value:
+                message: "User not Found"
+                statusCode: 404
+
+    409_currentBadge:
+      description: "Conflict - Badge or keyword already exists"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Badge or keyword already exists."
+            statusCode: 409
+
+    409_pendingBadge:
+      description: "Conflict - Badge or keyword under evaluation"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Badge or keyword currently under evaluation"
+            statusCode: 409
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            serverError:
+              summary: "Internal server error."
+              value:
+                message: "Server Error"
+                statusCode: 500
+
+paths:
+
+  /api/habits/badgesAndLevels/sendToPendingBadges/{username}:
+    post:
+      summary: "Send a badge request."
+      tags:
+        - Badges and levels
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "The username of the user suggesting the badge."
+          schema:
+            type: string
+            example: "brando16"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                badge:
+                  type: string
+                  description: "The name of the badge to add."
+                keyword:
+                  type: string
+                  description: "Keyword the habit will have to have so the badge is assigned."
+              required:
+                - habit
+                - keyword
+              example:
+                habit: "dog lover"
+                keyword: "walk"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_evaluateBadge"
+        "401":
+          description: "No token or making badge suggestion form someone else's profile."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/badgesAndLevels/evaluateBadge:  
+    post:
+      summary: "Decide if the badge is accepted or not"
+      tags:
+        - Badges and levels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  description: "Id for the badge."
+                decision:
+                  type: string
+                  description: Whether the badge is accepted or not"
+              required:
+                - id
+                - decision
+              example:
+                id: 1
+                decision: "rejected"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_evaluateBadge"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/badgesAndLevels/getUserAndBadgeLevels:
+    get:
+      summary: "Get all user's and badge's levels."
+      tags:
+        - Badges and levels
+      responses:
+        "200":
+          $ref: "#/components/responses/200_userAndBadgeLevels"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/badgesAndLevels/getBadges:
+    get:
+      summary: "Get all badges"
+      tags:
+        - Badges and levels
+      responses:
+        "200":
+          $ref: "#/components/responses/200_getBadges"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+
+

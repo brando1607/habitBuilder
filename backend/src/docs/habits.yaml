@@ -1,0 +1,294 @@
+components:
+  responses:
+    200_habitDeleted:
+      description: "Response for successfully deleting a habit."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Habit deleted"
+          examples:
+            habitDeleted:
+              summary: "Successful deletion of a habit."
+              value:
+                message: "Habit deleted"
+
+    200_completeHabit:
+      description: "Response indicating the successful completion of a habit."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Habit completed"
+          examples:
+            completeHabit:
+              summary: "Successful completion of a habit."
+              value:
+                message: "Habit completed"
+
+    200_addHabit:
+      description: "Habit added successfully."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: "Indicates the result of adding the habit."
+                example: "Habit added and badge assigned"
+          examples:
+            habitWithBadge:
+              summary: "Habit added with a badge."
+              value:
+                message: "Habit added and badge assigned"
+            habitWithoutBadge:
+              summary: "Habit added without a badge."
+              value:
+                message: "Habit added without badge"
+
+    400_habitCompletionError:
+      description: "Error response when attempting to complete a habit that is not in progress."
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: "Error message describing the issue."
+                example: "Only habits that are in progress can be completed."
+          examples:
+            habitCompletionError:
+              summary: "Error completing a habit."
+              value:
+                error: "Only habits that are in progress can be completed."
+
+    401_unauthorized:
+      description: "Unauthorized - Invalid credentials."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            unauthorized:
+              summary: "Invalid credentials."
+              value:
+                message: "Invalid Credentials"
+                statusCode: 401
+
+    401_noToken:
+      description: "Unauthorized - Please log in first so you can be verified."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            noToken:
+              summary: "No token provided."
+              value:
+                message: "Please log in first so you can be verified"
+                statusCode: 401
+
+    404_userNotFound:
+      description: "Not Found - User does not exist."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            userNotFound:
+              summary: "User does not exist."
+              value:
+                message: "User not Found"
+                statusCode: 404
+
+    404_habitNotFound:
+      description: "Not Found - Habit not found or not added on that day."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            habitNotFound:
+              summary: "Habit not found."
+              value:
+                message: "Habit not found, or not added on that day."
+                statusCode: 404
+
+    409_habit:
+      description: "Conflict - Habit already added for the specified day."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            habitConflict:
+              summary: "Habit already exists."
+              value:
+                message: "User already has that habit added on that day."
+                statusCode: 409
+
+    500_serverError:
+      description: "Internal server error occurred."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            serverError:
+              summary: "Internal server error."
+              value:
+                message: "Server Error"
+                statusCode: 500
+
+paths:
+  /api/habits/addHabit/{username}:
+    post:
+      summary: "Add a new habit for a user."
+      tags:
+        - Habits
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "The username of the user for whom the habit is being added."
+          schema:
+            type: string
+            example: "brando16"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                habit:
+                  type: string
+                  description: "The name of the habit to add."
+                deadline:
+                  type: string
+                  description: "The deadline for the habit."
+              required:
+                - habit
+                - deadline
+              example:
+                habit: "work out"
+                deadline: "2025-01-19"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_addHabit"
+        "401":
+          description: "No token or user adding a habit on someone else's profile."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "404":
+          $ref: "#/components/responses/404_userNotFound"
+        "409":
+          $ref: "#/components/responses/409_habit"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/habits/completeHabit/{username}:
+    put:
+      summary: "Complete a user's habit."
+      tags:
+        - Habits
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "The username of the user for whom the habit is being completed."
+          schema:
+            type: string
+            example: "brando16"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                habit:
+                  type: string
+                  description: "The name of the habit to complete."
+                deadline:
+                  type: string
+                  description: "The deadline for the habit."
+              required:
+                - habit
+                - deadline
+              example:
+                habit: "work out"
+                deadline: "2025-01-19"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_completeHabit"
+        "400":
+          $ref: "#/components/responses/400_habitCompletionError"
+        "401":
+          description: "No token or user adding a habit on someone else's profile."
+          content:
+            application/json:
+              examples:
+                noToken:
+                  $ref: "#/components/responses/401_noToken"
+                unauthorized:
+                  $ref: "#/components/responses/401_unauthorized"
+        "404":
+          $ref: "#/components/responses/404_habitNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"
+
+  /api/habits/deleteHabit/{username}:
+    delete:
+      summary: "Habit deletion."
+      tags:
+        - Habits
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: "The username of the user for whom the habit is being deleted."
+          schema:
+            type: string
+            example: "brando16"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                habit:
+                  type: string
+                  description: "The name of the habit to delete."
+                deadline:
+                  type: string
+                  description: "The deadline for the habit."
+              required:
+                - habit
+                - deadline
+              example:
+                habit: "work out"
+                deadline: "2025-01-19"
+      responses:
+        "200":
+          $ref: "#/components/responses/200_habitDeleted"
+        "401":
+          $ref: "#/components/responses/401_noToken"
+        "404":
+          $ref: "#/components/responses/404_habitNotFound"
+        "500":
+          $ref: "#/components/responses/500_serverError"
