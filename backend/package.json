@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/injections/dao.injection.js"
+    "start": "node --watch src/injections/dao.injection.js"
   },
   "author": "brando hernandez",
   "license": "ISC",
