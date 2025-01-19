@@ -34,7 +34,7 @@ export class BadgesAndLevelsDao {
       await client.set(
         "userAndBadgesLevels",
         JSON.stringify(userAndBadgesLevels),
-        { EX: 600 }
+        { EX: 120 }
       );
 
       return userAndBadgesLevels;

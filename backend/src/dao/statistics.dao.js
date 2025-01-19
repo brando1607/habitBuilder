@@ -66,7 +66,7 @@ export class StatisticsDao {
 `);
 
       await client.set("worldRanking", JSON.stringify(worldRanking), {
-        EX: 600,
+        EX: 60,
       });
 
       return worldRanking;
@@ -107,7 +107,7 @@ export class StatisticsDao {
       await client.set(
         `themeWorldWideRanking:${theme}`,
         JSON.stringify(themeWorldWideRanking),
-        { EX: 600 }
+        { EX: 60 }
       );
 
       return themeWorldWideRanking;
@@ -150,7 +150,7 @@ export class StatisticsDao {
       await client.set(
         `rankingInUsersCountryByTheme:${country}:${theme}`,
         JSON.stringify(rankingInUsersCountryByTheme),
-        { EX: 600 }
+        { EX: 60 }
       );
 
       return rankingInUsersCountryByTheme;

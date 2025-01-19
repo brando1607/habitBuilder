@@ -286,7 +286,7 @@ paths:
 
   /api/badgesAndLevels/getUserAndBadgeLevels:
     get:
-      summary: "Get all user's and badge's levels."
+      summary: "Get all user's and badge's levels. Information is updated every two minutes when the cache expires."
       tags:
         - Badges and levels
       responses:
@@ -297,7 +297,7 @@ paths:
 
   /api/badgesAndLevels/getBadges:
     get:
-      summary: "Get all badges"
+      summary: "Get all badges. Information is updated every two minutes when the cache expires."
       tags:
         - Badges and levels
       responses:

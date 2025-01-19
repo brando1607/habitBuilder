@@ -103,7 +103,7 @@ export class ProfileDao {
         `userInformation:${username}`,
         JSON.stringify(userInformation),
         {
-          EX: 600,
+          EX: 120,
         }
       );
 
@@ -156,7 +156,7 @@ export class ProfileDao {
         `userAchievements:${username}`,
         JSON.stringify(userAchievements),
         {
-          EX: 600,
+          EX: 120,
         }
       );
 
@@ -235,7 +235,7 @@ export class ProfileDao {
       );
 
       await client.set("getRequests", JSON.stringify(getRequests), {
-        EX: 600,
+        EX: 120,
       });
 
       return getRequests.length > 0
@@ -276,7 +276,7 @@ export class ProfileDao {
       );
 
       await client.set(`getFriends:${username}`, JSON.stringify(getFriends), {
-        EX: 600,
+        EX: 120,
       });
 
       return getFriends.length > 0 ? getFriends : "No friends yet.";

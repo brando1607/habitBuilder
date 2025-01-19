@@ -232,7 +232,7 @@ components:
 paths:
   /api/profile/{username}:
     get:
-      summary: "Get user's profile."
+      summary: "Get user's profile. Information is updated every two minutes when the cache expires."
       tags:
         - Profile
       parameters:
@@ -255,7 +255,7 @@ paths:
 
   /api/profile/achievements/{username}:
     get:
-      summary: "Get user's achievements"
+      summary: "Get user's achievements. Information is updated every two minutes when the cache expires."
       tags: 
         - Profile
       parameters:
@@ -278,7 +278,7 @@ paths:
 
   /api/profile/sendFriendRequest/{username}:
     post:
-      summary: "Send a friend request."
+      summary: "Send a friend request. Information is updated every two minutes when the cache expires."
       tags:
         - Profile
       parameters:
@@ -303,7 +303,7 @@ paths:
 
   /api/profile/getFriendRequests/{username}:
     get:
-      summary: "Get a user's friend requests."
+      summary: "Get a user's friend requests. Information is updated every two minutes when the cache expires."
       tags:
         - Profile
       parameters:

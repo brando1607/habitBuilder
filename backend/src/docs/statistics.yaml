@@ -121,7 +121,7 @@ components:
 paths:
   /api/statistics/rankingInUsersCountry/{username}:
     get:
-      summary: "Gets users position in a national ranking. Information updated every 60 seconds"
+      summary: "Gets users position in a national ranking. Information updated every 60 seconds when cache expires."
       tags:
         - Statistics
       parameters:
@@ -144,7 +144,7 @@ paths:
 
   /api/statistics/rankingWorlWide:
     get:
-      summary: "Gets worldwide ranking."
+      summary: "Gets worldwide ranking. Information updated every 60 seconds when cache expires."
       tags:
         - Statistics
       responses:
@@ -159,7 +159,7 @@ paths:
 
   /api/statistics/themeWorldWideRanking/{username}:
     get:
-      summary: "Worldwide ranking by theme"
+      summary: "Worldwide ranking by theme. Information updated every 60 seconds when cache expires."
       tags:
         - Statistics
       parameters:
@@ -182,7 +182,7 @@ paths:
 
   /api/statistics/rankingInUsersCountryByTheme/{username}:
     get:
-      summary: "National ranking by user's country"
+      summary: "National ranking by user's country. Information updated every 60 seconds when cache expires."
       tags: 
         - Statistics
       parameters:
