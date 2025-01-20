@@ -1,6 +1,6 @@
 process.loadEnvFile();
 export const config = {
-  host: process.env.DB_HOST,
+  host: process.env.MYSQL_DATABASE,
   user: process.env.DB_USER,
   port: process.env.DB_PORT,
   password: process.env.DB_PASSWORD,
