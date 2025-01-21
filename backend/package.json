@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/injections/dao.injection.js",
-    "build": "npm install --omit=dev"
+    "build": "npm install --omit=dev",
+    "dev": "node --watch src/injections/dao.injection.js"
   },
   "author": "brando hernandez",
   "license": "ISC",
