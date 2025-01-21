@@ -1,5 +1,6 @@
 import { createClient } from "redis";
-process.loadEnvFile();
+import dotenv from "dotenv";
+dotenv.config();
 
 export const client = createClient({
   socket: {

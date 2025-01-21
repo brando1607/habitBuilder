@@ -11,8 +11,8 @@ import { redisConnection } from "./utils/redisConfig.js";
 import { serve, setup } from "swagger-ui-express";
 import { opts } from "./utils/swagger.js";
 import swaggerJSDoc from "swagger-jsdoc";
-
-process.loadEnvFile();
+import dotenv from "dotenv";
+dotenv.config();
 
 export const createApp = ({ DaoIndex }) => {
   //express config
