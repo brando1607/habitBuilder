@@ -241,7 +241,58 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              type: object
+              required:
+                - firstName
+                - lastName
+                - username
+                - userEmail
+                - theme
+                - dateOfBirth
+                - country
+                - password
+              properties:
+                firstName:
+                  type: string
+                  example: "Brando"
+                  description: "The first name of the user."
+                lastName:
+                  type: string
+                  example: "Hernandez"
+                  description: "The last name of the user."
+                username:
+                  type: string
+                  example: "brando16"
+                  description: "The unique username for the user."
+                userEmail:
+                  type: string
+                  format: email
+                  example: "brandodavid16@gmail.com"
+                  description: "The email address of the user."
+                theme:
+                  type: string
+                  enum:
+                    - greek_gods
+                    - travelers
+                    - athletes
+                    - medieval_fantasy
+                    - magic
+                  example: "greek_gods"
+                  description: "The theme chosen by the user."
+                dateOfBirth:
+                  type: string
+                  format: date
+                  example: "1994-07-16"
+                  description: "The user's date of birth in YYYY-MM-DD format."
+                country:
+                  type: string
+                  example: "Venezuela"
+                  description: "The country of the user."
+                password:
+                  type: string
+                  format: password
+                  example: "Leslie2505."
+                  description: "The user's password."
       responses:
         "201":
           $ref: "#/components/responses/201_userCreated"
