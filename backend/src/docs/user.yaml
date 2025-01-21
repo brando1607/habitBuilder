@@ -393,7 +393,7 @@ paths:
                 - tempPassword
                 - newPassword
             example:
-              username: "Brando1607."
+              username: "brando16"
               tempPassword: "cc5b6dccce"
               newPassword: "NewSecurePassword123!"
       responses:
@@ -443,7 +443,7 @@ paths:
                 - login
             example:
               passwordToCheck: "Leslie2505."
-              login: "brando1607"
+              login: "brando16"
       responses:
         "200":
           $ref: "#/components/responses/200_login_Changed"
