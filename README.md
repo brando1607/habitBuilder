@@ -2,6 +2,8 @@
 
 This is the **Habit Builder** page, a project designed for my portfolio to showcase my backend development skills. Initially, I planned to create a to-do list, but I decided to take it to the next level.
 
+Deployed and available at **habitbuilder-production.up.railway.app**
+
 ## Why I Built This
 
 Backend development is my strongest suit, so I will focus on creating a robust backend first. Once completed, I’ll develop the best frontend I can to deliver an engaging user experience.
