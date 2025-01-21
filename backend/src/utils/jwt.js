@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-process.loadEnvFile();
+import dotenv from "dotenv";
+dotenv.config();
 export const TOKEN = process.env.TOKEN;
 
 export function generateToken(payload) {
