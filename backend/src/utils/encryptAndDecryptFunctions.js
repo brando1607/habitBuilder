@@ -1,5 +1,6 @@
 import crypto from "crypto";
-process.loadEnvFile();
+import dotenv from "dotenv";
+dotenv.config();
 
 const key = crypto
   .createHash("sha256")
