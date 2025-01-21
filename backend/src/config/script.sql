@@ -168,6 +168,20 @@ BEGIN
 END $
 DELIMITER ;
 
+DELIMITER $
+CREATE TRIGGER add_daily_habit_status
+	BEFORE INSERT ON daily_habit_status
+    FOR EACH ROW
+BEGIN
+	IF NEW.deadline > CURDATE() THEN 
+		SET NEW.status = 'SCHEDULED';
+	ELSEIF NEW.deadline = CURDATE() THEN 
+		SET NEW.status = 'IN PROGRESS';
+	ELSE
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deadline cannot be before today.';
+	END IF;
+END $
+DELIMITER ;
 
 DELIMITER $
 
