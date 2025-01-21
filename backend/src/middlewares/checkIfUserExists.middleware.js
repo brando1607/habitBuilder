@@ -10,15 +10,10 @@ export function userExists() {
         ? req.params.username
         : req.params.receiver;
 
-      console.log(username, "usename");
-      console.log(req.params.username, "username 2");
-
       const [getUser] = await connection.query(
         `SELECT id FROM user WHERE username = ?;`,
         [username]
       );
-
-      console.log(getUser, "query");
 
       if (getUser.length === 0) {
         return CustomError.newError(errors.notFound.userNotFound);

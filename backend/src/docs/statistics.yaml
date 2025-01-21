@@ -125,7 +125,7 @@ paths:
       tags:
         - Statistics
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose ranking position will be retrieved"
@@ -163,7 +163,7 @@ paths:
       tags:
         - Statistics
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose ranking position will be retrieved"
@@ -186,7 +186,7 @@ paths:
       tags: 
         - Statistics
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose ranking position will be retrieved"
@@ -209,7 +209,7 @@ paths:
       tags:
         - Statistics
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for user whose habits will be retrieved."
@@ -232,7 +232,7 @@ paths:
       tags:
         - Statistics
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for user whose habits will be checked"

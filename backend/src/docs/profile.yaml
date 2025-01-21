@@ -236,7 +236,7 @@ paths:
       tags:
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose profile will be retrieved."
@@ -259,7 +259,7 @@ paths:
       tags: 
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user's whose achievements will be retrieved."
@@ -282,7 +282,7 @@ paths:
       tags:
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user getting the friend request."
@@ -307,7 +307,7 @@ paths:
       tags:
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose friend requests will be retrieved."
@@ -337,7 +337,7 @@ paths:
       tags:
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user whose friends will be retrieved."
@@ -360,7 +360,7 @@ paths:
       tags:
         - Profile
       parameters:
-        - name: Username
+        - name: username
           in: path
           required: true
           description: "Username for the user that sent the friend request."
