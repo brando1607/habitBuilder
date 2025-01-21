@@ -11,6 +11,7 @@ export function userExists() {
         : req.params.receiver;
 
       console.log(username, "usename");
+      console.log(req.params.username, "username 2");
 
       const [getUser] = await connection.query(
         `SELECT id FROM user WHERE username = ?;`,
