@@ -192,18 +192,18 @@ DO
 BEGIN
     START TRANSACTION;
 
-    UPDATE daily_daily_habit_status
+    UPDATE daily_habit_status
     SET status = 'IN PROGRESS'
     WHERE deadline = CURRENT_DATE
     AND status != 'IN PROGRESS';
 
-    UPDATE daily_daily_habit_status
+    UPDATE daily_habit_status
     SET status = 'NOT COMPLETED'
     WHERE deadline = CURRENT_DATE - INTERVAL 1 DAY
     AND status = 'IN PROGRESS';
 
     UPDATE habit_completion hc
-    JOIN daily_daily_habit_status hs ON hc.habit_id = hs.habit_id
+    JOIN daily_habit_status hs ON hc.habit_id = hs.habit_id
     SET hc.times_not_completed = hc.times_not_completed + 1
     WHERE hs.deadline = CURRENT_DATE - INTERVAL 1 DAY
     AND hs.status = 'NOT COMPLETED';
