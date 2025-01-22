@@ -72,11 +72,14 @@ components:
                   type: string
                   description: "User's country"
           example: 
-            - id: "binary"
-            - username: "brando16"
-            - theme: "greek_gods"
-            - habitsCompleted: 1
-            - country: "Venezuela"
+            withHabits:
+              - id: "binary"
+              - username: "brando16"
+              - theme: "greek_gods"
+              - habitsCompleted: 1
+              - country: "Venezuela"
+            noHabits:
+              message: "No users with habit completed yet"
 
     401_noToken:
       description: "Unauthorized - Please log in first so you can be verified"

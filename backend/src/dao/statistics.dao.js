@@ -41,7 +41,9 @@ export class StatisticsDao {
         EX: 60,
       });
 
-      return getRanking;
+      return getRanking.length > 0
+        ? getRanking
+        : "No users with habit completed";
     } catch (error) {
       throw error;
     } finally {
@@ -69,7 +71,9 @@ export class StatisticsDao {
         EX: 60,
       });
 
-      return worldRanking;
+      return worldRanking.length > 0
+        ? getRanking
+        : "No users with habit completed";
     } catch (error) {
       throw error;
     } finally {
@@ -110,7 +114,9 @@ export class StatisticsDao {
         { EX: 60 }
       );
 
-      return themeWorldWideRanking;
+      return themeWorldWideRanking.length > 0
+        ? getRanking
+        : "No users with habit completed";
     } catch (error) {
       throw error;
     } finally {
@@ -153,7 +159,9 @@ export class StatisticsDao {
         { EX: 60 }
       );
 
-      return rankingInUsersCountryByTheme;
+      return rankingInUsersCountryByTheme.length > 0
+        ? getRanking
+        : "No users with habit completed yet";
     } catch (error) {
       throw error;
     } finally {
