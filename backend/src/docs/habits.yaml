@@ -63,6 +63,17 @@ components:
             message: "Deadline cannot be before today."
             statusCode: 400
 
+    400_deleteCompletedHabit:
+      description: "Bad Request - Wrong status."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: "Completed habits can't be deleted."
+            statusCode: 400
+        
+
     400_habitCompletionError:
       description: "Error response when attempting to complete a habit that is not in progress."
       content:
@@ -298,6 +309,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200_habitDeleted"
+        "400":
+          $ref: "#/components/responses/400_deleteCompletedHabit"
         "401":
           $ref: "#/components/responses/401_noToken"
         "404":

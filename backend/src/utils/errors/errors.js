@@ -21,6 +21,10 @@ export const errors = {
       message: "Username can't include @ sign.",
       statusCode: 400,
     },
+    deleteCompletedHabit: {
+      message: "Completed habits can't be deleted",
+      statusCode: 400,
+    },
   },
   auth: {
     unauthorized: { message: "Invalid Credentials", statusCode: 401 },

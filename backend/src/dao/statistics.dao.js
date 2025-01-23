@@ -32,7 +32,7 @@ export class StatisticsDao {
          WHERE status = 'COMPLETED'
          GROUP BY user.id
          HAVING country = ?
-         ORDER BY HabitsCompleted DESC;
+         ORDER BY COUNT(status) DESC;
     `,
         [country]
       );
@@ -64,7 +64,7 @@ export class StatisticsDao {
                                 JOIN daily_habit_status ON daily_habit_status.user_id = user.id
                                 WHERE status = 'COMPLETED'
                                 GROUP BY country, user.id
-                                ORDER BY HabitsCompleted DESC;
+                                ORDER BY COUNT(status) DESC;
 `);
 
       await client.set("worldRanking", JSON.stringify(worldRanking), {
@@ -103,7 +103,7 @@ export class StatisticsDao {
         WHERE status = 'COMPLETED'
         GROUP BY theme, user.id
         HAVING theme = ?
-        ORDER BY HabitsCompleted DESC;
+        ORDER BY COUNT(status) DESC;
 `,
         [theme]
       );
@@ -148,7 +148,7 @@ export class StatisticsDao {
          WHERE status = 'COMPLETED'
          GROUP BY user.id
          HAVING country = ? AND theme = ?
-         ORDER BY HabitsCompleted DESC;
+         ORDER BY COUNT(status) DESC;
 `,
         [country, theme]
       );
@@ -180,7 +180,8 @@ export class StatisticsDao {
       const [search] = await connection.query(
         `SELECT habit_id, habit, times_completed FROM habit_completion
          JOIN habits ON habit_completion.habit_id = habits.id 
-         WHERE times_completed >= 45 AND user_id = ?;`,
+         WHERE times_completed >= 45 AND user_id = ?
+         ORDER BY times_completed;`,
         [user_id]
       );
       return search.length > 0
@@ -213,10 +214,10 @@ export class StatisticsDao {
       const [mostFrequentDays] = await connection.query(
         `SELECT habits.habit, day, COUNT(day) AS TimesComletedOnThatDay FROM days
          JOIN daily_habit_status ON daily_habit_status.id_day = days.id
-         JOIN habits ON habits.id = habit_status.habit_id
+         JOIN habits ON habits.id = daily_habit_status.habit_id
          WHERE daily_habit_status.habit_id = ? AND daily_habit_status.user_id = ?
          GROUP BY day
-         ORDER BY TimesCompletedOnThatDay DESC;
+         ORDER BY COUNT(day) DESC;
 `,
         [habit_id, user_id]
       );

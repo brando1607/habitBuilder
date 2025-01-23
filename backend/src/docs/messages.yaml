@@ -290,7 +290,7 @@ paths:
                 id:
                   type: number
                   description: "ID for message"
-                message:
+                newMessage:
                   type: string
                   description: "Message."
               required:
@@ -298,7 +298,7 @@ paths:
                 - message
               example:
                 id: 5
-                message: "Hi, how are you doing?"
+                newMessage: "Hi, how are you doing?"
       responses:
         "200":
           $ref: "#/components/responses/200_messageEdited"

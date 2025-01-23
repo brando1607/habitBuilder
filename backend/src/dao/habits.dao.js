@@ -489,12 +489,18 @@ export class HabitsDao {
 
       await connection.beginTransaction();
 
-      await connection.query(
+      const [deleteHabit] = await connection.query(
         `UPDATE daily_habit_status
          SET status = ? 
-         WHERE user_id = ? AND habit_id = ? AND deadline = ?;`,
+         WHERE user_id = ? AND habit_id = ? AND deadline = ? AND status != 'COMPLETED';`,
         ["DELETED", user_id, habit_id, deadline]
       );
+
+      const deletionResult = deleteHabit.info.split(" ")[2];
+
+      if (deletionResult === "0") {
+        return CustomError.newError(errors.error.deleteCompletedHabit);
+      }
 
       await connection.commit();
 

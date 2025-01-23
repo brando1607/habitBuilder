@@ -42,7 +42,7 @@ export const createStatisticsRouter = ({ DaoIndex }) => {
     statisticsController.atLeast45Completions
   );
 
-  statisticsRouter.get(
+  statisticsRouter.post(
     "/mostFrequentDays/:username",
     passportCall("jwt", { session: false }),
     userExists(),

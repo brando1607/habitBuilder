@@ -22,7 +22,7 @@ GET http://localhost:1234/api/statistics/atLeast45Completions/brando16
 
 ### get days where the habit was completed the most     
     
-GET http://localhost:1234/api/statistics/mostFrequentDays/brando16
+POST http://localhost:1234/api/statistics/mostFrequentDays/brando16
 Content-Type: application/json
 
 {

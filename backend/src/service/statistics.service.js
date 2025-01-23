@@ -57,7 +57,10 @@ export class StatisticsService {
   }
   async mostFrequentDays({ username, habit }) {
     try {
-      const result = this.daoIndex.mostFrequentDays({ username, habit });
+      const result = this.daoIndex.statisticsDao.mostFrequentDays({
+        username,
+        habit,
+      });
 
       return result;
     } catch (error) {

@@ -205,7 +205,7 @@ components:
 
 paths:
 
-  /api/habits/badgesAndLevels/sendToPendingBadges/{username}:
+  /api/badgesAndLevels/sendToPendingBadges/{username}:
     post:
       summary: "Send a badge request."
       tags:
@@ -235,8 +235,8 @@ paths:
                 - habit
                 - keyword
               example:
-                habit: "dog lover"
-                keyword: "walk"
+                badge: "dog lover"
+                keyword: "dog"
       responses:
         "200":
           $ref: "#/components/responses/200_evaluateBadge"

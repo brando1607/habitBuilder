@@ -13,16 +13,16 @@ Content-Type: application/json
     "password": "Leslie2505."
 }
 
-# {
-#     "firstName": "Timothy",
-#     "lastName": "Bates",
-#     "username": "tim31", 
-#     "userEmail": "tim31@gmail.com",
-#     "theme": "medieval_fantasy",
-#     "dateOfBirth": "1971-12-31",
-#     "country": "United States", 
-#     "password": "Brando1607."
-# }
+{
+    "firstName": "Timothy",
+    "lastName": "Bates",
+    "username": "tim31", 
+    "userEmail": "tim31@gmail.com",
+    "theme": "medieval_fantasy",
+    "dateOfBirth": "1971-12-31",
+    "country": "United States", 
+    "password": "Brando1607."
+}
 
 
 # {
