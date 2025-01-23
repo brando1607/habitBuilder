@@ -195,7 +195,7 @@ BEGIN
     UPDATE daily_habit_status
     SET status = 'IN PROGRESS'
     WHERE deadline = CURRENT_DATE
-    AND status != 'IN PROGRESS';
+    AND status = 'SCHEDULED';
 
     UPDATE daily_habit_status
     SET status = 'NOT COMPLETED'
