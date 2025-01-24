@@ -43,6 +43,8 @@ export const createApp = ({ DaoIndex }) => {
   redisConnection();
   midnightCheck();
 
+  console.log("Current Railway server time:", new Date().toISOString());
+
   //Documentation config
   const specs = swaggerJSDoc(opts);
   app.use("/", serve, setup(specs));
