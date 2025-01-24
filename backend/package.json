@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/injections/dao.injection.js",
     "build": "npm install --omit=dev",
-    "dev": "node --watch src/injections/dao.injection.js"
+    "dev": "TZ=America/Santiago node --watch src/injections/dao.injection.js"
   },
   "author": "brando hernandez",
   "license": "ISC",
