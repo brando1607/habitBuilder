@@ -12,7 +12,6 @@ import { serve, setup } from "swagger-ui-express";
 import { opts } from "./utils/swagger.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import { midnightCheck } from "./utils/nodeCronJobs.js";
-import cron from "node-cron";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -43,17 +42,6 @@ export const createApp = ({ DaoIndex }) => {
   dbConnection();
   redisConnection();
   midnightCheck();
-
-  console.log("Current UTC time:", new Date().toISOString());
-  console.log("Current local time (Node.js):", new Date().toLocaleString());
-  console.log(
-    "Resolved Node.js time zone:",
-    Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
-
-  cron.schedule("* * * * * *", () => {
-    console.log("Cron job executed at:", new Date().toLocaleString());
-  });
 
   //Documentation config
   const specs = swaggerJSDoc(opts);
