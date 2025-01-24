@@ -45,20 +45,14 @@ export const createApp = ({ DaoIndex }) => {
   midnightCheck();
 
   console.log("Current UTC time:", new Date().toISOString());
-  console.log(
-    "Current local time (Node.js):",
-    new Date().toLocaleString("es-CL", { timeZone: "America/Santiago" })
-  );
+  console.log("Current local time (Node.js):", new Date().toLocaleString());
   console.log(
     "Resolved Node.js time zone:",
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
 
-  cron.schedule("* * * * *", () => {
-    console.log(
-      "Cron job executed at:",
-      new Date().toLocaleString("es-CL", { timeZone: "America/Santiago" })
-    );
+  cron.schedule("* * * * * *", () => {
+    console.log("Cron job executed at:", new Date().toLocaleString());
   });
 
   //Documentation config
