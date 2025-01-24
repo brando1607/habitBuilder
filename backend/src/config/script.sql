@@ -138,6 +138,7 @@ CREATE TABLE days(
 );
 
 CREATE TABLE daily_habit_status(
+    id INT PRIMARY KEY AUTO_INCREMENT,
     user_id BINARY(16),
 	habit_id BINARY(16),
     id_day INT,
