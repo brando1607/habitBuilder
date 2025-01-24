@@ -24,7 +24,6 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS habits;
 DROP TRIGGER IF EXISTS add_daily_habit_status;
 DROP TRIGGER IF EXISTS check_status_before_completion;
-DROP EVENT IF EXISTS update_user_daily_habit_status;
 
 CREATE TABLE user(
 	id BINARY(16),
@@ -181,36 +180,6 @@ BEGIN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deadline cannot be before today.';
 	END IF;
 END $
-DELIMITER ;
-
-DELIMITER $
-
-CREATE EVENT update_user_daily_habit_status
-ON SCHEDULE EVERY 1 DAY
-STARTS CURRENT_DATE + INTERVAL 1 DAY 
-DO
-BEGIN
-    START TRANSACTION;
-
-    UPDATE daily_habit_status
-    SET status = 'IN PROGRESS'
-    WHERE deadline = CURRENT_DATE
-    AND status = 'SCHEDULED';
-
-    UPDATE daily_habit_status
-    SET status = 'NOT COMPLETED'
-    WHERE deadline = CURRENT_DATE - INTERVAL 1 DAY
-    AND status = 'IN PROGRESS';
-
-    UPDATE habit_completion hc
-    JOIN daily_habit_status hs ON hc.habit_id = hs.habit_id
-    SET hc.times_not_completed = hc.times_not_completed + 1
-    WHERE hs.deadline = CURRENT_DATE - INTERVAL 1 DAY
-    AND hs.status = 'NOT COMPLETED';
-    
-    COMMIT;
-END$
-
 DELIMITER ;
 
 INSERT INTO levels(user_level, points_or_completions_required)
