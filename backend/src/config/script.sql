@@ -4,7 +4,6 @@ CREATE DATABASE habit_builder_db;
 
 USE habit_builder_db;
 
-SET GLOBAL event_scheduler = ON;
 
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS themes;

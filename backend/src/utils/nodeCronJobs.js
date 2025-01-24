@@ -17,8 +17,6 @@ export function midnightCheck() {
 
       await connection.commit();
 
-      console.log("Scheduled habits changed to IN PROGRESS.");
-
       await connection.beginTransaction();
 
       await connection.query(`
@@ -30,8 +28,6 @@ export function midnightCheck() {
 
       await connection.commit();
 
-      console.log("Habits left as IN PROGRESS marked as NOT COMPLETED.");
-
       await connection.beginTransaction();
 
       await connection.query(`    
@@ -42,15 +38,7 @@ export function midnightCheck() {
       AND hs.status = 'NOT COMPLETED';
   `);
 
-      console.log("Amount of not completed habits updated for each user.");
-
       await connection.commit();
-
-      const email = "brandodavid16@gmail.com";
-      const text = "Cron job done.";
-      const subject = "CronJob.";
-
-      await sendEmail(email, text, subject);
     } catch (error) {
       await connection.rollback();
       throw error;
