@@ -156,29 +156,33 @@ CREATE INDEX level_id ON levels(id, points_or_completions_required);
 CREATE INDEX message_id_index ON messages(id);
 
 DELIMITER $
+
 CREATE TRIGGER check_status_before_completion
-	BEFORE UPDATE ON daily_habit_status
+    BEFORE UPDATE ON daily_habit_status
     FOR EACH ROW
 BEGIN
- 	IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
- 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only habits that are in progress can be completed.';
- 	END IF;
+    IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only habits that are in progress can be completed.';
+    END IF;
 END $
+
 DELIMITER ;
 
 DELIMITER $
+
 CREATE TRIGGER add_daily_habit_status
-	BEFORE INSERT ON daily_habit_status
+    BEFORE INSERT ON daily_habit_status
     FOR EACH ROW
 BEGIN
-	IF NEW.deadline > CURDATE() THEN 
-		SET NEW.status = 'SCHEDULED';
-	ELSEIF NEW.deadline = CURDATE() THEN 
-		SET NEW.status = 'IN PROGRESS';
-	ELSE
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deadline cannot be before today.';
-	END IF;
+    IF NEW.deadline > CURDATE() THEN 
+        SET NEW.status = 'SCHEDULED';
+    ELSEIF NEW.deadline = CURDATE() THEN 
+        SET NEW.status = 'IN PROGRESS';
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deadline cannot be before today.';
+    END IF;
 END $
+
 DELIMITER ;
 
 INSERT INTO levels(user_level, points_or_completions_required)
