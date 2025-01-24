@@ -25,7 +25,7 @@ export class ProfileDao {
       const userTheme = getUserTheme[0];
 
       const [getUserData] = await connection.query(
-        `SELECT user.id, first_name, last_name, country, date_of_birth, points, themes.theme, themes.level_name FROM user
+        `SELECT user.id, first_name, last_name, country, date_of_birth, amount_in_progress, amount_scheduled, points, themes.theme, themes.level_name FROM user
         JOIN user_level ON user.id = user_level.user_id
         JOIN themes ON themes.level_number = user_level.level_id  
         WHERE username = ? AND themes.theme = ?;`,
@@ -34,8 +34,17 @@ export class ProfileDao {
 
       const userData = getUserData[0];
 
-      const { id, first_name, last_name, country, points, theme, level_name } =
-        userData;
+      const {
+        id,
+        first_name,
+        last_name,
+        country,
+        amount_in_progress,
+        amount_scheduled,
+        points,
+        theme,
+        level_name,
+      } = userData;
 
       const viewerId = await ReusableFunctions.getId(
         "user",
@@ -89,6 +98,8 @@ export class ProfileDao {
         first_name,
         last_name,
         country,
+        amount_in_progress,
+        amount_scheduled,
         points,
         level_name,
         theme,

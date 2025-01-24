@@ -15,6 +15,12 @@ components:
         country:
           type: string
           description: "The country of the user."
+        amountInProgress:
+          type: number
+          description: 'Amount of habits currently in progress'
+        amountScheduled:
+          type: number
+          description: "Amount of habits currently scheduled"
         points:
           type: integer
           description: "The total points the user has earned."
@@ -79,6 +85,8 @@ components:
         first_name: "Brando"
         last_name: "Hernandez"
         country: "Venezuela"
+        amountInProgress: 1
+        amountScheduled: 6
         points: 1
         level_name: "Human"
         theme: "greek_gods"
