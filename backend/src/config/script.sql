@@ -151,10 +151,9 @@ CREATE TABLE daily_habit_status(
 );
 
 CREATE INDEX username_index ON user(username);
-CREATE INDEX user_id ON user(id);
-CREATE INDEX habit_id_index ON habits(id);
 CREATE INDEX level_id ON levels(id, points_or_completions_required);
-CREATE INDEX message_id_index ON messages(id);
+CREATE INDEX midnight_check_index ON daily_habit_status(deadline, status);
+
 
 DELIMITER $
 
