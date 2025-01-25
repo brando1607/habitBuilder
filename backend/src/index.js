@@ -43,6 +43,11 @@ export const createApp = ({ DaoIndex }) => {
   redisConnection();
   midnightCheck();
 
+  console.log(
+    "App timezone:",
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+
   //Documentation config
   const specs = swaggerJSDoc(opts);
   app.use("/", serve, setup(specs));
