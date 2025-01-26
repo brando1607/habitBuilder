@@ -11,7 +11,7 @@ import { redisConnection } from "./utils/redisConfig.js";
 import { serve, setup } from "swagger-ui-express";
 import { opts } from "./utils/swagger.js";
 import swaggerJSDoc from "swagger-jsdoc";
-import { jobCheck, midnightCheck } from "./utils/nodeCronJobs.js";
+import { midnightCheck } from "./utils/nodeCronJobs.js";
 import dotenv from "dotenv";
 dotenv.config();
 
