@@ -47,3 +47,9 @@ export function midnightCheck() {
     }
   });
 }
+
+export function jobCheck() {
+  cron.schedule("* * * * * *", () => {
+    console.log("hola");
+  });
+}
