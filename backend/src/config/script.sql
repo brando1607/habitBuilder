@@ -161,7 +161,7 @@ CREATE TRIGGER check_status_before_completion
     BEFORE UPDATE ON daily_habit_status
     FOR EACH ROW
 BEGIN
-    IF OLD.status != 'IN PROGRESS' AND NEW.status != 'DELETED' THEN 
+    IF OLD.status != 'IN PROGRESS' AND NEW.status = 'COMPLETED' THEN 
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only habits that are in progress can be completed.';
     END IF;
 END $
