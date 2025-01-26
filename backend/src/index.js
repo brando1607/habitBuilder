@@ -42,7 +42,6 @@ export const createApp = ({ DaoIndex }) => {
   dbConnection();
   redisConnection();
   midnightCheck();
-  jobCheck();
 
   console.log(
     "App timezone:",

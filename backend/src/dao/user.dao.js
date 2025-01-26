@@ -112,6 +112,13 @@ export class UserDao {
     const connection = await this.pool.getConnection();
 
     try {
+      await connection.query(`    
+        UPDATE daily_habit_status
+        SET status = 'IN PROGRESS'
+        WHERE deadline = CURRENT_DATE
+        AND status = 'SCHEDULED';
+    `);
+
       const getUser = await ReusableFunctions.findUser(
         login,
         connection,

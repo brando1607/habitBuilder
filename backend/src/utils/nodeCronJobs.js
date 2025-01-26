@@ -1,6 +1,5 @@
 import cron from "node-cron";
 import { pool } from "./pool.config.js";
-import { sendEmail } from "./nodemailer.js";
 
 export function midnightCheck() {
   cron.schedule("0 0 * * *", async () => {
@@ -45,11 +44,5 @@ export function midnightCheck() {
     } finally {
       connection.release();
     }
-  });
-}
-
-export function jobCheck() {
-  cron.schedule("* * * * * *", () => {
-    console.log("hola");
   });
 }
