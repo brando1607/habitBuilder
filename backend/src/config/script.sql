@@ -143,7 +143,7 @@ CREATE TABLE daily_habit_status(
 	habit_id BINARY(16),
     id_day INT,
     deadline VARCHAR(10) NOT NULL,
-    status ENUM('IN PROGRESS', 'SCHEDULED', 'COMPLETED', 'DELETED'),
+    status ENUM('IN PROGRESS', 'SCHEDULED', 'COMPLETED', 'NOT COMPLETED', 'DELETED'),
     FOREIGN KEY(habit_id) REFERENCES habits(id) ON DELETE CASCADE,
     FOREIGN KEY(id_day) REFERENCES days(id),
     FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,

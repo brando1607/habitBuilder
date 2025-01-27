@@ -112,6 +112,17 @@ export class UserDao {
     const connection = await this.pool.getConnection();
 
     try {
+      await connection.beginTransaction();
+
+      await connection.query(`
+      UPDATE daily_habit_status
+      SET status = 'NOT COMPLETED'
+      WHERE deadline = (SELECT DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY))
+      AND status = 'IN PROGRESS';
+  `);
+
+      await connection.commit();
+
       const getUser = await ReusableFunctions.findUser(
         login,
         connection,
