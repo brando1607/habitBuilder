@@ -21,7 +21,7 @@ export function midnightCheck() {
       await connection.query(`
       UPDATE daily_habit_status
       SET status = 'NOT COMPLETED'
-      WHERE deadline = CURRENT_DATE - INTERVAL 1 DAY
+      WHERE deadline = (SELECT DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY))
       AND status = 'IN PROGRESS';
   `);
 
