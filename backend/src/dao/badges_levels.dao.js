@@ -101,7 +101,7 @@ export class BadgesAndLevelsDao {
           [badge]
         );
 
-        return `Badge sent to be evaluated, with id ${getId}`;
+        return `Badge sent to be evaluated, with id ${getId[0].id}`;
       } else {
         return CustomError.newError(errors.conflict.pendingBadge);
       }
