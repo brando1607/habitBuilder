@@ -34,7 +34,7 @@ export class BadgesAndLevelsDao {
       await client.set(
         "userAndBadgesLevels",
         JSON.stringify(userAndBadgesLevels),
-        { EX: 600 }
+        { EX: 10 }
       );
 
       return userAndBadgesLevels;
@@ -57,7 +57,7 @@ export class BadgesAndLevelsDao {
         `SELECT badge, keyword, username AS "created by" FROM badges;`
       );
 
-      await client.set("badges", JSON.stringify(getBadges), { EX: 600 });
+      await client.set("badges", JSON.stringify(getBadges), { EX: 10 });
 
       return getBadges;
     } catch (error) {
@@ -96,7 +96,12 @@ export class BadgesAndLevelsDao {
         );
         await connection.commit();
 
-        return `Badge sent to be evaluated`;
+        const [getId] = await connection.query(
+          `SELECT id from pending_badges WHERE badge = ?;`,
+          [badge]
+        );
+
+        return `Badge sent to be evaluated, with id ${getId}`;
       } else {
         return CustomError.newError(errors.conflict.pendingBadge);
       }

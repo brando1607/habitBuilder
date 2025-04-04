@@ -207,7 +207,7 @@ paths:
 
   /api/badgesAndLevels/sendToPendingBadges/{username}:
     post:
-      summary: "Send a badge request."
+      summary: "Send a badge request. When sent, write down the id number."
       tags:
         - Badges and levels
       parameters:
@@ -286,7 +286,7 @@ paths:
 
   /api/badgesAndLevels/getUserAndBadgeLevels:
     get:
-      summary: "Get all user's and badge's levels. Information is updated every 10 minutes when the cache expires."
+      summary: "Get all user's and badge's levels. Information is updated every 10 seconds when the cache expires."
       tags:
         - Badges and levels
       responses:
@@ -297,7 +297,7 @@ paths:
 
   /api/badgesAndLevels/getBadges:
     get:
-      summary: "Get all badges. Information is updated every 10 minutes when the cache expires."
+      summary: "Get all badges. Information is updated every 10 seconds when the cache expires."
       tags:
         - Badges and levels
       responses:
