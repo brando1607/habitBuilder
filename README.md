@@ -6,7 +6,7 @@ Deployed and available at **habitbuilder-production.up.railway.app**
 
 ## Why I Built This
 
-Backend development is my strongest suit, so I will focus on creating a robust backend first. Once completed, I’ll develop the best frontend I can to deliver an engaging user experience.
+Backend development is my strongest suit, so I wanted to build something that would be big enough to allow me to learn different technologies, strategies and architecture patterns.
 
 ## Core Features
 
@@ -54,7 +54,7 @@ Backend development is my strongest suit, so I will focus on creating a robust b
 - Messages can be modified.
 - Messages can be deleted.
 
-## Technical Details
+## Database Details
 
 The **`backend/config`** folder contains a `script.sql` file with:
 
@@ -81,15 +81,3 @@ This project is built using the following technologies and libraries:
 - **Passport-JWT**: For handling JWT-based authentication.
 - **Redis**: For caching.
 - **Node-cron**: To schedule jobs.
-
-## Development Status
-
-This project is a **work in progress**. I will update it regularly as new features are added or existing ones are improved.
-
-- The **`pending`** folder contains `.txt` files listing:
-  - Planned features for both the app and the database.
-  - Areas for improvement, like enhancing database performance and user experience.
-
----
-
-I’m excited to continue working on this app and make it a valuable addition to my portfolio.
