@@ -28,6 +28,7 @@ Backend development is my strongest suit, so I will focus on creating a robust b
   - Future habits are marked "scheduled."
 - **Complete Habits:** Habits can only be completed on their deadline day.
 - **Delete Habits:** Future habits can be deleted but not marked as completed.
+- **Status Update** at midnight, **scheduled** habits become **in progress** and **in progress\* habits become **not completed\*\*.
 
 ### User Profile Management
 
@@ -79,6 +80,7 @@ This project is built using the following technologies and libraries:
 - **Passport.js**: For user authentication.
 - **Passport-JWT**: For handling JWT-based authentication.
 - **Redis**: For caching.
+- **Node-cron**: To schedule jobs.
 
 ## Development Status
 
