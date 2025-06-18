@@ -27,7 +27,7 @@ export class StatisticsDao {
       }
 
       const [getRanking] = await connection.query(
-        `SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
+        `SELECT user.id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
          JOIN daily_habit_status ON daily_habit_status.user_id = user.id
          WHERE status = 'COMPLETED'
          GROUP BY user.id
@@ -60,7 +60,7 @@ export class StatisticsDao {
       }
 
       const [worldRanking] =
-        await connection.query(`SELECT id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
+        await connection.query(`SELECT user.id, username, theme, COUNT(status) AS HabitsCompleted, country FROM user
                                 JOIN daily_habit_status ON daily_habit_status.user_id = user.id
                                 WHERE status = 'COMPLETED'
                                 GROUP BY country, user.id
